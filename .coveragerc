@@ -1,0 +1,14 @@
+[paths]
+source =
+   src/clifunzone
+   */site-packages/clifunzone
+
+[run]
+branch = True
+source = clifunzone
+parallel = true
+
+[report]
+show_missing = true
+precision = 2
+omit = *migrations*
