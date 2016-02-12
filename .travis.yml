@@ -12,7 +12,7 @@ env:
     - TOXENV=py27,tests,coveralls,codecov
 #    - TOXENV=py33,tests,coveralls,codecov
 #    - TOXENV=py34,tests,coveralls,codecov
-#    - TOXENV=py35,tests,coveralls,codecov
+    - TOXENV=py35,tests,coveralls,codecov
 #    - TOXENV=pypy,tests,coveralls,codecov
 before_install:
   - python --version
