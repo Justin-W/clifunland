@@ -79,3 +79,7 @@ include .idea/runConfigurations/workspace_update_osx_sh.xml
 prune .idea/runConfigurations *.xml
 
 global-exclude *.py[cod] __pycache__ *.so *.dylib
+
+prune **/temp
+prune **/tmp
+prune **/out
