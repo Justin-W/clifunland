@@ -153,7 +153,7 @@ def echo_dom(dom):
 
     obj = vars(dom)
     obj = pformat(obj)
-    click.echo('\ndom content:\n{content}\n'.format(content=unicode(dom)))
+    click.echo('\ndom content:\n{content}\n'.format(content=dom))
 
 
 def main():
