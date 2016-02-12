@@ -80,7 +80,7 @@ def cli(debug):
 @click.option('--ini', '-i', type=click.Path(exists=True), help='the path to the INI file')
 def convert(**kwargs):
     """
-    Converts/transforms the input into a different format/encoding.
+    Reformat the input.
     """
     process(**kwargs)
 
@@ -90,7 +90,7 @@ def convert(**kwargs):
 # @click.argument('input', type=click.File('rb'))
 def info(input, **kwargs):
     """
-    Reports various info about the input.
+    Report various info about the input.
     """
     # process(**kwargs)
     # from xml.dom.minidom import parse, parseString
@@ -126,11 +126,22 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
         if echo:
             click.echo('\nXML:')
             click.echo(xmlstring)
+            click.echo('\nJSON:')
         output = xml2json.xml2json(xmlstring, options=options, strip_ns=stripnamespace, strip=stripwhitespace)
     # output = xml2json.elem2json(dom, options=options, strip_ns=None, strip=None)
     # click.echo('\nJSON:\n{}\n'.format(output))
-    click.echo('\nJSON:')
     click.echo(output)
+
+
+@cli.command()
+@click.argument('input', type=click.Path(exists=True, dir_okay=False))
+def echo(input, **kwargs):
+    """
+    Echo the input.
+    """
+    with open(input, mode='rb') as f:
+        xmlstring = f.read()
+        click.echo(xmlstring)
 
 
 def echo_dom(dom):
