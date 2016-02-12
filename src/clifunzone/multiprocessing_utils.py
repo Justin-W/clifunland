@@ -1,5 +1,4 @@
 import logging
-import datetime
 import random
 from multiprocessing import Process
 from time import sleep as time_sleep
