@@ -18,4 +18,58 @@ include README.rst
 
 include tox.ini .travis.yml appveyor.yml
 
+include requirements.txt
+
+recursive-include requirements *.txt
+
+#recursive-include scripts *.sh
+include scripts
+include scripts/.init.sh
+include scripts/tox.check.sh
+include scripts/tox.clean.sh
+include scripts/tox.sh
+include scripts/tox.tests.sh
+include scripts/venv.activate.sh
+include scripts/venv.create.sh
+include scripts/venv.deactivate.sh
+include scripts/venv.delete.sh
+include scripts/venv.freeze.sh
+include scripts/venv.update.hard.sh
+include scripts/venv.update.sh
+include scripts/workspace.status.sh
+include scripts/workspace.update.osx.sh
+#recursive-exclude scripts *.sh
+prune scripts *.sh
+
+include *.iml
+include .idea/.name
+include .idea/compiler.xml
+include .idea/encodings.xml
+include .idea/misc.xml
+include .idea/modules.xml
+include .idea/vcs.xml
+
+include .idea/copyright
+include .idea/copyright/profiles_settings.xml
+
+#recursive-include .idea/runConfigurations *.xml
+include .idea/runConfigurations
+include .idea/runConfigurations/run_tests__check_only.xml
+include .idea/runConfigurations/run_tests__Precommit.xml
+include .idea/runConfigurations/run_tests__tests_only.xml
+include .idea/runConfigurations/tox_check_sh.xml
+include .idea/runConfigurations/tox_clean_sh.xml
+include .idea/runConfigurations/tox_sh.xml
+include .idea/runConfigurations/tox_tests_sh.xml
+include .idea/runConfigurations/venv__refresh__fast_.xml
+include .idea/runConfigurations/venv__refresh__recreate_.xml
+include .idea/runConfigurations/venv_delete_sh.xml
+include .idea/runConfigurations/venv_freeze_sh.xml
+include .idea/runConfigurations/venv_update_hard_sh.xml
+include .idea/runConfigurations/venv_update_sh.xml
+include .idea/runConfigurations/workspace_status_sh.xml
+include .idea/runConfigurations/workspace_update_osx_sh.xml
+#recursive-exclude .idea/runConfigurations *.xml
+prune .idea/runConfigurations *.xml
+
 global-exclude *.py[cod] __pycache__ *.so *.dylib
