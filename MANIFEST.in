@@ -22,6 +22,10 @@ include requirements.txt
 
 recursive-include requirements *.txt
 
+#recursive-include resources/files/ini *.ini
+#recursive-include resources/files/xml *.xml
+recursive-include resources/files/** *.*
+
 #recursive-include scripts *.sh
 include scripts
 include scripts/.init.sh
