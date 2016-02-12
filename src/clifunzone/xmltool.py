@@ -151,8 +151,6 @@ def echo_dom(dom):
     obj = pformat(obj)
     click.echo('\nvars(dom):\n{obj}\n'.format(obj=obj))
 
-    obj = vars(dom)
-    obj = pformat(obj)
     click.echo('\ndom content:\n{content}\n'.format(content=dom))
 
 
