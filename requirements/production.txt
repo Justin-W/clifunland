@@ -1,0 +1,2 @@
+# Dependencies related to deploying the package
+-r base.txt
