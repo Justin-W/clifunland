@@ -26,6 +26,8 @@ recursive-include requirements *.txt
 #recursive-include resources/files/xml *.xml
 recursive-include resources/files/** *.*
 
+recursive-include resources/snippets/** *.py
+
 #recursive-include scripts *.sh
 include scripts
 include scripts/.init.sh
