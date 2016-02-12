@@ -3,4 +3,4 @@
 
 # Usage: bash ./tox.tests.sh
 
-bash ./tox.sh --skip-missing-interpreters -eclean,tests,report
+bash ./tox.sh --skip-missing-interpreters -eclean,py27,py35,report
