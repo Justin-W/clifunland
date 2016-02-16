@@ -1,4 +1,3 @@
-import xml.etree.ElementTree as ET
 from pprint import pformat
 
 import click
@@ -46,7 +45,7 @@ def echo_dom(dom):
 def cli(debug):
     ctx = click.get_current_context()
     if debug:
-        echo_context(ctx)
+        click_utils.echo_context(ctx)
 
     subcommand = ctx.invoked_subcommand
     # click.echo('Subcommand: {}'.format(subcommand))
@@ -131,8 +130,6 @@ def echo(input, **kwargs):
     with click.open_file(input, mode='rb') as f:
         s = f.read()
         click.echo(s)
-
-
 
 
 def main():
