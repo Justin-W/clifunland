@@ -120,15 +120,15 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
 
 
 @cli.command()
-@click.option('--infile', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input to be echoed. Or '-' to use stdin (e.g. piped input).")
-def echo(infile, **kwargs):
+def echo(input, **kwargs):
     """
     Echo the input.
     """
-    if not infile:
-        infile = '-'
-    with click.open_file(infile, mode='rb') as f:
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
         s = f.read()
         click.echo(s)
 
