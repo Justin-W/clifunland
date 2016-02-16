@@ -1,34 +1,10 @@
-import click
+import xml.etree.ElementTree as ET
 from pprint import pformat
 
+import click
+
+import click_utils
 import xml2json
-
-CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
-
-
-def echo_kwargs(kwargs):
-    click.echo('kwargs: %s' % kwargs)
-
-
-def echo_context(ctx, depth=0):
-    # if not depth:
-    #     click.echo('dir(ctx): %s' % dir(ctx))
-    obj = vars(ctx)
-    obj = pformat(obj)
-    click.echo('\nctx{d}:\n{obj}\n'.format(d=' (parent {})'.format(depth) if depth else '', obj=obj))
-    if ctx.parent:
-        echo_context(ctx.parent, depth=1 + depth)
-
-
-def inherit_parent_params(ctx, params):
-    """
-    Copies specified params from the parent context into the params of the child context.
-
-    :param ctx: a <click.core.Context> object
-    :param params: an iterable of param names/keys
-    """
-    for k in params:
-        ctx.params[k] = ctx.parent.params[k]
 
 
 def process(**kwargs):
@@ -36,23 +12,33 @@ def process(**kwargs):
 
     # debug_ = ctx.params.get('debug') or ctx.parent.params.get('debug') if ctx.parent else False
     # if debug_:
-    #     echo_context(ctx)
+    #     click_utils.echo_context(ctx)
 
-    inherit_parent_params(ctx, ('debug',))
+    click_utils.inherit_parent_params(ctx, ('debug',))
 
     debug_ = ctx.params['debug']
 
     if debug_:
         click.echo('Debug mode: %s' % ('enabled' if debug_ else 'disabled'))
-        echo_context(ctx)
-        echo_kwargs(kwargs)
+        click_utils.echo_context(ctx)
+        click_utils.echo_kwargs(kwargs)
 
     subcommand = ctx.invoked_subcommand
     if subcommand == 'info':
         pass
 
 
-@click.group(context_settings=CONTEXT_SETTINGS, invoke_without_command=True)
+def echo_dom(dom):
+    # if not depth:
+    #     click.echo('dir(ctx): %s' % dir(ctx))
+    obj = vars(dom)
+    obj = pformat(obj)
+    click.echo('\nvars(dom):\n{obj}\n'.format(obj=obj))
+
+    click.echo('\ndom content:\n{content}\n'.format(content=dom))
+
+
+@click.group(context_settings=click_utils.CONTEXT_SETTINGS, invoke_without_command=True)
 @click.version_option(version='1.0.0')
 @click.option('--debug/--silent', '-d/-s', 'debug', default=False)
 # @click.option('--debug', '-d', 'debug', flag_value=True, default=True)
@@ -134,24 +120,19 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
 
 
 @cli.command()
-@click.argument('input', type=click.Path(exists=True, dir_okay=False))
-def echo(input, **kwargs):
+@click.option('--infile', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input to be echoed. Or '-' to use stdin (e.g. piped input).")
+def echo(infile, **kwargs):
     """
     Echo the input.
     """
-    with open(input, mode='rb') as f:
-        xmlstring = f.read()
-        click.echo(xmlstring)
+    if not infile:
+        infile = '-'
+    with click.open_file(infile, mode='rb') as f:
+        s = f.read()
+        click.echo(s)
 
 
-def echo_dom(dom):
-    # if not depth:
-    #     click.echo('dir(ctx): %s' % dir(ctx))
-    obj = vars(dom)
-    obj = pformat(obj)
-    click.echo('\nvars(dom):\n{obj}\n'.format(obj=obj))
-
-    click.echo('\ndom content:\n{content}\n'.format(content=dom))
 
 
 def main():
