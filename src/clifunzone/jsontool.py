@@ -75,19 +75,28 @@ def echo(input, **kwargs):
 #               help='shortcut that overrides the indent and separators options to generate the most compact output possible.')
 # @click.option('--pretty', '-p', type=click.BOOL,
 #               help='shortcut that overrides the indent and separators options to generate more readable output.')
-@click.option('--indent', type=click.IntRange(min=0))
+@click.option('--indent', type=click.IntRange(min=0),
+              help='Default is None. Must be a non-negative integer.'
+                   ' Maps to the corresponding argument of the json.dumps() function.')
 # @click.option('--indent', '-in', help="'None', or a non-negative integer.")
 @click.option('--skip-keys', '--skip', '--ignore-key-errors', '-ike', 'skip_keys', type=click.BOOL)
 # @click.option('--sort-keys', '--sort', '-s', 'sort_keys', type=click.BOOL)
 # @click.option('--sort-keys/--unsorted-keys', '--sorted/--unsorted', '--sort', '-s', 'sort_keys', default=False)
-@click.option('--sort-keys', '--sorted/--unsorted', '--sort', '-s', 'sort_keys', default=False)
-@click.option('--ensure-ascii', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
+@click.option('--sort-keys', '--sorted/--unsorted', '--sort', '-s', 'sort_keys', default=False,
+              help='causes the keys of each element to be output in sorted order.')
+# @click.option('--ensure-ascii', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
 # @click.option('--ensure-ascii', is_flag=True, default=True, help='defaults to True. use =0 suffix to disable')
-@click.option('--check-circular', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
-@click.option('--allow-nan', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
-# @click.option('--ensure-ascii/--ensure-ascii=0', '-ea+/-ea-', default=True)
-# @click.option('--check-circular/--check-circular=0', '-cc+/-cc-', default=True)
-# @click.option('--allow-nan/--allow-nan=0', '-nan+/-nan-', default=True)
+# @click.option('--check-circular', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
+# @click.option('--allow-nan', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
+@click.option('--ensure-ascii/--ensure-ascii-off', '-ea+/-ea-', default=True,
+              help='Default is True.'
+                   ' Maps to the corresponding argument of the json.dumps() function.')
+@click.option('--check-circular/--check-circular-ff', '-cc+/-cc-', default=True,
+              help='Default is True.'
+                   ' Maps to the corresponding argument of the json.dumps() function.')
+@click.option('--allow-nan/--allow-nan-off', '-nan+/-nan-', default=True,
+              help='Default is True.'
+                   ' Maps to the corresponding argument of the json.dumps() function.')
 @click.option('--item-separator', '-is', default=', ', help='the item separator')
 @click.option('--dict-separator', '-ds', default=': ', help='the dictionary/element separator')
 def format(input,
