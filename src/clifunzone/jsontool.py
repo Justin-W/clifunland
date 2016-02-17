@@ -50,7 +50,7 @@ def cli(debug):
               help="the path to the file containing the input to be echoed. Or '-' to use stdin (e.g. piped input).")
 def echo(input, **kwargs):
     """
-    Echo the input.
+    Echo the (unparsed) input.
     """
     if not input:
         input = '-'
