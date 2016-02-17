@@ -74,6 +74,32 @@ def reprcommand(input, **kwargs):
         click.echo(s)
 
 
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+def info(input, **kwargs):
+    """
+    Provides info about the input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        data = json.load(f)
+        d = {
+            'type': type(data),
+            'length': len(data),
+            # 'repr': repr(data),
+            'keys': data.keys()
+        }
+        # click.echo('type={}'.format(t))
+        # click.echo('len={}'.format(len(data)))
+        # click.echo('keys={}'.format(', '.join(data.keys())))
+        click.echo(d)
+        # click.echo('iter={}'.format(', '.join(iter(data))))
+        # click.echo('dir={}'.format(dir(data)))
+        # click.echo('repr={}'.format(repr(data)))
+
+
 @cli.command(name='format')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input."
