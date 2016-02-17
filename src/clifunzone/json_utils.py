@@ -3,10 +3,10 @@ import json
 
 def contains_valid_json(obj):
     """
-    Indicates whether a specified value contains
+    Indicates whether a specified value contains valid and well-formed JSON.
 
-    :param obj:
-    :return:
+    :param obj: a file-like or string-like object.
+    :return: True if valid, else False.
 
     >>> contains_valid_json(None)
     False
