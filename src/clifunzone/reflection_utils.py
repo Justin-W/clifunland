@@ -1,6 +1,3 @@
-import sys
-
-
 def is_file_like(obj):
     """
     Indicates whether a specified value is a 'file-like' object.
@@ -23,7 +20,7 @@ def is_file_like(obj):
     >>> is_file_like({})
     False
 
-    >>> is_file_like(sys.stdin)
+    >>> import sys; is_file_like(sys.stdin) and is_file_like(sys.stderr) and is_file_like(sys.stdout)
     True
     """
     if obj is None:

@@ -28,10 +28,10 @@ def contains_valid_json(obj):
     try:
         try:
             # json_object = json.loads(obj.read())
-            d = json.load(obj)
+            json.load(obj)
         except AttributeError:
             # obj is not a file
-            d = json.loads(obj)
+            json.loads(obj)
     except ValueError:
         return False
     return True
