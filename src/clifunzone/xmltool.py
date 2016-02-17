@@ -1,9 +1,11 @@
+import sys
 from pprint import pformat
 
 import click
 
 import click_utils
 import xml2json
+import xml_utils
 
 
 def process(**kwargs):
@@ -68,6 +70,25 @@ def echo(input, **kwargs):
     with click.open_file(input, mode='rb') as f:
         s = f.read()
         click.echo(s)
+
+
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--silent', '-s', is_flag=True, type=click.BOOL,
+              help='disables the normal console output.')
+def validate(input, silent, **kwargs):
+    """
+    Validates whether the input is syntactically valid and well-formed.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        b = xml_utils.contains_valid_xml(f)
+        if not silent:
+            click.echo(b)
+        if not b:
+            sys.exit(1)  # exit with a failure code of 1
 
 
 @cli.command()
