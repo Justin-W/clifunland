@@ -1,3 +1,14 @@
+#
+# project-specific ignore settings
+#
+
+/clifundistro-*.*
+
+
+#
+# common ignore settings
+#
+
 *.py[cod]
 
 # C extensions
