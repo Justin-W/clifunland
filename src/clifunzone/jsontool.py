@@ -59,6 +59,21 @@ def echo(input, **kwargs):
         click.echo(s)
 
 
+@cli.command(name='repr')
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+def reprcommand(input, **kwargs):
+    """
+    Provides the python repr() representation of the parsed input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        data = json.load(f)
+        s = repr(data)
+        click.echo(s)
+
+
 @cli.command(name='format')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input."
