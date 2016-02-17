@@ -34,7 +34,7 @@ def process(**kwargs):
 def cli(debug):
     ctx = click.get_current_context()
     if debug:
-        echo_context(ctx)
+        click_utils.echo_context(ctx)
 
     subcommand = ctx.invoked_subcommand
     # click.echo('Subcommand: {}'.format(subcommand))
