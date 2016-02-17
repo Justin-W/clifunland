@@ -3,6 +3,7 @@ import json
 import click
 
 import click_utils
+from dict_utils import flatten
 
 
 def process(**kwargs):
@@ -163,6 +164,50 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
         s = json.dumps(data, skipkeys=skip_keys, sort_keys=sort_keys,
                        ensure_ascii=ensure_ascii, check_circular=check_circular,
                        allow_nan=allow_nan, indent=indent, separators=separators)
+        click.echo(s)
+
+
+@cli.command(name='flatten')
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input."
+                   " Or '-' to use stdin (e.g. piped input).")
+@click.option('--separator', '-s', type=click.STRING, help='the key/element separator. Default is "__".')
+@click.option('--sort-keys', '--sorted/--unsorted', '--sort', 'sort_keys', default=False,
+              help='causes the keys of each element to be output in sorted order.')
+@click.option('--compact', '-c', 'style', flag_value='compact',
+              help='output format style that minimizes the output.'
+                   ' for more options, use the jsontool.format command.')
+@click.option('--pretty', '-p', 'style', flag_value='pretty',
+              help='output format style that generates human readable output.'
+                   ' for more options, use the jsontool.format command.')
+@click.option('--flat', '-f', 'style', flag_value='flat',
+              help='output format style that generates multi-line, non-indented output.'
+                   ' for more options, use the jsontool.format command.')
+def flattencommand(input, separator, sort_keys, style, **kwargs):
+    """
+    Flattens JSON input with nested or hierarchical structure into a flat hierarchy.
+    """
+    if style == 'compact':
+        dumps_separators = (',', ':')
+        dumps_indent = None
+    elif style == 'pretty':
+        dumps_separators = None
+        dumps_indent = 2
+    elif style == 'flat':
+        dumps_separators = (',', ': ')
+        dumps_indent = 0
+    else:
+        dumps_separators = None
+        dumps_indent = None
+
+    if not input:
+        input = '-'
+    if separator is None:
+        separator = '__'
+    with click.open_file(input, mode='rb') as f:
+        data = json.load(f)
+        data = flatten(data, separator)
+        s = json.dumps(data, indent=dumps_indent, separators=dumps_separators, sort_keys=sort_keys)
         click.echo(s)
 
 
