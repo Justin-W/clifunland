@@ -89,13 +89,8 @@ def echo(input, **kwargs):
                    ' Maps to the corresponding argument of the json.dumps() function.')
 @click.option('--item-separator', '-is', default=', ', help='the item separator')
 @click.option('--dict-separator', '-ds', default=': ', help='the dictionary/element separator')
-def format(input,
-           style,
-           indent,
-           skip_keys, sort_keys,
-           ensure_ascii, check_circular, allow_nan,
-           item_separator, dict_separator,
-           **kwargs):
+def format(input, style, indent, skip_keys, sort_keys, ensure_ascii, check_circular, allow_nan,
+           item_separator, dict_separator, **kwargs):
     """
     Formats the JSON input. See the docs of the json.dumps() function (in python's builtin json module) for details.
     """
