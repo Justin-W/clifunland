@@ -90,7 +90,7 @@ def echo(input, **kwargs):
 @click.option('--item-separator', '-is', default=', ', help='the item separator')
 @click.option('--dict-separator', '-ds', default=': ', help='the dictionary/element separator')
 def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, check_circular, allow_nan,
-           item_separator, dict_separator, **kwargs):
+                  item_separator, dict_separator, **kwargs):
     """
     Formats the JSON input. See the docs of the json.dumps() function (in python's builtin json module) for details.
     """
