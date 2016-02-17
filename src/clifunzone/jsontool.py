@@ -61,7 +61,8 @@ def echo(input, **kwargs):
 
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
-              help="the path to the file containing the input to be echoed. Or '-' to use stdin (e.g. piped input).")
+              help="the path to the file containing the input to be echoed."
+                   " Or '-' to use stdin (e.g. piped input).")
 @click.option('--compact', '-c', 'style', flag_value='compact',
               help='output format style that minimizes the output.'
                    ' overrides the indent and separator options.')
@@ -71,23 +72,12 @@ def echo(input, **kwargs):
 @click.option('--flat', '-f', 'style', flag_value='flat',
               help='output format style that generates multi-line, non-indented output.'
                    ' overrides the indent and separator options.')
-# @click.option('--compact', '-c', type=click.BOOL,
-#               help='shortcut that overrides the indent and separators options to generate the most compact output possible.')
-# @click.option('--pretty', '-p', type=click.BOOL,
-#               help='shortcut that overrides the indent and separators options to generate more readable output.')
 @click.option('--indent', type=click.IntRange(min=0),
               help='Default is None. Must be a non-negative integer.'
                    ' Maps to the corresponding argument of the json.dumps() function.')
-# @click.option('--indent', '-in', help="'None', or a non-negative integer.")
 @click.option('--skip-keys', '--skip', '--ignore-key-errors', '-ike', 'skip_keys', type=click.BOOL)
-# @click.option('--sort-keys', '--sort', '-s', 'sort_keys', type=click.BOOL)
-# @click.option('--sort-keys/--unsorted-keys', '--sorted/--unsorted', '--sort', '-s', 'sort_keys', default=False)
 @click.option('--sort-keys', '--sorted/--unsorted', '--sort', '-s', 'sort_keys', default=False,
               help='causes the keys of each element to be output in sorted order.')
-# @click.option('--ensure-ascii', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
-# @click.option('--ensure-ascii', is_flag=True, default=True, help='defaults to True. use =0 suffix to disable')
-# @click.option('--check-circular', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
-# @click.option('--allow-nan', type=click.BOOL, default=True, help='defaults to True. use =0 suffix to disable')
 @click.option('--ensure-ascii/--ensure-ascii-off', '-ea+/-ea-', default=True,
               help='Default is True.'
                    ' Maps to the corresponding argument of the json.dumps() function.')
@@ -134,10 +124,6 @@ def format(input,
         # s = f.read()
         # json.loads(s)
         data = json.load(f)
-        # s = json.dumps(data, skipkeys=skip_keys, sort_keys=sort_keys,
-        #                ensure_ascii=ensure_ascii, check_circular=check_circular,
-        #                allow_nan=allow_nan, indent=indent, separators=separators,
-        #                encoding='utf-8', default=None, **kw)
         s = json.dumps(data, skipkeys=skip_keys, sort_keys=sort_keys,
                        ensure_ascii=ensure_ascii, check_circular=check_circular,
                        allow_nan=allow_nan, indent=indent, separators=separators)
