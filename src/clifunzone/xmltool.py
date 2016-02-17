@@ -57,6 +57,20 @@ def cli(debug):
 
 
 @cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+def echo(input, **kwargs):
+    """
+    Echo the (unparsed) input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        s = f.read()
+        click.echo(s)
+
+
+@cli.command()
 @click.argument('input', type=click.Path(exists=True, dir_okay=False))
 @click.option('--output', '-o', type=click.Path(exists=False), help='the path to the output file')
 @click.option('--encoding', '-e', type=click.Choice(['json', 'xml']), default='json',
@@ -116,20 +130,6 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
     # output = xml2json.elem2json(dom, options=options, strip_ns=None, strip=None)
     # click.echo('\nJSON:\n{}\n'.format(output))
     click.echo(output)
-
-
-@cli.command()
-@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
-              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
-def echo(input, **kwargs):
-    """
-    Echo the (unparsed) input.
-    """
-    if not input:
-        input = '-'
-    with click.open_file(input, mode='rb') as f:
-        s = f.read()
-        click.echo(s)
 
 
 def main():
