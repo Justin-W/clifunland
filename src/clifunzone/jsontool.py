@@ -1,8 +1,10 @@
 import json
+import sys
 
 import click
 
 import click_utils
+import json_utils
 from dict_utils import flatten
 
 
@@ -73,6 +75,25 @@ def reprcommand(input, **kwargs):
         data = json.load(f)
         s = repr(data)
         click.echo(s)
+
+
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--silent', '-s', is_flag=True, type=click.BOOL,
+              help='disables the normal console output.')
+def validate(input, silent, **kwargs):
+    """
+    Validates whether the input is syntactically valid and well-formed.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        b = json_utils.contains_valid_json(f)
+        if not silent:
+            click.echo(b)
+        if not b:
+            sys.exit(1)  # exit with a failure code of 1
 
 
 @cli.command()
