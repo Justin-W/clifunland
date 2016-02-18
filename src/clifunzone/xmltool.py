@@ -171,10 +171,6 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
     """
     # output = xml2json.json2xml(input)
 
-    from collections import namedtuple
-    Xml2JsonOptions = namedtuple('Xml2JsonOptions', ['pretty'], verbose=False)
-    options = Xml2JsonOptions(pretty=pretty)
-
     if not input:
         input = '-'
     with click.open_file(input, mode='rb') as f:
@@ -183,10 +179,12 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
             click.echo('\nXML:')
             click.echo(xmlstring)
             click.echo('\nJSON:')
-        output = xml2json.xml2json(xmlstring, options=options, strip_ns=stripnamespace, strip=stripwhitespace)
+    output = xml_to_json(xmlstring, stripwhitespace, stripnamespace, pretty)
     # output = xml2json.elem2json(dom, options=options, strip_ns=None, strip=None)
     # click.echo('\nJSON:\n{}\n'.format(output))
     click.echo(output)
+
+
 
 
 def main():

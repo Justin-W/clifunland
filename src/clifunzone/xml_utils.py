@@ -1,6 +1,7 @@
 from xml.etree import ElementTree as ET
 
 import reflection_utils
+import xml2json
 
 
 def contains_valid_xml(obj):
@@ -68,6 +69,60 @@ def load(obj):
         # read the contents of obj
         obj = obj.read()
     return ET.fromstring(obj)
+
+
+def xml_to_json(xmlstring, strip_whitespace=True, strip_namespace=False, pretty=False):
+    r"""
+    Converts XML to JSON.
+
+    :param xmlstring: the XML string.
+    :param strip_whitespace: If True, 'unimportant' whitespace will be ignored.
+    :param strip_namespace: If True, namespaces will be ignored.
+    :param pretty: If True, the output will be pretty-formatted.
+    :return: a JSON string.
+
+    >>> xml_to_json(None) is None
+    True
+
+    >>> xml_to_json('')
+    Traceback (most recent call last):
+    ParseError: no element found: line 1, column 0
+
+    >>> xml_to_json('<')
+    Traceback (most recent call last):
+    ParseError: unclosed token: line 1, column 0
+
+    >>> xml_to_json('<a/>')
+    '{"a": null}'
+
+    >>> xml_to_json('<a/>', pretty=True)
+    '{\n    "a": null\n}'
+
+    >>> xml_to_json('<a> <b\nid="b1"   />\n<c/> <d> </d> </a>', strip_whitespace=False)
+    '{"a": {"#text": " ", "c": {"#tail": " "}, "b": {"#tail": "\\n", "@id": "b1"}, "d": {"#tail": " ", "#text": " "}}}'
+
+    >>> xml_to_json('<a> <b\nid="b1"   />\n<c/> <d> </d> </a>', strip_whitespace=True)
+    '{"a": {"c": null, "b": {"@id": "b1"}, "d": null}}'
+
+    >>> xml_to_json("<a> <b\nid=\"b1\"   />\n<c/> <d> </d> </a>", strip_namespace=False)
+    '{"a": {"c": null, "b": {"@id": "b1"}, "d": null}}'
+
+    >>> xml_to_json("<a> <b\nid=\"b1\"   />\n<c/> <d> </d> </a>", strip_namespace=True)
+    '{"a": {"c": null, "b": null, "d": null}}'
+
+    >>> xml_to_json('<constants><constant id="pi" value="3.14" />\n<constant id="zero">0</constant></constants>')
+    '{"constants": {"constant": [{"@id": "pi", "@value": "3.14"}, {"#text": "0", "@id": "zero"}]}}'
+    """
+
+    def construct_options_param(pretty):
+        from collections import namedtuple
+        Xml2JsonOptions = namedtuple('Xml2JsonOptions', ['pretty'], verbose=False)
+        options = Xml2JsonOptions(pretty=pretty)
+        return options
+    if xmlstring is None:
+        return None
+    options = construct_options_param(pretty)
+    return xml2json.xml2json(xmlstring, options=options, strip_ns=strip_namespace, strip=strip_whitespace)
 
 
 def main():
