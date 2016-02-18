@@ -157,7 +157,7 @@ def elem2json(elem, strip_namespace=True, strip_whitespace=True, factory=None, p
 
     d = elem_to_internal(elem, strip_namespace=strip_namespace, strip_whitespace=strip_whitespace, factory=factory)
     if pretty:
-        return json.dumps(d, sort_keys=True, indent=4, separators=(',', ': '))
+        return json.dumps(d, indent=4, separators=(',', ': '))
     else:
         return json.dumps(d)
 
