@@ -75,7 +75,7 @@ def main():
     _test_flatten(
         "OrderedDict([('a', 1), ('c<~|~>a', '2'), ('c<~|~>b<~|~>x', 5), ('c<~|~>b<~|~>y', 10), ('d', [1, 'two', 3])])",
         OrderedDict([('a', 1), ('c', OrderedDict([('a', '2'), ('b', OrderedDict([('x', 5), ('y', 10)]))])), ('d', [1, 'two', 3])]), separator='<~|~>')  # noqa
-    print 'All (non-doctest) tests PASSED.'
+    print('All (non-doctest) tests PASSED.')
 
 
 if __name__ == "__main__":
