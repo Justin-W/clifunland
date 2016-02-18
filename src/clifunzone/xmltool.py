@@ -162,8 +162,10 @@ def info(input, verbose, **kwargs):
 # @click.argument('input', type=click.File('rb'))
 @click.option('--pretty', '-p', is_flag=True, default=False, help='pretty format')
 @click.option('--echo', '-e', is_flag=True, default=False, help='echo input')
-@click.option('--stripwhitespace', '-sws', 'strip_whitespace', is_flag=True, default=False)
-@click.option('--stripnamespace', '-sns', 'strip_namespace', is_flag=True, default=False)
+@click.option('--stripwhitespace', '-sws', 'strip_whitespace', is_flag=True, default=False,
+              help='causes unimportant whitespaces to be ignored.')
+@click.option('--stripnamespace', '-sns', 'strip_namespace', is_flag=True, default=False,
+              help='causes XML namespaces to be ignored.')
 def tojson(input, pretty, echo, strip_whitespace, strip_namespace, **kwargs):
     """
     Converts the XML input to JSON output.
