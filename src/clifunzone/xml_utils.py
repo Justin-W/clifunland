@@ -113,16 +113,9 @@ def xml_to_json(xmlstring, strip_whitespace=True, strip_namespace=False, pretty=
     >>> xml_to_json('<constants><constant id="pi" value="3.14" />\n<constant id="zero">0</constant></constants>')
     '{"constants": {"constant": [{"@id": "pi", "@value": "3.14"}, {"#text": "0", "@id": "zero"}]}}'
     """
-
-    def construct_options_param(pretty):
-        from collections import namedtuple
-        Xml2JsonOptions = namedtuple('Xml2JsonOptions', ['pretty'], verbose=False)
-        options = Xml2JsonOptions(pretty=pretty)
-        return options
     if xmlstring is None:
         return None
-    options = construct_options_param(pretty)
-    return xml2json.xml2json(xmlstring, options=options, strip_ns=strip_namespace, strip=strip_whitespace)
+    return xml2json.xml2json(xmlstring, pretty=pretty, strip_ns=strip_namespace, strip=strip_whitespace)
 
 
 def main():

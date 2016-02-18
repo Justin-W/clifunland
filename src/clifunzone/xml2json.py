@@ -33,6 +33,7 @@ import sys
 # import os
 
 import xml.etree.cElementTree as ET
+# from collections import OrderedDict
 
 
 def strip_tag(tag):
@@ -44,12 +45,24 @@ def strip_tag(tag):
     return tag
 
 
-def elem_to_internal(elem, strip_ns=1, strip=1):
-    """Convert an Element into an internal dictionary (not JSON!)."""
+def elem_to_internal(elem, strip_namespace=1, strip_whitespace=1, factory=None):
+    """
+    Convert an Element into an internal dictionary (not JSON!).
 
-    d = {}
+    :param elem: the <ElementTree.Element> to convert.
+    :param strip_namespace: If True, namespaces will be ignored.
+    :param strip_whitespace: If True, 'unimportant' whitespace will be ignored.
+    :param factory: a dict-like object type. Defaults to <dict>.
+    :return: a dict-like object.
+    """
+
+    if factory is None:
+        factory = dict
+        # factory = OrderedDict
+
+    d = factory()
     elem_tag = elem.tag
-    if strip_ns:
+    if strip_namespace:
         elem_tag = strip_tag(elem.tag)
     else:
         for key, value in list(elem.attrib.items()):
@@ -57,10 +70,10 @@ def elem_to_internal(elem, strip_ns=1, strip=1):
 
     # loop over subelements to merge them
     for subelem in elem:
-        v = elem_to_internal(subelem, strip_ns=strip_ns, strip=strip)
+        v = elem_to_internal(subelem, strip_namespace=strip_namespace, strip_whitespace=strip_whitespace)
 
         tag = subelem.tag
-        if strip_ns:
+        if strip_namespace:
             tag = strip_tag(subelem.tag)
 
         value = v[tag]
@@ -76,7 +89,7 @@ def elem_to_internal(elem, strip_ns=1, strip=1):
             d[tag] = value
     text = elem.text
     tail = elem.tail
-    if strip:
+    if strip_whitespace:
         # ignore leading and trailing whitespace
         if text:
             text = text.strip()
@@ -135,17 +148,17 @@ def internal_to_elem(pfsh, factory=ET.Element):
     return e
 
 
-def elem2json(elem, options, strip_ns=1, strip=1):
+def elem2json(elem, pretty=False, strip_namespace=1, strip_whitespace=1, factory=None):
     """Convert an ElementTree or Element into a JSON string."""
 
     if hasattr(elem, 'getroot'):
         elem = elem.getroot()
 
-    if options.pretty:
-        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip), sort_keys=True, indent=4,
-                          separators=(',', ': '))
+    d = elem_to_internal(elem, strip_namespace=strip_namespace, strip_whitespace=strip_whitespace, factory=factory)
+    if pretty:
+        return json.dumps(d, sort_keys=True, indent=4, separators=(',', ': '))
     else:
-        return json.dumps(elem_to_internal(elem, strip_ns=strip_ns, strip=strip))
+        return json.dumps(d)
 
 
 def json2elem(json_data, factory=ET.Element):
@@ -158,11 +171,11 @@ def json2elem(json_data, factory=ET.Element):
     return internal_to_elem(json.loads(json_data), factory)
 
 
-def xml2json(xmlstring, options, strip_ns=1, strip=1):
+def xml2json(xmlstring, pretty=False, strip_ns=1, strip=1, factory=None):
     """Convert an XML string into a JSON string."""
 
     elem = ET.fromstring(xmlstring)
-    return elem2json(elem, options, strip_ns=strip_ns, strip=strip)
+    return elem2json(elem, pretty=pretty, strip_namespace=strip_ns, strip_whitespace=strip, factory=factory)
 
 
 def json2xml(json_data, factory=ET.Element):
@@ -220,7 +233,7 @@ def main():
     if options.strip_nl:
         input = input.replace('\n', '').replace('\r', '')
     if (options.type == "xml2json"):
-        out = xml2json(input, options, strip_ns, strip)
+        out = xml2json(input, pretty=options.pretty, strip_ns=strip_ns, strip=strip)
     else:
         out = json2xml(input)
 
