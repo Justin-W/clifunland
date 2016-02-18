@@ -28,50 +28,70 @@ def is_file_like(obj):
     return hasattr(obj, 'read')
 
 
-def varsdict(obj, hidden=False):
+def varsdict(obj, hidden=False, callables=False):
     """
     Creates a dict of the attributes of a specified object.
 
     Works (unlike __builtin__.vars) even on objects without a __dict__ attribute.
 
+    Adapted from: http://stackoverflow.com/a/31226800
+
     :param obj: the object/value.
     :param hidden: If True, even private and magic attributes will be included.
+    :param callables: If True, even attributes that are callable will be included.
     :return: a dict.
 
     >>> varsdict(None) is None
     True
 
-    >>> obj = True; sorted(varsdict(obj).items()); sorted(varsdict(obj, hidden=True).items())  #doctest: +ELLIPSIS
+    >>> obj = True; sorted(varsdict(obj).items())  #doctest: +ELLIPSIS
+    [('denominator', 1), ('imag', 0), ('numerator', 1), ('real', 1)]
+
+    >>> obj = True; sorted(varsdict(obj, hidden=True).items())  #doctest: +ELLIPSIS
+    [('__doc__', '...'), ('denominator', 1), ('imag', 0), ('numerator', 1), ('real', 1)]
+
+    >>> obj = True; sorted(varsdict(obj, callables=True).items())  #doctest: +ELLIPSIS
     [('bit_length', <built-in method bit_length of bool object at 0x...>), ('conjugate', <built-in method conjugate ...
-    [('__abs__', <method-wrapper '__abs__' of bool object at 0x...>), ('__add__', <method-wrapper '__add__' of ...
+
+    >>> obj = True; sorted(varsdict(obj, hidden=True, callables=True).items())  #doctest: +ELLIPSIS
+    [('__abs__', <method-wrapper '__abs__' of bool object at 0x...>), ('__add__', <method-wrapper '__add__' ...
 
     >>> obj = 1; sorted(varsdict(obj).items()); sorted(varsdict(obj, hidden=True).items())  #doctest: +ELLIPSIS
-    [('bit_length', <built-in method bit_length of int object at 0x...>), ('conjugate', <built-in method conjugate ...
-    [('__abs__', <method-wrapper '__abs__' of int object at 0x...>), ('__add__', <method-wrapper '__add__' of int ...
+    [('denominator', 1), ('imag', 0), ('numerator', 1), ('real', 1)]
+    [('__doc__', "..."), ('denominator', 1), ('imag', 0), ('numerator', 1), ('real', 1)]
 
-    >>> obj = True; sorted(varsdict(obj).keys()); sorted(varsdict(obj, hidden=True).keys())  #doctest: +ELLIPSIS
-    ['bit_length', 'conjugate', 'denominator', 'imag', 'numerator', 'real']
-    ['__abs__', '__add__', '__and__', '__class__', '__cmp__', '__coerce__', '__delattr__', '__div__', '__divmod__', ...
+    >>> obj = True; sorted(varsdict(obj).keys()); sorted(varsdict(obj, hidden=True).keys())
+    ['denominator', 'imag', 'numerator', 'real']
+    ['__doc__', 'denominator', 'imag', 'numerator', 'real']
 
-    >>> obj = ''; sorted(varsdict(obj).keys()); sorted(varsdict(obj, hidden=True).keys())  #doctest: +ELLIPSIS
-    ['capitalize', 'center', 'count', 'decode', 'encode', 'endswith', 'expandtabs', 'find', 'format', 'index', ...
-    ['__add__', '__class__', '__contains__', '__delattr__', '__doc__', '__eq__', '__format__', '__ge__', ...
+    >>> obj = ''; sorted(varsdict(obj).keys()); sorted(varsdict(obj, hidden=True).keys())
+    []
+    ['__doc__']
 
-    >>> obj = []; sorted(varsdict(obj).keys()); sorted(varsdict(obj, hidden=True).keys())  #doctest: +ELLIPSIS
-    ['append', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort']
-    ['__add__', '__class__', '__contains__', '__delattr__', '__delitem__', '__delslice__', '__doc__', '__eq__', ...
+    >>> obj = []; sorted(varsdict(obj).keys()); sorted(varsdict(obj, hidden=True).keys())
+    []
+    ['__doc__', '__hash__']
 
     >>> obj = {}; sorted(varsdict(obj).keys()); sorted(varsdict(obj, hidden=True).keys())  #doctest: +ELLIPSIS
-    ['clear', 'copy', 'fromkeys', 'get', 'has_key', 'items', 'iteritems', 'iterkeys', 'itervalues', 'keys', 'pop', ...
-    ['__class__', '__cmp__', '__contains__', '__delattr__', '__delitem__', '__doc__', '__eq__', '__format__', ...
+    []
+    ['__doc__', '__hash__']
 
     >>> import sys; is_file_like(sys.stdin) and is_file_like(sys.stderr) and is_file_like(sys.stdout)
     True
     """
     if obj is None:
         return None
-    # d = dict([attr, getattr(obj, attr)] for attr in dir(obj) if hidden or not attr.startswith('_'))
-    d = {attr: getattr(obj, attr) for attr in dir(obj) if hidden or not attr.startswith('_')}
+
+    attribs = [n for n in dir(obj)]
+    # exclude (if needed) hidden attributes by name
+    attribs = [n for n in attribs if hidden or not n.startswith('_')]
+    # get the actual attribute values as well (for the remaining attribute names)
+    attribs = [(n, getattr(obj, n)) for n in attribs]
+    # exclude (if needed) callable attributes
+    attribs = [(n, v) for n, v in attribs if callables or not callable(v)]
+    # convert the remaining (matching) attribute name/value pairs to a dict
+    d = {n: v for n, v in attribs}
+
     return d
 
 
