@@ -162,9 +162,9 @@ def info(input, verbose, **kwargs):
 # @click.argument('input', type=click.File('rb'))
 @click.option('--pretty', '-p', is_flag=True, default=False, help='pretty format')
 @click.option('--echo', '-e', is_flag=True, default=False, help='echo input')
-@click.option('--stripwhitespace', '-sws', is_flag=True, default=False)
-@click.option('--stripnamespace', '-sns', is_flag=True, default=False)
-def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
+@click.option('--stripwhitespace', '-sws', 'strip_whitespace', is_flag=True, default=False)
+@click.option('--stripnamespace', '-sns', 'strip_namespace', is_flag=True, default=False)
+def tojson(input, pretty, echo, strip_whitespace, strip_namespace, **kwargs):
     """
     Converts the XML input to JSON output.
     """
@@ -178,7 +178,8 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
             click.echo('\nXML:')
             click.echo(xmlstring)
             click.echo('\nJSON:')
-    output = xml_utils.xml_to_json(xmlstring, stripwhitespace, stripnamespace, pretty)
+    output = xml_utils.xml_to_json(xmlstring, strip_whitespace=strip_whitespace, strip_namespace=strip_namespace,
+                                   pretty=pretty)
     # output = xml2json.elem2json(dom, options=options, strip_ns=None, strip=None)
     # click.echo('\nJSON:\n{}\n'.format(output))
     click.echo(output)
