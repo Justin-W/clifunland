@@ -98,6 +98,12 @@ def xml_to_json(xmlstring, strip_whitespace=True, strip_namespace=False, pretty=
     >>> xml_to_json('<a/>', pretty=True)
     '{\n    "a": null\n}'
 
+    >>> xml_to_json('<z> <q qz="z" qy="y" /> <a az="z" ab="b" ay="y" /> <x/></z>', strip_whitespace=True)
+    '{"z": {"q": {"@qy": "y", "@qz": "z"}, "a": {"@ay": "y", "@az": "z", "@ab": "b"}, "x": null}}'
+
+    >>> xml_to_json('<royg> <r/> <o/> <y/> <r e="d"/> <g/></royg>', strip_whitespace=True)
+    '{"royg": {"r": [null, {"@e": "d"}], "o": null, "y": null, "g": null}}'
+
     >>> xml_to_json('<a> <b\nid="b1"   />\n<c/> <d> </d> </a>', strip_whitespace=False)
     '{"a": {"b": {"@id": "b1", "#tail": "\\n"}, "c": {"#tail": " "}, "d": {"#tail": " ", "#text": " "}, "#text": " "}}'
 
