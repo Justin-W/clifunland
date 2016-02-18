@@ -142,18 +142,18 @@ def dominfo(input, **kwargs):
         click.echo('\ndom content:\n{content}\n'.format(content=dom))
 
 
-@cli.command()
-@click.argument('input', type=click.Path(exists=True, dir_okay=False))
-@click.option('--output', '-o', type=click.Path(exists=False), help='the path to the output file')
-@click.option('--encoding', '-e', type=click.Choice(['json', 'xml']), default='json',
-              help='the encoding format to use for the output')
-@click.option('--verbose', '-v', is_flag=True, help='verbose mode')
-@click.option('--ini', '-i', type=click.Path(exists=True), help='the path to the INI file')
-def convert(**kwargs):
-    """
-    Reformat the input.
-    """
-    process(**kwargs)
+# @cli.command()
+# @click.argument('input', type=click.Path(exists=True, dir_okay=False))
+# @click.option('--output', '-o', type=click.Path(exists=False), help='the path to the output file')
+# @click.option('--encoding', '-e', type=click.Choice(['json', 'xml']), default='json',
+#               help='the encoding format to use for the output')
+# @click.option('--verbose', '-v', is_flag=True, help='verbose mode')
+# @click.option('--ini', '-i', type=click.Path(exists=True), help='the path to the INI file')
+# def convert(**kwargs):
+#     """
+#     Reformat the input.
+#     """
+#     process(**kwargs)
 
 
 @cli.command()
