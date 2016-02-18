@@ -29,16 +29,6 @@ def process(**kwargs):
         pass
 
 
-def echo_dom(dom):
-    # if not depth:
-    #     click.echo('dir(ctx): %s' % dir(ctx))
-    obj = vars(dom)
-    obj = pformat(obj)
-    click.echo('\nvars(dom):\n{obj}\n'.format(obj=obj))
-
-    click.echo('\ndom content:\n{content}\n'.format(content=dom))
-
-
 @click.group(context_settings=click_utils.CONTEXT_SETTINGS, invoke_without_command=True)
 @click.version_option(version='1.0.0')
 @click.option('--debug/--silent', '-d/-s', 'debug', default=False)
@@ -92,6 +82,58 @@ def validate(input, silent, **kwargs):
 
 
 @cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+def info(input, **kwargs):
+    """
+    Provides info about the input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        data = xml_utils.load(f)
+        d = {
+            'type': type(data),
+            'length': len(data),
+            # 'repr': repr(data),
+            'vars': vars(data),
+            'tag': data.tag
+        }
+        # click.echo('type={}'.format(t))
+        # click.echo('len={}'.format(len(data)))
+        # click.echo('keys={}'.format(', '.join(data.keys())))
+        click.echo(d)
+        # click.echo('iter={}'.format(', '.join(iter(data))))
+        # click.echo('dir={}'.format(dir(data)))
+        # click.echo('repr={}'.format(repr(data)))
+
+
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+def dominfo(input, **kwargs):
+    """
+    Provides info about the input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        # process(**kwargs)
+        # from xml.dom.minidom import parse, parseString
+        # dom1 = parse('c:\\temp\\mydata.xml') # parse an XML file by name
+        # datasource = open('c:\\temp\\mydata.xml')
+        # dom2 = parse(datasource)   # parse an open file
+        # dom3 = parseString('<myxml>Some data<empty/> some more data</myxml>')
+        from xml.dom.minidom import parse
+        dom = parse(f)
+        click.echo('\nINFO about:\n{}\n'.format(input))
+        obj = vars(dom)
+        obj = pformat(obj)
+        click.echo('\nvars(dom):\n{obj}\n'.format(obj=obj))
+        click.echo('\ndom content:\n{content}\n'.format(content=dom))
+
+
+@cli.command()
 @click.argument('input', type=click.Path(exists=True, dir_okay=False))
 @click.option('--output', '-o', type=click.Path(exists=False), help='the path to the output file')
 @click.option('--encoding', '-e', type=click.Choice(['json', 'xml']), default='json',
@@ -103,25 +145,6 @@ def convert(**kwargs):
     Reformat the input.
     """
     process(**kwargs)
-
-
-@cli.command()
-@click.argument('input', type=click.Path(exists=True, dir_okay=False))
-# @click.argument('input', type=click.File('rb'))
-def info(input, **kwargs):
-    """
-    Report various info about the input.
-    """
-    # process(**kwargs)
-    # from xml.dom.minidom import parse, parseString
-    # dom1 = parse('c:\\temp\\mydata.xml') # parse an XML file by name
-    # datasource = open('c:\\temp\\mydata.xml')
-    # dom2 = parse(datasource)   # parse an open file
-    # dom3 = parseString('<myxml>Some data<empty/> some more data</myxml>')
-    from xml.dom.minidom import parse
-    dom = parse(input)
-    click.echo('\nINFO about:\n{}\n'.format(input))
-    echo_dom(dom)
 
 
 @cli.command()
