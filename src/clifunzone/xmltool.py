@@ -158,7 +158,8 @@ def info(input, verbose, **kwargs):
 
 
 @cli.command()
-@click.argument('input', type=click.Path(exists=True, dir_okay=False))
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 # @click.argument('input', type=click.File('rb'))
 @click.option('--pretty', '-p', is_flag=True, default=False, help='pretty format')
 @click.option('--echo', '-e', is_flag=True, default=False, help='echo input')
@@ -174,7 +175,9 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
     Xml2JsonOptions = namedtuple('Xml2JsonOptions', ['pretty'], verbose=False)
     options = Xml2JsonOptions(pretty=pretty)
 
-    with open(input, mode='rb') as f:
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
         xmlstring = f.read()
         if echo:
             click.echo('\nXML:')
