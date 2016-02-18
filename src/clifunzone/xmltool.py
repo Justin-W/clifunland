@@ -5,7 +5,6 @@ from pprint import pformat
 import click
 
 import click_utils
-import xml2json
 import xml_utils
 from reflection_utils import varsdict
 
@@ -179,12 +178,10 @@ def tojson(input, pretty, echo, stripwhitespace, stripnamespace, **kwargs):
             click.echo('\nXML:')
             click.echo(xmlstring)
             click.echo('\nJSON:')
-    output = xml_to_json(xmlstring, stripwhitespace, stripnamespace, pretty)
+    output = xml_utils.xml_to_json(xmlstring, stripwhitespace, stripnamespace, pretty)
     # output = xml2json.elem2json(dom, options=options, strip_ns=None, strip=None)
     # click.echo('\nJSON:\n{}\n'.format(output))
     click.echo(output)
-
-
 
 
 def main():
