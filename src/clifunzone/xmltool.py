@@ -1,3 +1,4 @@
+import json
 import sys
 from pprint import pformat
 
@@ -6,6 +7,7 @@ import click
 import click_utils
 import xml2json
 import xml_utils
+from reflection_utils import varsdict
 
 
 def process(**kwargs):
@@ -84,7 +86,9 @@ def validate(input, silent, **kwargs):
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
-def info(input, **kwargs):
+@click.option('--verbose', '-v', is_flag=True, type=click.BOOL,
+              help='enables more detailed output.')
+def info(input, verbose, **kwargs):
     """
     Provides info about the input.
     """
@@ -93,19 +97,24 @@ def info(input, **kwargs):
     with click.open_file(input, mode='rb') as f:
         data = xml_utils.load(f)
         d = {
-            'type': type(data),
             'length': len(data),
-            # 'repr': repr(data),
-            'vars': vars(data),
             'tag': data.tag
         }
-        # click.echo('type={}'.format(t))
-        # click.echo('len={}'.format(len(data)))
-        # click.echo('keys={}'.format(', '.join(data.keys())))
-        click.echo(d)
-        # click.echo('iter={}'.format(', '.join(iter(data))))
-        # click.echo('dir={}'.format(dir(data)))
-        # click.echo('repr={}'.format(repr(data)))
+        if verbose:
+            d['_object'] = {
+                'type': type(data),
+                # 'repr': repr(data),
+                # 'vars': sorted(vars(data)),
+                # 'dir': sorted(dir(data)),
+                'members': sorted(varsdict(data).keys())
+            }
+        # click.echo(d)
+        # click.echo(sorted(d.items()))
+        if verbose:
+            s = pformat(d)
+        else:
+            s = json.dumps(d, indent=2, sort_keys=True)
+        click.echo(s)
 
 
 @cli.command()
