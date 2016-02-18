@@ -99,23 +99,24 @@ def xml_to_json(xmlstring, strip_whitespace=True, strip_namespace=False, pretty=
     '{\n    "a": null\n}'
 
     >>> xml_to_json('<a> <b\nid="b1"   />\n<c/> <d> </d> </a>', strip_whitespace=False)
-    '{"a": {"#text": " ", "c": {"#tail": " "}, "b": {"#tail": "\\n", "@id": "b1"}, "d": {"#tail": " ", "#text": " "}}}'
+    '{"a": {"b": {"@id": "b1", "#tail": "\\n"}, "c": {"#tail": " "}, "d": {"#tail": " ", "#text": " "}, "#text": " "}}'
 
     >>> xml_to_json('<a> <b\nid="b1"   />\n<c/> <d> </d> </a>', strip_whitespace=True)
-    '{"a": {"c": null, "b": {"@id": "b1"}, "d": null}}'
+    '{"a": {"b": {"@id": "b1"}, "c": null, "d": null}}'
 
     >>> xml_to_json("<a> <b\nid=\"b1\"   />\n<c/> <d> </d> </a>", strip_namespace=False)
-    '{"a": {"c": null, "b": {"@id": "b1"}, "d": null}}'
+    '{"a": {"b": {"@id": "b1"}, "c": null, "d": null}}'
 
     >>> xml_to_json("<a> <b\nid=\"b1\"   />\n<c/> <d> </d> </a>", strip_namespace=True)
-    '{"a": {"c": null, "b": null, "d": null}}'
+    '{"a": {"b": null, "c": null, "d": null}}'
 
     >>> xml_to_json('<constants><constant id="pi" value="3.14" />\n<constant id="zero">0</constant></constants>')
-    '{"constants": {"constant": [{"@id": "pi", "@value": "3.14"}, {"#text": "0", "@id": "zero"}]}}'
+    '{"constants": {"constant": [{"@id": "pi", "@value": "3.14"}, {"@id": "zero", "#text": "0"}]}}'
     """
     if xmlstring is None:
         return None
-    return xml2json.xml2json(xmlstring, pretty=pretty, strip_ns=strip_namespace, strip=strip_whitespace)
+    return xml2json.xml2json(xmlstring, strip_namespace=strip_namespace, strip_whitespace=strip_whitespace,
+                             pretty=pretty)
 
 
 def main():
