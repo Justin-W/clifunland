@@ -166,7 +166,9 @@ def info(input, verbose, **kwargs):
               help='causes unimportant whitespaces to be ignored.')
 @click.option('--stripnamespace', '-sns', 'strip_namespace', is_flag=True, default=False,
               help='causes XML namespaces to be ignored.')
-def tojson(input, pretty, echo, strip_whitespace, strip_namespace, **kwargs):
+@click.option('--stripattribute', '-sa', 'strip_attribute', is_flag=True, default=False,
+              help='causes XML attributes to be ignored.')
+def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribute, **kwargs):
     """
     Converts the XML input to JSON output.
     """
@@ -181,7 +183,7 @@ def tojson(input, pretty, echo, strip_whitespace, strip_namespace, **kwargs):
             click.echo(xmlstring)
             click.echo('\nJSON:')
     output = xml_utils.xml_to_json(xmlstring, strip_whitespace=strip_whitespace, strip_namespace=strip_namespace,
-                                   pretty=pretty)
+                                   strip_attribute=strip_attribute, pretty=pretty)
     # output = xml2json.elem2json(dom, options=options, strip_ns=None, strip=None)
     # click.echo('\nJSON:\n{}\n'.format(output))
     click.echo(output)
