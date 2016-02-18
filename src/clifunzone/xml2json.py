@@ -45,11 +45,12 @@ def strip_tag(tag):
     return tag
 
 
-def elem_to_internal(elem, strip_namespace=1, strip_whitespace=1, factory=None):
+def elem_to_internal(elem, strip_attribute=False, strip_namespace=True, strip_whitespace=True, factory=None):
     """
     Convert an Element into an internal dictionary (not JSON!).
 
     :param elem: the <ElementTree.Element> to convert.
+    :param strip_attribute: If True, attributes will be ignored.
     :param strip_namespace: If True, namespaces will be ignored.
     :param strip_whitespace: If True, 'unimportant' whitespace will be ignored.
     :param factory: a dict-like object type. Defaults to <collections.OrderedDict>.
@@ -61,17 +62,19 @@ def elem_to_internal(elem, strip_namespace=1, strip_whitespace=1, factory=None):
         factory = OrderedDict
 
     d = factory()
+
     elem_tag = elem.tag
     if strip_namespace:
         elem_tag = strip_tag(elem.tag)
-    else:
+
+    if not strip_attribute:
         for key, value in list(elem.attrib.items()):
             d['@' + key] = value
 
     # loop over subelements to merge them
     for subelem in elem:
-        v = elem_to_internal(subelem, strip_namespace=strip_namespace, strip_whitespace=strip_whitespace,
-                             factory=factory)
+        v = elem_to_internal(subelem, strip_attribute=strip_attribute, strip_namespace=strip_namespace,
+                             strip_whitespace=strip_whitespace, factory=factory)
 
         tag = subelem.tag
         if strip_namespace:
@@ -149,13 +152,14 @@ def internal_to_elem(pfsh, factory=ET.Element):
     return e
 
 
-def elem2json(elem, strip_namespace=True, strip_whitespace=True, factory=None, pretty=False):
+def elem2json(elem, strip_attribute=False, strip_namespace=True, strip_whitespace=True, factory=None, pretty=False):
     """Convert an ElementTree or Element into a JSON string."""
 
     if hasattr(elem, 'getroot'):
         elem = elem.getroot()
 
-    d = elem_to_internal(elem, strip_namespace=strip_namespace, strip_whitespace=strip_whitespace, factory=factory)
+    d = elem_to_internal(elem, strip_attribute=strip_attribute, strip_namespace=strip_namespace,
+                         strip_whitespace=strip_whitespace, factory=factory)
     if pretty:
         return json.dumps(d, indent=4, separators=(',', ': '))
     else:
@@ -172,12 +176,12 @@ def json2elem(json_data, factory=ET.Element):
     return internal_to_elem(json.loads(json_data), factory)
 
 
-def xml2json(xmlstring, strip_namespace=1, strip_whitespace=1, factory=None, pretty=False):
+def xml2json(xmlstring, strip_attribute=0, strip_namespace=1, strip_whitespace=1, factory=None, pretty=False):
     """Convert an XML string into a JSON string."""
 
     elem = ET.fromstring(xmlstring)
-    return elem2json(elem, strip_namespace=strip_namespace, strip_whitespace=strip_whitespace, factory=factory,
-                     pretty=pretty)
+    return elem2json(elem, strip_attribute=strip_attribute, strip_namespace=strip_namespace,
+                     strip_whitespace=strip_whitespace, factory=factory, pretty=pretty)
 
 
 def json2xml(json_data, factory=ET.Element):
