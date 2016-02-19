@@ -171,6 +171,9 @@ def mergelines(input, root, **kwargs):
 @click.option('--flat', '-f', 'style', flag_value='flat',
               help='output format style that generates multi-line, non-indented output.'
                    ' overrides the indent and separator options.')
+@click.option('--lines', '-l', 'style', flag_value='lines',
+              help='special output format style that puts each child element of the root element on a separate line.'
+                   ' useful in combination with other CLI commands (e.g. grep, head, tail, etc.).')
 @click.option('--indent', type=click.IntRange(min=0),
               help='Default is None. Must be a non-negative integer.'
                    ' Maps to the corresponding argument of the json.dumps() function.')
@@ -218,10 +221,22 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
         # s = f.read()
         # json_utils.loads_ordered(s)
         data = json_utils.load_ordered(f)
-        s = json.dumps(data, skipkeys=skip_keys, sort_keys=sort_keys,
-                       ensure_ascii=ensure_ascii, check_circular=check_circular,
-                       allow_nan=allow_nan, indent=indent, separators=separators)
-        click.echo(s)
+        if style == 'lines':
+            if len(data) != 1:
+                raise ValueError('"lines" style requires that the input must contain a single root element.')
+            root = data.keys()[0]
+            header = '{"%s": [\n' % root
+            child_line_separator = '\n,\n'
+            footer = ']}'  # '\n]}'
+            click.echo(header)
+            lines = [json.dumps(child, indent=None, separators=(',', ':')) for child in data[root]]
+            click.echo(child_line_separator.join(lines))
+            click.echo(footer)
+        else:
+            s = json.dumps(data, skipkeys=skip_keys, sort_keys=sort_keys,
+                           ensure_ascii=ensure_ascii, check_circular=check_circular,
+                           allow_nan=allow_nan, indent=indent, separators=separators)
+            click.echo(s)
 
 
 @cli.command(name='flatten')
