@@ -137,6 +137,27 @@ def info(input, verbose, **kwargs):
         click.echo(s)
 
 
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--root', '-r', default='root', help='the name of the new root element')
+def mergelines(input, root, **kwargs):
+    """
+    Merges multiple (valid) JSON fragments into a single JSON.
+
+    For piped input, each line is is assumed to be a separate json fragment.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        s = f.read()
+        s = s.strip()
+        lines = s.split('\n')
+        s = '{"%s": [%s]}' % (root, ',\n'.join(lines))
+        # data = json_utils.loads_ordered(s)
+        click.echo(s)
+
+
 @cli.command(name='format')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input."
