@@ -6,7 +6,7 @@ import click
 
 import click_utils
 import json_utils
-from dict_utils import flatten
+from dict_utils import flatten, filter_none_values
 from reflection_utils import varsdict
 
 
@@ -239,6 +239,52 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
         data = json.load(f)
         data = flatten(data, separator)
         s = json.dumps(data, indent=dumps_indent, separators=dumps_separators, sort_keys=sort_keys)
+        click.echo(s)
+
+
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input."
+                   " Or '-' to use stdin (e.g. piped input).")
+@click.option('--null', '-n', 'prune_null', is_flag=True, type=click.BOOL, default=True,
+              help='removes elements with null values.')
+# @click.option('--empty', '-e', 'prune_empty', is_flag=True, type=click.BOOL, default=True,
+#               help='removes elements with empty values.')
+# @click.option('--trim', '-t', 'trim', type=click.BOOL,
+#               help='trims leading and trailing whitespace from all string values.')
+@click.option('--compact', '-c', 'style', flag_value='compact',
+              help='output format style that minimizes the output.'
+                   ' for more options, use the jsontool.format command.')
+@click.option('--pretty', '-p', 'style', flag_value='pretty',
+              help='output format style that generates human readable output.'
+                   ' for more options, use the jsontool.format command.')
+@click.option('--flat', '-f', 'style', flag_value='flat',
+              help='output format style that generates multi-line, non-indented output.'
+                   ' for more options, use the jsontool.format command.')
+def clean(input, prune_null, prune_empty, style, **kwargs):
+    """
+    Flattens JSON input with nested or hierarchical structure into a flat hierarchy.
+    """
+    if style == 'compact':
+        dumps_separators = (',', ':')
+        dumps_indent = None
+    elif style == 'pretty':
+        dumps_separators = None
+        dumps_indent = 2
+    elif style == 'flat':
+        dumps_separators = (',', ': ')
+        dumps_indent = 0
+    else:
+        dumps_separators = None
+        dumps_indent = None
+
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        data = json.load(f)
+        if prune_null:
+            data = filter_none_values(data, recursive=True)
+        s = json.dumps(data, indent=dumps_indent, separators=dumps_separators)
         click.echo(s)
 
 
