@@ -160,7 +160,7 @@ def filter_none_values(d, recursive=True):
         # return strip_none(d)
     else:
         d = d.copy()
-        # remove all keys
+        # remove all bad keys
         bad_keys = [k for k, v in d.items() if v is None]
         for k in bad_keys:
             d.pop(k)
