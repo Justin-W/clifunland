@@ -72,6 +72,11 @@ def validate(input, silent, **kwargs):
     """
     Validates whether the input is syntactically valid and well-formed.
     """
+    debug_ = click.get_current_context().parent.params['debug']
+    if debug_:
+        click.echo('Debug mode: %s' % ('enabled' if debug_ else 'disabled'))
+        click.echo('input: %s' % input)
+        click.echo('silent: %s' % silent)
     if not input:
         input = '-'
     with click.open_file(input, mode='rb') as f:
