@@ -153,7 +153,7 @@ def mergelines(input, root, **kwargs):
         s = f.read()
         s = s.strip()
         lines = s.split('\n')
-        s = '{"%s": [%s]}' % (root, ',\n'.join(lines))
+        s = '{"%s": [\n%s\n]}' % (root, ',\n'.join(lines))
         # data = json_utils.loads_ordered(s)
         click.echo(s)
 
