@@ -1,3 +1,5 @@
+from collections import MutableMapping
+
 def is_file_like(obj):
     """
     Indicates whether a specified value is a 'file-like' object.
@@ -26,6 +28,52 @@ def is_file_like(obj):
     if obj is None:
         return False
     return hasattr(obj, 'read')
+
+
+def is_dict_like(obj):
+    """
+    Indicates whether a specified value is a 'dict-like' object.
+
+    :param obj: the object/value.
+    :return:
+
+    >>> is_dict_like(None)
+    False
+
+    >>> is_dict_like(1)
+    False
+
+    >>> is_dict_like('')
+    False
+
+    >>> is_dict_like('abc')
+    False
+
+    >>> is_dict_like([1, 2])
+    False
+
+    >>> is_dict_like((1, 2))
+    False
+
+    >>> is_dict_like(set((1, 2)))
+    False
+
+    >>> is_dict_like({1: 2})
+    True
+
+    >>> from collections import OrderedDict as od; is_dict_like(od([(1, 2)]))
+    True
+
+    >>> from json import loads; is_dict_like(loads('{"1": 2}'))
+    True
+
+    >>> from json import loads; is_dict_like(loads('{"1": {"2": 3"}}')[0])
+    True
+    """
+    if obj is None:
+        return False
+    return isinstance(obj, MutableMapping)
+
 
 
 def is_iterable(obj):
