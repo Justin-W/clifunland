@@ -109,12 +109,12 @@ def filter_none_values(d, recursive=True):
         if hasattr(o, 'items'):
             oo = type(o)()
             for k in o:
-                if k != None and o[k] != None:
+                if k is not None and o[k] is not None:
                     oo[k] = purify(o[k])
         elif hasattr(o, '__iter__'):
             oo = []
             for it in o:
-                if it != None:
+                if it is not None:
                     oo.append(purify(it))
         else:
             return o
