@@ -1,5 +1,6 @@
 from collections import MutableMapping
 
+
 def is_file_like(obj):
     """
     Indicates whether a specified value is a 'file-like' object.
@@ -85,7 +86,6 @@ def is_dict_like(obj):
     if obj is None:
         return False
     return isinstance(obj, MutableMapping)
-
 
 
 def is_iterable(obj):
