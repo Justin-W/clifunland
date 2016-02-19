@@ -10,16 +10,28 @@ def is_file_like(obj):
     >>> is_file_like(None)
     False
 
+    >>> is_file_like(1)
+    False
+
     >>> is_file_like('')
     False
 
     >>> is_file_like('abc')
     False
 
-    >>> is_file_like([])
+    >>> is_file_like([1, 2])
     False
 
-    >>> is_file_like({})
+    >>> is_file_like((1, 2))
+    False
+
+    >>> is_file_like(set((1, 2)))
+    False
+
+    >>> is_file_like({1: 2})
+    False
+
+    >>> from collections import OrderedDict as od; is_file_like(od([(1, 2)]))
     False
 
     >>> import sys; is_file_like(sys.stdin) and is_file_like(sys.stderr) and is_file_like(sys.stdout)
