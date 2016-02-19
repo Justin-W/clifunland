@@ -82,6 +82,21 @@ def filter_none_values(d, recursive=True):
 
     >>> from collections import OrderedDict as od; filter_none_values({'r': od((('a', 1), ('b', None), ('c', '3')))})
     {'r': OrderedDict([('a', 1), ('c', '3')])}
+
+    >>> from json import loads; repr(filter_none_values(loads('{"a": 1, "b": null, "c": 3}')))
+    "{u'a': 1, u'c': 3}"
+
+    >>> from json import loads; repr(filter_none_values(loads('{"a": 1, "b": [], "c": 3}')))
+    "{u'a': 1, u'c': 3, u'b': []}"
+
+    >>> from json import loads; repr(filter_none_values(loads('{"a": 1, "b": {"ba": null}, "c": 3}')))
+    "{u'a': 1, u'c': 3, u'b': {}}"
+
+    >>> from json import loads; repr(filter_none_values(loads('{"a": 1, "b": {"ba": []}, "c": 3}')))
+    "{u'a': 1, u'c': 3, u'b': {u'ba': []}}"
+
+    >>> from json import loads; repr(filter_none_values(loads('{"a": 1, "b": {"ba": {"baa": null}}, "c": 3}')))
+    "{u'a': 1, u'c': 3, u'b': {u'ba': {}}}"
     """
 
     def remove_none(obj):
