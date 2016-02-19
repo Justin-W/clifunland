@@ -74,7 +74,7 @@ def reprcommand(input, **kwargs):
     if not input:
         input = '-'
     with click.open_file(input, mode='rb') as f:
-        data = json.load(f)
+        data = json_utils.load_ordered(f)
         s = repr(data)
         click.echo(s)
 
@@ -115,7 +115,7 @@ def info(input, verbose, **kwargs):
     if not input:
         input = '-'
     with click.open_file(input, mode='rb') as f:
-        data = json.load(f)
+        data = json_utils.load_ordered(f)
         d = {
             'length': len(data),
             'keys': sorted(data.keys())
@@ -195,8 +195,8 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
         input = '-'
     with click.open_file(input, mode='rb') as f:
         # s = f.read()
-        # json.loads(s)
-        data = json.load(f)
+        # json_utils.loads_ordered(s)
+        data = json_utils.load_ordered(f)
         s = json.dumps(data, skipkeys=skip_keys, sort_keys=sort_keys,
                        ensure_ascii=ensure_ascii, check_circular=check_circular,
                        allow_nan=allow_nan, indent=indent, separators=separators)
@@ -241,7 +241,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
     if separator is None:
         separator = '__'
     with click.open_file(input, mode='rb') as f:
-        data = json.load(f)
+        data = json_utils.load_ordered(f)
         data = flatten(data, separator)
         s = json.dumps(data, indent=dumps_indent, separators=dumps_separators, sort_keys=sort_keys)
         click.echo(s)
@@ -286,7 +286,7 @@ def clean(input, prune_null, style, **kwargs):
     if not input:
         input = '-'
     with click.open_file(input, mode='rb') as f:
-        data = json.load(f)
+        data = json_utils.load_ordered(f)
         if prune_null:
             data = filter_none_values(data, recursive=True)
         s = json.dumps(data, indent=dumps_indent, separators=dumps_separators)
