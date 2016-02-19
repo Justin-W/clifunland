@@ -261,7 +261,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
 @click.option('--flat', '-f', 'style', flag_value='flat',
               help='output format style that generates multi-line, non-indented output.'
                    ' for more options, use the jsontool.format command.')
-def clean(input, prune_null, prune_empty, style, **kwargs):
+def clean(input, prune_null, style, **kwargs):
     """
     Flattens JSON input with nested or hierarchical structure into a flat hierarchy.
     """
