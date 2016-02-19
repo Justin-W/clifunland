@@ -167,6 +167,105 @@ def filter_none_values(d, recursive=True):
         return d
 
 
+def filter_empty_values(d, recursive=True):
+    """
+    Returns a filtered copy of a dict, with all keys associated with 'empty' values removed.
+
+    :param d: a dict-like object.
+    :param recursive: If True, performs the operation recursively on inner elements of the object.
+    :return:
+
+    >>> filter_empty_values(None) is None
+    True
+
+    >>> filter_empty_values(1)
+    Traceback (most recent call last):
+    TypeError: d is not a dict-like object.
+
+    >>> filter_empty_values({})
+    {}
+
+    >>> filter_empty_values({'a': 1, 'b': None, 'c': '3'})
+    {'a': 1, 'c': '3', 'b': None}
+
+    >>> filter_empty_values({'a': 1, 'b': [1, None, 3], 'c': '3'})
+    {'a': 1, 'c': '3', 'b': [1, None, 3]}
+
+    >>> filter_empty_values({'a': 1, 'b': [1, {'ba': 1, 'bb': None, 'bc': '3'}, 3], 'c': '3'})
+    {'a': 1, 'c': '3', 'b': [1, {'ba': 1, 'bb': None, 'bc': '3'}, 3]}
+
+    >>> from collections import OrderedDict as od; filter_empty_values(od((('a', 1), ('b', None), ('c', '3'))))
+    OrderedDict([('a', 1), ('b', None), ('c', '3')])
+
+    >>> from collections import OrderedDict as od; filter_empty_values({'r': od((('a', 1), ('b', None), ('c', '3')))})
+    {'r': OrderedDict([('a', 1), ('b', None), ('c', '3')])}
+
+    >>> from json import loads; repr(filter_empty_values(loads('{"a": 1, "b": null, "c": 3}')))
+    "{u'a': 1, u'c': 3, u'b': None}"
+
+    >>> from json import loads; repr(filter_empty_values(loads('{"a": 1, "b": [], "c": 3}')))
+    "{u'a': 1, u'c': 3}"
+
+    >>> from json import loads; repr(filter_empty_values(loads('{"a": 1, "b": {"ba": null}, "c": 3}')))
+    "{u'a': 1, u'c': 3, u'b': {u'ba': None}}"
+
+    >>> from json import loads; repr(filter_empty_values(loads('{"a": 1, "b": {"ba": []}}')))
+    "{u'a': 1, u'b': {}}"
+
+    >>> from json import loads; repr(filter_empty_values(loads('{"a": 1, "b": {"ba": [[]]}}')))
+    "{u'a': 1, u'b': {u'ba': []}}"
+
+    >>> from json import loads; repr(filter_empty_values(filter_empty_values(loads('{"a": 1, "b": {"ba": []}}'))))
+    "{u'a': 1}"
+
+    >>> from json import loads; repr(filter_empty_values(loads('{"a": 1, "b": {"ba": {"baa": null}}, "c": 3}')))
+    "{u'a': 1, u'c': 3, u'b': {u'ba': {u'baa': None}}}"
+    """
+
+    def remove_empty(obj):
+        if isinstance(obj, (list, tuple, set)):
+            return type(obj)(remove_empty(x) for x in obj if not is_empty(x))
+        elif isinstance(obj, dict):
+            return type(obj)((remove_empty(k), remove_empty(v))
+                             for k, v in obj.items() if not is_empty(k) and not is_empty(v))
+        else:
+            return obj
+
+    def purify_empty(o):
+        if hasattr(o, 'items'):
+            oo = type(o)()
+            for k in o:
+                if not is_empty(k) and not is_empty(o[k]):
+                    oo[k] = purify_empty(o[k])
+        elif hasattr(o, '__iter__'):
+            oo = []
+            for it in o:
+                if not is_empty(it):
+                    oo.append(purify_empty(it))
+        else:
+            return o
+        return type(o)(oo)
+
+    def is_empty(o):
+        return o is not None and hasattr(o, '__len__') and not len(o)
+
+    if d is None:
+        return None
+    elif not hasattr(d, 'items'):
+        raise TypeError('d is not a dict-like object.')
+
+    if recursive:
+        # return remove_empty(d)
+        return purify_empty(d)
+    else:
+        d = d.copy()
+        # remove all bad keys
+        bad_keys = [k for k, v in d.items() if len(v)]
+        for k in bad_keys:
+            d.pop(k)
+        return d
+
+
 def _test_flatten(expected_value, d, separator=None):
     flattened = flatten(d, separator=separator)
     # print 'before:\t\t{}\nflattened:\t{}'.format(d, flattened)
