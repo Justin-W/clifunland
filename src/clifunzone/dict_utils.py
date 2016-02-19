@@ -85,6 +85,7 @@ def filter_none_values(d, recursive=True):
     """
 
     def remove_none(obj):
+        """Note: This one seems to be functionally equivalent to purify (at least for the cases I tested)."""
         if isinstance(obj, (list, tuple, set)):
             return type(obj)(remove_none(x) for x in obj if x is not None)
         elif isinstance(obj, dict):
@@ -93,19 +94,8 @@ def filter_none_values(d, recursive=True):
         else:
             return obj
 
-    def strip_none(data):
-        if isinstance(data, dict):
-            return {k: strip_none(v) for k, v in data.items() if k is not None and v is not None}
-        elif isinstance(data, list):
-            return [strip_none(item) for item in data if item is not None]
-        elif isinstance(data, tuple):
-            return tuple(strip_none(item) for item in data if item is not None)
-        elif isinstance(data, set):
-            return {strip_none(item) for item in data if item is not None}
-        else:
-            return data
-
     def purify(o):
+        """Note: This one seems to be functionally equivalent to remove_none (at least for the cases I tested)."""
         if hasattr(o, 'items'):
             oo = type(o)()
             for k in o:
@@ -119,6 +109,19 @@ def filter_none_values(d, recursive=True):
         else:
             return o
         return type(o)(oo)
+
+    def strip_none(data):
+        """Note: This one doesn't support OrderedDict, etc."""
+        if isinstance(data, dict):
+            return {k: strip_none(v) for k, v in data.items() if k is not None and v is not None}
+        elif isinstance(data, list):
+            return [strip_none(item) for item in data if item is not None]
+        elif isinstance(data, tuple):
+            return tuple(strip_none(item) for item in data if item is not None)
+        elif isinstance(data, set):
+            return {strip_none(item) for item in data if item is not None}
+        else:
+            return data
 
     if d is None:
         return None
