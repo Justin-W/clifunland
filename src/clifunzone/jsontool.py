@@ -251,7 +251,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input."
                    " Or '-' to use stdin (e.g. piped input).")
-@click.option('--null', '-n', 'prune_null', is_flag=True, type=click.BOOL, default=True,
+@click.option('--null', '-n', 'prune_null', is_flag=True, type=click.BOOL,
               help='removes elements with null values.')
 # @click.option('--empty', '-e', 'prune_empty', is_flag=True, type=click.BOOL, default=True,
 #               help='removes elements with empty values.')
