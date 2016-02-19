@@ -28,6 +28,36 @@ def is_file_like(obj):
     return hasattr(obj, 'read')
 
 
+def is_iterable(obj):
+    """
+    Indicates whether a specified value is an iterable object.
+
+    :param obj: the object/value.
+    :return:
+
+    >>> is_iterable(None)
+    False
+
+    >>> is_iterable('')
+    False
+
+    >>> is_iterable('abc')
+    False
+
+    >>> is_iterable([])
+    True
+
+    >>> is_iterable({})
+    True
+
+    >>> import sys; is_iterable(sys.stdin) and is_iterable(sys.stderr) and is_iterable(sys.stdout)
+    True
+    """
+    if obj is None:
+        return False
+    return hasattr(obj, '__iter__')
+
+
 def varsdict(obj, hidden=False, callables=False):
     """
     Creates a dict of the attributes of a specified object.
