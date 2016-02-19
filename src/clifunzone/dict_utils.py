@@ -99,6 +99,16 @@ def filter_none_values(d, recursive=True):
     "{u'a': 1, u'c': 3, u'b': {u'ba': {}}}"
     """
 
+    # def my_remove_none(obj):
+    #     """Note: adapted from remove_none."""
+    #     if isinstance(obj, (collections.Sequence, list, tuple, set)):
+    #         return type(obj)(remove_none(x) for x in obj if x is not None)
+    #     elif isinstance(obj, (collections.Mapping, dict)):
+    #         return type(obj)((remove_none(k), remove_none(v))
+    #                          for k, v in obj.items() if k is not None and v is not None)
+    #     else:
+    #         return obj
+
     def remove_none(obj):
         """Note: This one seems to be functionally equivalent to purify (at least for the cases I tested)."""
         if isinstance(obj, (list, tuple, set)):
@@ -144,8 +154,9 @@ def filter_none_values(d, recursive=True):
         raise TypeError('d is not a dict-like object.')
 
     if recursive:
-        return remove_none(d)
-        # return purify(d)
+        # return my_remove_none(d)
+        # return remove_none(d)
+        return purify(d)
         # return strip_none(d)
     else:
         d = d.copy()
