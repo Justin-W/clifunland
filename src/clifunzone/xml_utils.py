@@ -1,7 +1,13 @@
-from xml.etree import ElementTree as ET
-
 import reflection_utils
 import xml2json
+
+try:
+    from lxml import etree as ET
+except ImportError:
+    try:
+        import xml.etree.cElementTree as ET
+    except ImportError:
+        import xml.etree.ElementTree as ET
 
 
 def contains_valid_xml(obj):

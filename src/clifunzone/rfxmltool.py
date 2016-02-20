@@ -1,5 +1,4 @@
 import json
-import xml.etree.ElementTree as ET
 from collections import OrderedDict
 from pprint import pformat
 
@@ -9,6 +8,13 @@ import click_utils
 import xml_utils
 from reflection_utils import varsdict
 
+try:
+    from lxml import etree as ET
+except ImportError:
+    try:
+        import xml.etree.cElementTree as ET
+    except ImportError:
+        import xml.etree.ElementTree as ET
 
 def process(**kwargs):
     ctx = click.get_current_context()
