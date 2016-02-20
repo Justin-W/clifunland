@@ -135,6 +135,13 @@ def xml_to_json(xmlstring, strip_attribute=False, strip_namespace=False, strip_w
                              strip_whitespace=strip_whitespace, pretty=pretty)
 
 
+# def etree_to_dict(t):
+#     d = {t.tag: map(etree_to_dict, t.iterchildren())}
+#     d.update(('@' + k, v) for k, v in t.attrib.iteritems())
+#     d['text'] = t.text
+#     return d
+
+
 def main():
     import doctest
     fail, total = doctest.testmod(optionflags=(doctest.REPORT_NDIFF | doctest.REPORT_ONLY_FIRST_FAILURE))
