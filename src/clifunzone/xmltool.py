@@ -36,6 +36,9 @@ def process(**kwargs):
 # @click.option('--debug', '-d', 'debug', flag_value=True, default=True)
 # @click.option('--silent', '-s', 'debug', flag_value=False)
 def cli(debug):
+    """
+    Provides CLI commands for interacting with XML data/files.
+    """
     ctx = click.get_current_context()
     if debug:
         click_utils.echo_context(ctx)
