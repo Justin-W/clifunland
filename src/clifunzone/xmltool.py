@@ -8,6 +8,14 @@ import click_utils
 import xml_utils
 from reflection_utils import varsdict
 
+try:
+    from lxml import etree as ET
+except ImportError:
+    try:
+        import xml.etree.cElementTree as ET
+    except ImportError:
+        import xml.etree.ElementTree as ET
+
 
 def process(**kwargs):
     ctx = click.get_current_context()
@@ -195,6 +203,32 @@ def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribu
     # output = xml2json.elem2json(dom, options=options, strip_ns=None, strip=None)
     # click.echo('\nJSON:\n{}\n'.format(output))
     click.echo(output)
+
+
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--pretty', '-p', is_flag=True, default=False, help='pretty format')
+def elements(input, pretty, **kwargs):
+    """
+    Extracts information about the elements (i.e. tags) from the input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        tree = ET.parse(f)
+        root = tree.getroot()
+        tag = None  # 'div' or whatever
+        items = root.iter(tag=tag) if tag else root.iter()
+        # items = [i for i in items]
+        items = [xml_utils.element_info(i, tree=tree) for i in items]
+        if pretty:
+            output = json.dumps(items, indent=4)
+            click.echo(output)
+        else:
+            lines = [json.dumps(i, indent=None, separators=(',', ':')) for i in items]
+            for line in lines:
+                click.echo(line)
 
 
 def main():

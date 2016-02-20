@@ -1,3 +1,5 @@
+from collections import OrderedDict
+
 import reflection_utils
 import xml2json
 
@@ -146,6 +148,71 @@ def xml_to_json(xmlstring, strip_attribute=False, strip_namespace=False, strip_w
 #     d.update(('@' + k, v) for k, v in t.attrib.iteritems())
 #     d['text'] = t.text
 #     return d
+
+
+def element_info(element, tree=None):
+    """
+    Returns a dict with (incomplete) info about a specified element/node.
+
+    :param element: an <ElementTree.Element> instance.
+    :return: a <collections.OrderedDict> instance.
+    """
+    d = OrderedDict()
+
+    d['tag'] = element.tag
+    if tree:
+        try:
+            d['path'] = tree.getpath(element)
+        except AttributeError:
+            # tree.getpath() is only available in lxml, not in the builtin xml.etree
+            # see: http://lxml.de/xpathxslt.html#xpath
+            # see: http://stackoverflow.com/a/13352109
+            pass
+
+    if element.text:
+        d['#text'] = element.text
+
+    # get all attribs
+    # children = element.iterfind('.')
+    attribs = element.attrib.items()
+    # attribs_count = len(attribs)
+    # prefix attrib names
+    attribs = [('@' + k, v) for k, v in attribs]
+    # # filter out duplicates
+    # attribs = set(attribs)
+    # # sorted
+    # attribs = sorted(attribs)
+    # if attribs_count:
+    if attribs:
+        # d['attribs'] = {'tags': attribs, 'count': attribs_count}
+        d['attribs'] = attribs
+
+    # get all direct children
+    # children = element.iterfind('.')
+    children = element.findall('./*')
+    children_count = len(children)
+    # convert to tag names
+    children = [child.tag for child in children]
+    # filter out duplicates
+    children = set(children)
+    # sorted
+    children = sorted(children)
+    if children_count:
+        d['children'] = {'tags': children, 'count': children_count}
+
+    # get all descendants
+    descendants = element.findall('.//')
+    # convert to tag names
+    descendants = [descendent.tag for descendent in descendants]
+    descendants_count = len(descendants)
+    # filter out duplicates
+    descendants = set(descendants)
+    # sorted
+    descendants = sorted(descendants)
+    if descendants_count:
+        d['descendants'] = {'tags': descendants, 'count': descendants_count}
+
+    return d
 
 
 def main():
