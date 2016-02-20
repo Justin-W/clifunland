@@ -16,6 +16,7 @@ except ImportError:
     except ImportError:
         import xml.etree.ElementTree as ET
 
+
 def process(**kwargs):
     ctx = click.get_current_context()
 
