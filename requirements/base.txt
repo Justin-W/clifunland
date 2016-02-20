@@ -5,3 +5,6 @@ configparser==3.5.0b2
 
 # CLI
 click==6.2
+
+# lxml
+lxml==3.5.0
