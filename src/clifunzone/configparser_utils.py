@@ -3,7 +3,10 @@ import logging
 import os
 from collections import OrderedDict
 
-from backports import configparser
+try:
+    from backports import configparser
+except ImportError:
+    import configparser
 
 log = logging.getLogger(__name__)
 
