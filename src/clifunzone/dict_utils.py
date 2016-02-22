@@ -410,7 +410,7 @@ def replace_values(obj, func):
         raise TypeError('obj is not a Mapping object.')
 
 
-def remove_if(obj, test_func):
+def remove_if(obj, test_func, output=False):
     """
     Modifies a specified dict-like object,
     removing every key/value pair that matches a specified predicate/test function.
@@ -422,7 +422,9 @@ def remove_if(obj, test_func):
     :param obj: the dict-like object to map.
     :param predicate_func: a predicate function (i.e. returns a Bool value) that accepts a key and value as params,
         and returns True if that key should be removed from it's parent dict.
-    :return: No return value. Modifies the original (passed) object instance in place.
+    :param output: if True, the function will return the (now modified) obj instance.
+        This enables the function to be used as part of a function pipeline or chain.
+    :return: No return value (unless output is True). Modifies the original (passed) object instance in place.
 
     >>> remove_if(1, lambda k, v: v % 2 == 0 if type(v) is int else False)
     Traceback (most recent call last):
@@ -438,6 +440,10 @@ def remove_if(obj, test_func):
     {'b': {'d': 7}}
 
     >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; remove_if(d, lambda k, v: k not in 'acegik'); d  # noqa
+    {'a': 1, 'e': {}}
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; remove_if(d, lambda k, v: k not in 'acegik', output=True); d  # noqa
+    {'a': 1, 'e': {}}
     {'a': 1, 'e': {}}
 
     >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': {'f': 3}}); remove_if(d, lambda k, v: v % 2 == 0 if type(v) is int else False); repr(d)  # noqa
@@ -457,6 +463,8 @@ def remove_if(obj, test_func):
                 obj.pop(k)
     else:
         raise TypeError('obj is not a MutableMapping object.')
+    if output:
+        return obj
 
 
 def _test_flatten(expected_value, d, separator=None):
