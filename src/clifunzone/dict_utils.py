@@ -314,7 +314,7 @@ def replace_values(obj, func):
 
     :param obj: the dict-like object to map.
     :param func: a mapping function to apply to every value (including any nested dict-like ones).
-    :return:
+    :return: No return value. Modifies the original (passed) object instance in place.
 
     >>> replace_values(1, lambda v: v + 7 if type(v) is int else v)
     Traceback (most recent call last):
