@@ -225,8 +225,15 @@ def elements(input, verbose, pretty, **kwargs):
         # items = [i for i in items]
         items = [xml_utils.element_info(i, tree=tree) for i in items]
         if not verbose:
-            items = [dict_utils.filter_none_values(i) for i in items]
-            items = [dict_utils.filter_empty_values(i) for i in items]
+            # remove 'noise' from the data output to make it more understandable/readable/concise
+            # items = [dict_utils.map_values(i, lambda v: '' if v == '\n' else v) for i in items]
+            items = [dict_utils.remove_if(i, lambda k, v: v == '\n', output=True) for i in items]
+            items = [dict_utils.remove_if(i, lambda k, v: v == '', output=True) for i in items]
+            items = [dict_utils.remove_if(i, lambda k, v: v is None, output=True) for i in items]
+            items = [dict_utils.remove_if(i, lambda k, v: v == [], output=True) for i in items]
+            items = [dict_utils.remove_if(i, lambda k, v: v == {}, output=True) for i in items]
+            # items = [dict_utils.filter_none_values(i) for i in items]
+            # items = [dict_utils.filter_empty_values(i) for i in items]
         if pretty:
             output = json.dumps(items, indent=4)
             click.echo(output)
