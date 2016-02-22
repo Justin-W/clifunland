@@ -80,7 +80,7 @@ def is_dict_like(obj):
     >>> from json import loads; is_dict_like(loads('{"1": 2}'))
     True
 
-    >>> from json import loads; is_dict_like(loads('{"1": {"2": 3"}}')[0])
+    >>> from json import loads; is_dict_like(loads('{"1": {"2": "3"}}')['1'])
     True
     """
     if obj is None:
