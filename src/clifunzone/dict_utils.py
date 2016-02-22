@@ -281,7 +281,7 @@ def map_values(obj, func):
     >>> map_values(1, lambda v: v + 7 if type(v) is int else v)
     8
 
-    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; map_values(d, lambda v: v + 7 if type(v) is int else v)
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; map_values(d, lambda v: v + 7 if type(v) is int else v)  # noqa
     {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
 
     >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': {'f': 3}}); repr(map_values(d, lambda v: v + 7 if type(v) is int else v))  # noqa
@@ -320,7 +320,7 @@ def replace_values(obj, func):
     Traceback (most recent call last):
     TypeError: obj is not a dict-like object.
 
-    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; replace_values(d, lambda v: v + 7 if type(v) is int else v); d
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; replace_values(d, lambda v: v + 7 if type(v) is int else v); d  # noqa
     {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
 
     >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': {'f': 3}}); replace_values(d, lambda v: v + 7 if type(v) is int else v); repr(d)  # noqa
