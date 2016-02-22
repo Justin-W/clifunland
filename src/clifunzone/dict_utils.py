@@ -372,7 +372,7 @@ def map_values(obj, func):
         return func(obj)
 
 
-def replace_values(obj, func):
+def replace_values(obj, func, output=False):
     """
     Modifies a specified dict-like object,
     replacing every (non-dict) value using a specified mapping/conversion func.
@@ -383,13 +383,19 @@ def replace_values(obj, func):
 
     :param obj: the dict-like object to map.
     :param func: a mapping function to apply to every value (including any nested dict-like ones).
-    :return: No return value. Modifies the original (passed) object instance in place.
+    :param output: if True, the function will return the (now modified) obj instance.
+        This enables the function to be used as part of a function pipeline or chain.
+    :return: No return value (unless output is True). Modifies the original (passed) object instance in place.
 
     >>> replace_values(1, lambda v: v + 7 if type(v) is int else v)
     Traceback (most recent call last):
     TypeError: obj is not a Mapping object.
 
     >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; replace_values(d, lambda v: v + 7 if type(v) is int else v); d  # noqa
+    {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; replace_values(d, lambda v: v + 7 if type(v) is int else v, output=True); d  # noqa
+    {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
     {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
 
     >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': {'f': 3}}); replace_values(d, lambda v: v + 7 if type(v) is int else v); repr(d)  # noqa
@@ -408,6 +414,8 @@ def replace_values(obj, func):
             obj[k] = func(v)
     else:
         raise TypeError('obj is not a Mapping object.')
+    if output:
+        return obj
 
 
 def remove_if(obj, test_func, output=False):
