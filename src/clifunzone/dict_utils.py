@@ -267,6 +267,72 @@ def filter_empty_values(d, recursive=True):
         return d
 
 
+def remove_empty_values(d):
+    """
+    Removes (from a dict) all keys associated with 'empty' values.
+
+    :param d: a dict-like object.
+    :return: No return value. Modifies the original (passed) object instance in place.
+
+    >>> d = None; remove_empty_values(d); d is None
+    Traceback (most recent call last):
+    TypeError: obj is not a MutableMapping object.
+
+    >>> d = 1; remove_empty_values(d); d
+    Traceback (most recent call last):
+    TypeError: obj is not a MutableMapping object.
+
+    >>> d = {}; remove_empty_values(d); d
+    {}
+
+    >>> d = {'a': 1, 'b': None, 'c': '3'}; remove_empty_values(d); d
+    {'a': 1, 'c': '3', 'b': None}
+
+    >>> d = {'a': 1, 'b': [1, None, 3], 'c': '3'}; remove_empty_values(d); d
+    {'a': 1, 'c': '3', 'b': [1, None, 3]}
+
+    >>> d = {'a': 1, 'b': [1, {'ba': 1, 'bb': None, 'bc': '3'}, 3], 'c': '3'}; remove_empty_values(d); d
+    {'a': 1, 'c': '3', 'b': [1, {'ba': 1, 'bb': None, 'bc': '3'}, 3]}
+
+    >>> from collections import OrderedDict as od; d = od((('a', 1), ('b', None), ('c', '3'))); remove_empty_values(d); d  # noqa
+    OrderedDict([('a', 1), ('b', None), ('c', '3')])
+
+    >>> from collections import OrderedDict as od; d = {'r': od((('a', 1), ('b', None), ('c', '3')))}; remove_empty_values(d); d  # noqa
+    {'r': OrderedDict([('a', 1), ('b', None), ('c', '3')])}
+
+    >>> from json import loads; d = loads('{"a": 1, "b": null, "c": 3}'); remove_empty_values(d); repr(d)
+    "{u'a': 1, u'c': 3, u'b': None}"
+
+    >>> from json import loads; d = loads('{"a": 1, "b": [], "c": 3}'); remove_empty_values(d); repr(d)
+    "{u'a': 1, u'c': 3}"
+
+    >>> from json import loads; d = loads('{"a": 1, "b": {"ba": null}, "c": 3}'); remove_empty_values(d); repr(d)
+    "{u'a': 1, u'c': 3, u'b': {u'ba': None}}"
+
+    >>> from json import loads; d = loads('{"a": 1, "b": {"ba": []}}'); remove_empty_values(d); repr(d)
+    "{u'a': 1}"
+
+    >>> from json import loads; d = loads('{"a": 1, "b": {"ba": [[]]}}'); remove_empty_values(d); repr(d)
+    "{u'a': 1, u'b': {u'ba': [[]]}}"
+
+    >>> from json import loads; d = loads('{"a": 1, "b": {"ba": []}}'); remove_empty_values(d); repr(d)
+    "{u'a': 1}"
+
+    >>> from json import loads; d = loads('{"a": 1, "b": {"ba": {"baa": null}}, "c": 3}'); remove_empty_values(d); repr(d)  # noqa
+    "{u'a': 1, u'c': 3, u'b': {u'ba': {u'baa': None}}}"
+    """
+
+    def is_empty(o):
+        return o is not None and hasattr(o, '__len__') and not len(o)
+
+    # if d is None:
+    #     return None
+    # elif not hasattr(d, 'items'):
+    #     raise TypeError('d is not a dict-like object.')
+
+    remove_if(d, lambda k, v: is_empty(v))
+
+
 def map_values(obj, func):
     """
     Creates a (modified) copy of a specified dict-like object,
