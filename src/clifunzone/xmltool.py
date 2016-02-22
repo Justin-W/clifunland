@@ -1,10 +1,10 @@
+import click
 import json
 import sys
 from pprint import pformat
 
-import click
-
 import click_utils
+import dict_utils
 import xml_utils
 from reflection_utils import varsdict
 
@@ -208,8 +208,10 @@ def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribu
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--verbose', '-v', is_flag=True, type=click.BOOL,
+              help='enables more detailed output.')
 @click.option('--pretty', '-p', is_flag=True, default=False, help='pretty format')
-def elements(input, pretty, **kwargs):
+def elements(input, verbose, pretty, **kwargs):
     """
     Extracts information about the elements (i.e. tags) from the input.
     """
@@ -222,6 +224,9 @@ def elements(input, pretty, **kwargs):
         items = root.iter(tag=tag) if tag else root.iter()
         # items = [i for i in items]
         items = [xml_utils.element_info(i, tree=tree) for i in items]
+        if not verbose:
+            items = [dict_utils.filter_none_values(i) for i in items]
+            items = [dict_utils.filter_empty_values(i) for i in items]
         if pretty:
             output = json.dumps(items, indent=4)
             click.echo(output)
