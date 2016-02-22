@@ -1,4 +1,5 @@
-from collections import OrderedDict, MutableMapping
+import collections
+from collections import OrderedDict, MutableMapping, defaultdict
 
 
 def flatten(d, separator='_', parent_key=None):
@@ -264,6 +265,80 @@ def filter_empty_values(d, recursive=True):
         for k in bad_keys:
             d.pop(k)
         return d
+
+
+def map_values(obj, func):
+    """
+    Creates a (modified) copy of a specified dict-like object,
+    with every (non-dict) value mapped using the specified func.
+
+    Adapted from: http://stackoverflow.com/a/32935278
+
+    :param obj: the dict-like object to map.
+    :param func: a mapping function to apply to every value (including any nested dict-like ones).
+    :return:
+
+    >>> map_values(1, lambda v: v + 7 if type(v) is int else v)
+    8
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; map_values(d, lambda v: v + 7 if type(v) is int else v)
+    {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': {'f': 3}}); repr(map_values(d, lambda v: v + 7 if type(v) is int else v))  # noqa
+    "OrderedDict([('a', 8), ('b', {'c': 13, 'd': 14, 'g': OrderedDict([('h', 10), ('i', 16)])}), ('e', {'f': 10})])"
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': defaultdict(int, (('h', 3), ('i', 9)))}, 'e': {'f': 3}}); repr(map_values(d, lambda v: v + 7 if type(v) is int else v))  # noqa
+    "OrderedDict([('a', 8), ('b', {'c': 13, 'd': 14, 'g': defaultdict(<type 'int'>, {'i': 16, 'h': 10})}), ('e', {'f': 10})])"
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': defaultdict(int, {'f': 10})}); repr(map_values(d, lambda v: v + 7 if type(v) is int else v))  # noqa
+    "OrderedDict([('a', 8), ('b', {'c': 13, 'd': 14, 'g': OrderedDict([('h', 10), ('i', 16)])}), ('e', defaultdict(<type 'int'>, {'f': 17}))])"
+    """
+    if type(obj) is dict:
+        return {k: map_values(v, func) for k, v in obj.iteritems()}
+    elif type(obj) is defaultdict:
+        return type(obj)(obj.default_factory, ((k, map_values(v, func)) for k, v in obj.iteritems()))
+    elif isinstance(obj, collections.Mapping):
+        return type(obj)((k, map_values(v, func)) for k, v in obj.iteritems())
+    else:
+        return func(obj)
+
+
+def replace_values(obj, func):
+    """
+    Modifies a specified dict-like object,
+    replacing every (non-dict) value using a specified mapping/conversion func.
+
+    Note: This function modifies the original instance, not a copy.
+
+    Adapted from: http://stackoverflow.com/a/32935278
+
+    :param obj: the dict-like object to map.
+    :param func: a mapping function to apply to every value (including any nested dict-like ones).
+    :return:
+
+    >>> replace_values(1, lambda v: v + 7 if type(v) is int else v)
+    Traceback (most recent call last):
+    TypeError: obj is not a dict-like object.
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; replace_values(d, lambda v: v + 7 if type(v) is int else v); d
+    {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': {'f': 3}}); replace_values(d, lambda v: v + 7 if type(v) is int else v); repr(d)  # noqa
+    "OrderedDict([('a', 8), ('b', {'c': 13, 'd': 14, 'g': OrderedDict([('h', 10), ('i', 16)])}), ('e', {'f': 10})])"
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': defaultdict(int, (('h', 3), ('i', 9)))}, 'e': {'f': 3}}); replace_values(d, lambda v: v + 7 if type(v) is int else v); repr(d)  # noqa
+    "OrderedDict([('a', 8), ('b', {'c': 13, 'd': 14, 'g': defaultdict(<type 'int'>, {'i': 16, 'h': 10})}), ('e', {'f': 10})])"
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': defaultdict(int, {'f': 10})}); replace_values(d, lambda v: v + 7 if type(v) is int else v); repr(d)  # noqa
+    "OrderedDict([('a', 8), ('b', {'c': 13, 'd': 14, 'g': OrderedDict([('h', 10), ('i', 16)])}), ('e', defaultdict(<type 'int'>, {'f': 17}))])"
+    """
+    if isinstance(obj, collections.Mapping):
+        for k, v in obj.iteritems():
+            if isinstance(v, collections.Mapping):
+                replace_values(v, func)
+            obj[k] = func(v)
+    else:
+        raise TypeError('obj is not a dict-like object.')
 
 
 def _test_flatten(expected_value, d, separator=None):
