@@ -426,7 +426,7 @@ def remove_if(obj, test_func):
 
     >>> remove_if(1, lambda k, v: v % 2 == 0 if type(v) is int else False)
     Traceback (most recent call last):
-    TypeError: obj is not a dict-like object.
+    TypeError: obj is not a MutableMapping object.
 
     >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; remove_if(d, lambda k, v: v % 2 == 0 if type(v) is int else False); d  # noqa
     {'a': 1, 'b': {'d': 7, 'g': {'i': 9, 'h': 3}}, 'e': {'f': 3}}
