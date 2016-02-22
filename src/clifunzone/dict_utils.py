@@ -57,7 +57,8 @@ def filter_none_values(d, recursive=True):
 
     :param d: a dict-like object.
     :param recursive: If True, performs the operation recursively on inner elements of the object.
-    :return:
+    :return: a new dict (of the same type as the original) containing the original dict's values,
+        except as modified per this function's documented effects.
 
     >>> filter_none_values(None) is None
     True
@@ -174,7 +175,8 @@ def filter_empty_values(d, recursive=True):
 
     :param d: a dict-like object.
     :param recursive: If True, performs the operation recursively on inner elements of the object.
-    :return:
+    :return: a new dict (of the same type as the original) containing the original dict's values,
+        except as modified per this function's documented effects.
 
     >>> filter_empty_values(None) is None
     True
@@ -342,7 +344,8 @@ def map_values(obj, func):
 
     :param obj: the dict-like object to map.
     :param func: a mapping function to apply to every value (including any nested dict-like ones).
-    :return:
+    :return: a new dict (of the same type as the original) containing the original dict's values,
+        except as modified per this function's documented effects.
 
     >>> map_values(1, lambda v: v + 7 if type(v) is int else v)
     8
