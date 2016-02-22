@@ -341,6 +341,55 @@ def replace_values(obj, func):
         raise TypeError('obj is not a dict-like object.')
 
 
+def remove_if(obj, test_func):
+    """
+    Modifies a specified dict-like object,
+    removing every key/value pair that matches a specified predicate/test function.
+
+    Note: This function modifies the original instance, not a copy.
+
+    Adapted from: http://stackoverflow.com/a/32935278
+
+    :param obj: the dict-like object to map.
+    :param predicate_func: a predicate function (i.e. returns a Bool value) that accepts a key and value as params,
+        and returns True if that key should be removed from it's parent dict.
+    :return: No return value. Modifies the original (passed) object instance in place.
+
+    >>> remove_if(1, lambda k, v: v % 2 == 0 if type(v) is int else False)
+    Traceback (most recent call last):
+    TypeError: obj is not a dict-like object.
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; remove_if(d, lambda k, v: v % 2 == 0 if type(v) is int else False); d  # noqa
+    {'a': 1, 'b': {'d': 7, 'g': {'i': 9, 'h': 3}}, 'e': {'f': 3}}
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; remove_if(d, lambda k, v: v % 2 == 1 if type(v) is int else False); d  # noqa
+    {'b': {'c': 6, 'g': {}}, 'e': {}}
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; remove_if(d, lambda k, v: k in 'acegik'); d  # noqa
+    {'b': {'d': 7}}
+
+    >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; remove_if(d, lambda k, v: k not in 'acegik'); d  # noqa
+    {'a': 1, 'e': {}}
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': {'f': 3}}); remove_if(d, lambda k, v: v % 2 == 0 if type(v) is int else False); repr(d)  # noqa
+    "OrderedDict([('a', 1), ('b', {'d': 7, 'g': OrderedDict([('h', 3), ('i', 9)])}), ('e', {'f': 3})])"
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': defaultdict(int, (('h', 3), ('i', 9)))}, 'e': {'f': 3}}); remove_if(d, lambda k, v: v % 2 == 0 if type(v) is int else False); repr(d)  # noqa
+    "OrderedDict([('a', 1), ('b', {'d': 7, 'g': defaultdict(<type 'int'>, {'i': 9, 'h': 3})}), ('e', {'f': 3})])"
+
+    >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': defaultdict(int, {'f': 10})}); remove_if(d, lambda k, v: v % 2 == 0 if type(v) is int else False); repr(d)  # noqa
+    "OrderedDict([('a', 1), ('b', {'d': 7, 'g': OrderedDict([('h', 3), ('i', 9)])}), ('e', defaultdict(<type 'int'>, {}))])"
+    """
+    if isinstance(obj, collections.Mapping):
+        for k, v in obj.items():
+            if isinstance(v, collections.Mapping):
+                remove_if(v, test_func)
+            if test_func(k, v):
+                obj.pop(k)
+    else:
+        raise TypeError('obj is not a dict-like object.')
+
+
 def _test_flatten(expected_value, d, separator=None):
     flattened = flatten(d, separator=separator)
     # print 'before:\t\t{}\nflattened:\t{}'.format(d, flattened)
