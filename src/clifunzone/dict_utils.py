@@ -338,7 +338,7 @@ def replace_values(obj, func):
                 replace_values(v, func)
             obj[k] = func(v)
     else:
-        raise TypeError('obj is not a dict-like object.')
+        raise TypeError('obj is not a Mapping object.')
 
 
 def remove_if(obj, test_func):
@@ -380,14 +380,14 @@ def remove_if(obj, test_func):
     >>> d = OrderedDict({'a': 1, 'b': {'c': 6, 'd': 7, 'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': defaultdict(int, {'f': 10})}); remove_if(d, lambda k, v: v % 2 == 0 if type(v) is int else False); repr(d)  # noqa
     "OrderedDict([('a', 1), ('b', {'d': 7, 'g': OrderedDict([('h', 3), ('i', 9)])}), ('e', defaultdict(<type 'int'>, {}))])"
     """
-    if isinstance(obj, collections.Mapping):
+    if isinstance(obj, collections.MutableMapping):
         for k, v in obj.items():
-            if isinstance(v, collections.Mapping):
+            if isinstance(v, collections.MutableMapping):
                 remove_if(v, test_func)
             if test_func(k, v):
                 obj.pop(k)
     else:
-        raise TypeError('obj is not a dict-like object.')
+        raise TypeError('obj is not a MutableMapping object.')
 
 
 def _test_flatten(expected_value, d, separator=None):
