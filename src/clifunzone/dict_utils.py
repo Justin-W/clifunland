@@ -387,7 +387,7 @@ def replace_values(obj, func):
 
     >>> replace_values(1, lambda v: v + 7 if type(v) is int else v)
     Traceback (most recent call last):
-    TypeError: obj is not a dict-like object.
+    TypeError: obj is not a Mapping object.
 
     >>> d = {'a': 1, 'b': {'c': 6, 'd': 7, 'g': {'h': 3, 'i': 9}}, 'e': {'f': 3}}; replace_values(d, lambda v: v + 7 if type(v) is int else v); d  # noqa
     {'a': 8, 'b': {'c': 13, 'd': 14, 'g': {'i': 16, 'h': 10}}, 'e': {'f': 10}}
