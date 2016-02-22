@@ -159,6 +159,7 @@ def element_info(element, tree=None):
     """
     d = OrderedDict()
 
+    d['metrics'] = {}
     d['tag'] = element.tag
     if tree:
         try:
@@ -198,7 +199,7 @@ def element_info(element, tree=None):
     # sorted
     children = sorted(children)
     if children_count:
-        d['children'] = {'tags': children, 'count': children_count}
+        d['metrics']['children'] = {'tags': children, 'count': children_count}
 
     # get all descendants
     descendants = element.findall('.//')
@@ -210,8 +211,7 @@ def element_info(element, tree=None):
     # sorted
     descendants = sorted(descendants)
     if descendants_count:
-        d['descendants'] = {'tags': descendants, 'count': descendants_count}
-
+        d['metrics']['descendants'] = {'tags': descendants, 'count': descendants_count}
     return d
 
 
