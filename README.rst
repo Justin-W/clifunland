@@ -7,12 +7,13 @@ Overview
 .. list-table::
     :stub-columns: 1
 
+    * - tests & metrics
+      - | |travis|
+        | |coveralls| |codecov|
+        | |requires|
+        | |landscape|
     * - docs
       - |docs|
-    * - tests
-      - | |travis| |appveyor| |requires|
-        | |coveralls| |codecov|
-        | |landscape|
     * - package
       - |version| |downloads| |wheel| |supported-versions| |supported-implementations|
 
