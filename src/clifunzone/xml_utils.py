@@ -57,13 +57,15 @@ def load(obj):
     Traceback (most recent call last):
     ValueError
 
-    >>> load('')
+    >>> load('')  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: no element found: line 1, column 0
+    XMLSyntaxError: None
+    # Note: the exception will be different without lxml: ParseError: no element found: line 1, column 0
 
-    >>> load('<')
+    >>> load('<')  # doctest: +IGNORE_EXCEPTION_DETAIL
     Traceback (most recent call last):
-    ParseError: unclosed token: line 1, column 0
+    XMLSyntaxError: StartTag: invalid element name, line 1, column 2
+    # Note: the exception will be different without lxml: ParseError: unclosed token: line 1, column 0
 
     >>> load('<abc />').tag
     'abc'
