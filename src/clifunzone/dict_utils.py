@@ -468,7 +468,9 @@ def remove_if(obj, test_func, output=False):
             if isinstance(v, collections.MutableMapping):
                 remove_if(v, test_func)
             if test_func(k, v):
-                obj.pop(k)
+                # obj.pop(k)
+                # obj.pop(k, None)
+                del obj[k]
     else:
         raise TypeError('obj is not a MutableMapping object.')
     if output:
