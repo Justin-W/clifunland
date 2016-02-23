@@ -191,11 +191,11 @@ def node_to_dict(root, showargs=False, showmsgs=False, showtags=True):
         d['@' + attrib] = root.attrib[attrib]
 
     status = root.find('status').attrib
-    if status:
+    if status is not None:
         d['status'] = status
 
     doc = root.find('doc')
-    if doc:
+    if doc is not None:
         d['doc'] = doc.text
 
     if showtags:
