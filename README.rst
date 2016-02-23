@@ -63,6 +63,8 @@ Overview
     :alt: Supported implementations
     :target: https://pypi.python.org/pypi/clifundistro
 
+.. TODO: see [Referencing current branch in github readme.md](http://stackoverflow.com/a/35368808) for
+    one solution to the "per-branch badges" problem.
 
 .. end-badges
 
