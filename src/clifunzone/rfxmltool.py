@@ -192,6 +192,10 @@ def node_to_dict(root, showargs=False, showmsgs=False, showtags=True):
 
     status = root.find('status').attrib
     if status is not None:
+        if type(status) is not dict:
+            # Note: if lxml is being used, status will be a non-JSON-serializable object (<type 'lxml.etree._Attrib'>).
+            # Therefore, we must manually convert it to a regular dict to enable JSON serialization compatibility.
+            status = {k: v for k, v in status.items()}
         d['status'] = status
 
     doc = root.find('doc')
