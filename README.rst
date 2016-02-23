@@ -10,7 +10,6 @@ Overview
     * - tests & metrics
       - | |travis|
         | |coveralls| |codecov|
-        | |requires| |landscape|
     * - docs
       - |docs|
     * - package
