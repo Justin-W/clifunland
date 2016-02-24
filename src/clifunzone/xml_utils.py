@@ -217,6 +217,27 @@ def element_info(element, tree=None):
     return d
 
 
+def is_empty_element(elem):
+    """
+    Indicates whether an XML Element object is 'empty'.
+
+    :param elem: an Element object
+    :return: True if elem is empty
+    """
+    # return not bool(len(elem) or len(elem.attrib) or len(elem.text))
+    return not bool(len(elem) or elem.attrib or elem.text)
+
+
+def is_parent_element(elem):
+    """
+    Indicates whether an XML Element object has any children.
+
+    :param elem: an Element object
+    :return: True if elem has any child elements
+    """
+    return len(elem)
+
+
 def main():
     import doctest
     fail, total = doctest.testmod(optionflags=(doctest.REPORT_NDIFF | doctest.REPORT_ONLY_FIRST_FAILURE))
