@@ -167,6 +167,13 @@ def element_info(element, tree=None):
         elements = set(elements)
         return elements
 
+    def get_distinct_attribute_names(elements):
+        names = set()
+        for i in elements:
+            names.update(i.attrib.keys())
+        names = ('@' + k for k in names)
+        return names
+
     d = OrderedDict()
 
     if tree:
@@ -204,6 +211,7 @@ def element_info(element, tree=None):
     if children_count:
         d2 = {'count': children_count}
         d2.update({'tags': (sorted(get_distinct_tag_names(children)))})
+        d2.update({'attributes': (sorted(get_distinct_attribute_names(children)))})
         d['metrics']['children'] = d2
 
     # get all descendants
@@ -213,6 +221,7 @@ def element_info(element, tree=None):
     if descendants_count:
         d2 = {'count': descendants_count}
         d2.update({'tags': (sorted(get_distinct_tag_names(descendants)))})
+        d2.update({'attributes': (sorted(get_distinct_attribute_names(descendants)))})
         d['metrics']['descendants'] = d2
     return d
 
