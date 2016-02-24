@@ -268,6 +268,11 @@ def strip(input, xpaths, whitespace, all_attributes, all_text, empty, **kwargs):
 
     This command can be used to simplify complex data (by discarding specific portions of it).
     Such simplification might be used (for example) as part of an interactive data analysis process.
+
+    Examples:
+
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py strip -x "" | tail -n 1
+        {"path":"/a/b[2]/d","content":{"tag":"d"}}
     """
 
     if not input:
