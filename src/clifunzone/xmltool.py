@@ -323,6 +323,111 @@ def strip(input, xpaths, whitespace, all_attributes, all_text, empty, **kwargs):
         click.echo(output)
 
 
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--xpath', '-x', type=click.STRING,
+              help='removes all elements matching a given XPath expression.')
+def find(input, xpath, **kwargs):
+    """
+    Extracts specified portions of XML data from the input.
+
+    This command can be used to extract a data subset from within more complex data.
+
+    Examples:
+
+        $ echo 'Find all b elements:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//b'
+        <b><c/></b>
+        <b><d><e/></d><d/></b>
+
+        $ echo 'Find the 1st b element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//b[1]'
+        <b><c/></b>
+
+        $ echo 'Find the 2nd b element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//b[2]'
+        <b><d><e/></d><d/></b>
+
+        $ echo 'Find the last b element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//b[last()]'
+        <b><d><e/></d><d/></b>
+
+        $ echo 'Find all e elements that are a child of a d element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//d/e'
+        <e/>
+
+        $ echo 'Find all d elements with a child e element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//d/e/parent::*'
+        <d><e/></d>
+
+        $ echo 'Find all d elements with a child e element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//d/e/parent::*'
+        <d><e/></d>
+
+        $ echo 'Find all elements with exactly 1 inner element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//*[count(*)=1]'
+        <b><c/></b>
+        <d><e/></d>
+
+        $ echo 'Find all elements with exactly 2+ inner elements:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//*[count(*)>=2]'
+        <a><b><c/></b><b><d><e/></d><d/></b></a>
+        <b><d><e/></d><d/></b>
+
+        $ echo 'Find all elements with 1 child element:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//*[count(/*)=1]'
+        <b><c/></b>
+        <d><e/></d>
+
+        $ echo 'Find all elements with 1 inner element with tag c:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//*[count(./c)=1]'
+        <b><c/></b>
+
+        $ echo 'Find all elements with 1 inner element with either the c OR e tag:'
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//*[count(./c|./e)=1]'
+        <b><c/></b>
+        <d><e/></d>
+
+        $ echo 'Find all b elements with attribute @z=1:'
+        $ echo '<a><b z="1"><c/></b><b z="2"><d><e z="1"/></d><d/></b></a>' | python xmltool.py find -x '//b[@z="1"]'
+        <b z="1"><c/></b>
+
+        $ echo 'Find all elements with attribute @z=1:'
+        $ echo '<a><b z="1"><c/></b><b z="2"><d><e z="1"/></d><d/></b></a>' | python xmltool.py find -x '//*[@z="1"]'
+        <b z="1"><c/></b>
+        <e z="1"/>
+
+        $ echo 'Find all elements with attribute @z except those with @z=2:'
+        $ echo '<a><b z="1"><c/></b><b z="2"><d z="1"><e z="2"/></d></b></a>' | python xmltool.py find -x '//*[@z and @z!="2"]'
+        <b z="1"><c/></b>
+        <d z="1"><e z="2"/></d>
+
+        $ echo 'Find all elements with attribute @z=1 and a node position greater than 2:'
+        $ echo '<a><b z="1"><c/></b><b z="2"><d z="1"><e z="2"/></d></b></a>' | python xmltool.py find -x '//*[@z="1" and position()>2]'
+        <d z="1"><e z="2"/></d>
+
+        $ echo 'Find all elements with text that contains "3":'
+        $ echo '<z><a>1a1</a><b>2b1</b><c>3c1</c><a>4a2</a><b>5b2</b><c>6c2</c><a>7a3</a></z>' | python xmltool.py find -x '//*[contains(text(),"3")]'
+        <c>3c1</c>
+        <a>7a3</a>
+    """
+
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        tree = ET.parse(f)
+        root = tree.getroot()
+        if xpath:
+            elements = xml_utils.get_elements(root, xpath=xpath)
+        else:
+            elements = []
+        # output = ET.tostring(root, method='text')
+        for i in elements:
+            output = ET.tostring(i)
+            click.echo(output)
+
+
 def main():
     cli()
 
