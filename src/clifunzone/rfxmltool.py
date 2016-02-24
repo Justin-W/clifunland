@@ -15,6 +15,7 @@ except ImportError:
         import xml.etree.cElementTree as ET
     except ImportError:
         import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET
 
 
 def process(**kwargs):
@@ -77,13 +78,18 @@ def info(input, verbose, **kwargs):
         root = tree.getroot()
         d = {}
         d.update({'xml': xml_utils.element_info(root)})
-        rf_metrics = {
-            'suites': int(tree.xpath('count(//suite)')),
-            'tests': int(tree.xpath('count(//test)')),
-            'keywords': int(tree.xpath('count(//kw)')),
-            'messages': int(tree.xpath('count(//msg)'))
-        }
-        d.update({'robot': rf_metrics})
+        try:
+            rf_metrics = {
+                'suites': int(tree.xpath('count(//suite)')),
+                'tests': int(tree.xpath('count(//test)')),
+                'keywords': int(tree.xpath('count(//kw)')),
+                'messages': int(tree.xpath('count(//msg)'))
+            }
+            d.update({'robot': rf_metrics})
+        except AttributeError:
+            # AttributeError: 'ElementTree' object has no attribute 'xpath'
+            pass
+
         if verbose:
             d['_object'] = {
                 'type': type(root),
