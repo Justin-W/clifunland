@@ -213,7 +213,7 @@ def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribu
 @click.option('--pretty', '-p', is_flag=True, default=False, help='pretty format')
 def elements(input, verbose, pretty, **kwargs):
     """
-    Extracts information about the elements (i.e. tags) from the input.
+    Prints information about each element (i.e. tag) in the input.
     """
     if not input:
         input = '-'
