@@ -214,6 +214,11 @@ def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribu
 def elements(input, verbose, pretty, **kwargs):
     """
     Prints information about each element (i.e. tag) in the input.
+
+    Examples:
+
+        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py elements | tail -n 1
+        {"path":"/a/b[2]/d","content":{"tag":"d"}}
     """
     if not input:
         input = '-'
