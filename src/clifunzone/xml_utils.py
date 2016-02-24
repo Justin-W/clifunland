@@ -302,6 +302,34 @@ def get_elements(obj, xpath=None):
     return obj.findall(xpath)
 
 
+def remove_elements(obj, xpath):
+    """
+    Removes all XML elements that match a specified XPath expression.
+
+    This function encapsulates API differences between the lxml and ElementTree packages.
+
+    :param obj: a tree or element object
+    :param xpath: an XPath node set/selection expression
+    :return: an int count of the number of removed elements
+    """
+    if not xpath:
+        raise ValueError('invalid xpath')
+
+    elements = get_elements(obj, xpath=xpath)
+    # count = len(elements)
+    count = 0
+    for i in elements:
+        # try lxml syntax first
+        try:
+            parent = i.getparent()
+            parent.remove(i)
+        except AttributeError:
+            # else try ElementTree syntax
+            obj.remove(i)
+        count += 1
+    return count
+
+
 def main():
     import doctest
     fail, total = doctest.testmod(optionflags=(doctest.REPORT_NDIFF | doctest.REPORT_ONLY_FIRST_FAILURE))
