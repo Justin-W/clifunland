@@ -15,6 +15,7 @@ except ImportError:
         import xml.etree.cElementTree as ET
     except ImportError:
         import xml.etree.ElementTree as ET
+# import xml.etree.ElementTree as ET
 
 
 def process(**kwargs):
@@ -333,6 +334,9 @@ def find(input, xpath, **kwargs):
     Extracts specified portions of XML data from the input.
 
     This command can be used to extract a data subset from within more complex data.
+
+    Note: The ElementTree package (Python builtin) has limited XPath support.
+    Therefore, some of the examples below will only work if the lxml package is used (instead of ElementTree).
 
     Examples:
 
