@@ -242,6 +242,70 @@ def elements(input, verbose, pretty, **kwargs):
                 click.echo(line)
 
 
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--whitespace', '-w', is_flag=True, type=click.BOOL,
+              help='removes any leading/trailing whitespace.')
+@click.option('--all-attributes', 'all_attributes', is_flag=True, type=click.BOOL,
+              help='removes all attributes from all elements.')
+@click.option('--all-text', 'all_text', is_flag=True, type=click.BOOL,
+              help='removes all text content from all elements.')
+@click.option('--empty', '-e', is_flag=True, type=click.BOOL,
+              help='removes all empty elements.')
+def strip(input, whitespace, all_attributes, all_text, empty, **kwargs):
+    """
+    Removes specified portions of XML data from the input.
+
+    This command can be used to simplify complex data (by discarding specific portions of it).
+    Such simplification might be used (for example) as part of an interactive data analysis process.
+    """
+
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        parser = None
+        if whitespace:
+            try:
+                parser = ET.XMLParser(remove_blank_text=True)
+            except TypeError:
+                # TypeError: __init__() got an unexpected keyword argument 'remove_blank_text'
+                # lxml not imported?
+                pass
+        if parser:
+            tree = ET.parse(f, parser=parser)
+        else:
+            tree = ET.parse(f)
+        root = tree.getroot()
+        # import reflection_utils
+        # click.echo('tree: %s' % reflection_utils.varsdict(tree))
+        # click.echo('tree: %s' % dir(tree))
+        # click.echo('root: %s' % reflection_utils.varsdict(root))
+        # click.echo('root: %s' % dir(root))
+        if all_attributes:
+            for i in [i for i in root.iter() if i.attrib]:
+                i.attrib.clear()
+        if all_text:
+            for i in [i for i in root.iter() if i.text]:
+                i.text = ''
+        if whitespace:
+            for i in [i for i in root.iter() if i.text]:
+                i.text = i.text.strip()
+        if empty:
+            # Note: the repeat flag will cause elements that become empty (as a result of removal of empty children)
+            # to be subsequently detected as empty and removed.
+            repeat = True
+            while repeat:
+                repeat = False  # stop unless a removal occurs
+                for parent in [i for i in root.iter() if xml_utils.is_parent_element(i)]:
+                    for child in [i for i in parent.findall('./*') if xml_utils.is_empty_element(i)]:
+                        repeat = True
+                        parent.remove(child)
+        # output = ET.tostring(root, method='text')
+        output = ET.tostring(root)
+        click.echo(output)
+
+
 def main():
     cli()
 
