@@ -249,7 +249,7 @@ def is_parent_element(elem):
 
 def count_elements(obj, xpath=None):
     """
-    Returns a count of the XML elements within a specified
+    Returns a count of the XML elements that match a specified XPath expression.
 
     This function encapsulates API differences between the lxml and ElementTree packages.
 
@@ -260,7 +260,7 @@ def count_elements(obj, xpath=None):
     if not xpath:
         xpath = '//'  # match all elements by default
 
-    # try lxml syntax
+    # try lxml syntax first (much faster!)
     try:
         return int(obj.xpath('count({xpath})'.format(xpath=xpath)))
     except AttributeError:
@@ -268,15 +268,11 @@ def count_elements(obj, xpath=None):
         pass
 
     # else try ElementTree syntax
-    try:
-        if xpath.startswith('/'):
-            # ElementTree's findall() doesn't like xpath expressions that start with a '/'.
-            # e.g. "FutureWarning: This search is broken in 1.3 and earlier, and will be fixed in a future version. ..."
-            xpath = '.' + xpath
-        return len(obj.findall(xpath))
-    except AttributeError:
-        # AttributeError: 'ElementTree' object has no attribute 'xpath'
-        pass
+    if xpath.startswith('/'):
+        # ElementTree's findall() doesn't like xpath expressions that start with a '/'.
+        # e.g. "FutureWarning: This search is broken in 1.3 and earlier, and will be fixed in a future version. ..."
+        xpath = '.' + xpath
+    return len(obj.findall(xpath))
 
 
 def main():
