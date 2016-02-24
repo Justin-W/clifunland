@@ -112,8 +112,7 @@ def info(input, verbose, **kwargs):
     with click.open_file(input, mode='rb') as f:
         data = xml_utils.load(f)
         d = {
-            'length': len(data),
-            'tag': data.tag
+            'root': xml_utils.element_info(data)
         }
         if verbose:
             d['_object'] = {
