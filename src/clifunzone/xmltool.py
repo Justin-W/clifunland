@@ -110,17 +110,18 @@ def info(input, verbose, **kwargs):
     if not input:
         input = '-'
     with click.open_file(input, mode='rb') as f:
-        data = xml_utils.load(f)
-        d = {
-            'root': xml_utils.element_info(data)
-        }
+        # root = xml_utils.load(f)
+        tree = ET.parse(f)
+        root = tree.getroot()
+        d = {}
+        d.update({'root': xml_utils.element_info(root)})
         if verbose:
             d['_object'] = {
-                'type': type(data),
+                'type': type(root),
                 # 'repr': repr(data),
                 # 'vars': sorted(vars(data)),
                 # 'dir': sorted(dir(data)),
-                'members': sorted(varsdict(data).keys())
+                'members': sorted(varsdict(root).keys())
             }
         # click.echo(d)
         # click.echo(sorted(d.items()))
