@@ -72,18 +72,25 @@ def info(input, verbose, **kwargs):
     if not input:
         input = '-'
     with click.open_file(input, mode='rb') as f:
-        data = xml_utils.load(f)
-        d = {
-            'length': len(data),
-            'tag': data.tag
+        # root = xml_utils.load(f)
+        tree = ET.parse(f)
+        root = tree.getroot()
+        d = {}
+        d.update({'xml': xml_utils.element_info(root)})
+        rf_metrics = {
+            'suites': int(tree.xpath('count(//suite)')),
+            'tests': int(tree.xpath('count(//test)')),
+            'keywords': int(tree.xpath('count(//kw)')),
+            'messages': int(tree.xpath('count(//msg)'))
         }
+        d.update({'robot': rf_metrics})
         if verbose:
             d['_object'] = {
-                'type': type(data),
-                # 'repr': repr(data),
-                # 'vars': sorted(vars(data)),
-                # 'dir': sorted(dir(data)),
-                'members': sorted(varsdict(data).keys())
+                'type': type(root),
+                # 'repr': repr(root),
+                # 'vars': sorted(vars(root)),
+                # 'dir': sorted(dir(root)),
+                'members': sorted(varsdict(root).keys())
             }
         # click.echo(d)
         # click.echo(sorted(d.items()))
