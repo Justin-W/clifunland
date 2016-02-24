@@ -78,17 +78,13 @@ def info(input, verbose, **kwargs):
         root = tree.getroot()
         d = {}
         d.update({'xml': xml_utils.element_info(root)})
-        try:
-            rf_metrics = {
-                'suites': int(tree.xpath('count(//suite)')),
-                'tests': int(tree.xpath('count(//test)')),
-                'keywords': int(tree.xpath('count(//kw)')),
-                'messages': int(tree.xpath('count(//msg)'))
-            }
-            d.update({'robot': rf_metrics})
-        except AttributeError:
-            # AttributeError: 'ElementTree' object has no attribute 'xpath'
-            pass
+
+        rf_metrics = {
+            'suites': xml_utils.count_elements(tree, xpath='//suite'),
+            'tests': xml_utils.count_elements(tree, xpath='//test'),
+            'messages': xml_utils.count_elements(tree, xpath='//msg')
+        }
+        d.update({'robot': rf_metrics})
 
         if verbose:
             d['_object'] = {
