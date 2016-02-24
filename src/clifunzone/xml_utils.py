@@ -275,6 +275,34 @@ def count_elements(obj, xpath=None):
     return len(obj.findall(xpath))
 
 
+def get_elements(obj, xpath=None):
+    """
+    Returns all XML elements that match a specified XPath expression.
+
+    This function encapsulates API differences between the lxml and ElementTree packages.
+
+    :param obj: a tree or element object
+    :param xpath: an XPath node set/selection expression
+    :return: an iterable
+    """
+    if not xpath:
+        xpath = '//'  # match all elements by default
+
+    # try lxml syntax first (much faster!)
+    try:
+        return obj.xpath(xpath)
+    except AttributeError:
+        # AttributeError: 'ElementTree' object has no attribute 'xpath'
+        pass
+
+    # else try ElementTree syntax
+    if xpath.startswith('/'):
+        # ElementTree's findall() doesn't like xpath expressions that start with a '/'.
+        # e.g. "FutureWarning: This search is broken in 1.3 and earlier, and will be fixed in a future version. ..."
+        xpath = '.' + xpath
+    return obj.findall(xpath)
+
+
 def main():
     import doctest
     fail, total = doctest.testmod(optionflags=(doctest.REPORT_NDIFF | doctest.REPORT_ONLY_FIRST_FAILURE))
