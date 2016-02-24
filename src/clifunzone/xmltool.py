@@ -299,7 +299,8 @@ def strip(input, whitespace, all_attributes, all_text, empty, **kwargs):
             while repeat:
                 repeat = False  # stop unless a removal occurs
                 for parent in [i for i in root.iter() if xml_utils.is_parent_element(i)]:
-                    for child in [i for i in parent.findall('./*') if xml_utils.is_empty_element(i)]:
+                    for child in [i for i in xml_utils.get_elements(parent, xpath='./*')
+                                  if xml_utils.is_empty_element(i)]:
                         repeat = True
                         parent.remove(child)
         # output = ET.tostring(root, method='text')

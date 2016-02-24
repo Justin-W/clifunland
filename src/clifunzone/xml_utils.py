@@ -204,8 +204,7 @@ def element_info(element, tree=None):
     d['metrics'] = {}
 
     # get all direct children
-    # children = element.iterfind('.')
-    children = element.findall('./*')
+    children = get_elements(element, xpath='./*')
     children_count = len(children)
 
     if children_count:
@@ -215,7 +214,7 @@ def element_info(element, tree=None):
         d['metrics']['children'] = d2
 
     # get all descendants
-    descendants = element.findall('.//')
+    descendants = get_elements(element, xpath='.//*')
     descendants_count = len(descendants)
 
     if descendants_count:
