@@ -159,61 +159,61 @@ def element_info(element, tree=None):
     :param element: an <ElementTree.Element> instance.
     :return: a <collections.OrderedDict> instance.
     """
+
+    def get_distinct_tag_names(elements):
+        # convert to tag names
+        elements = [child.tag for child in elements]
+        # filter out duplicates
+        elements = set(elements)
+        return elements
+
     d = OrderedDict()
 
-    d['metrics'] = {}
-    d['tag'] = element.tag
     if tree:
         try:
-            d['path'] = tree.getpath(element)
+            d.update({'path': tree.getpath(element)})
         except AttributeError:
             # tree.getpath() is only available in lxml, not in the builtin xml.etree
             # see: http://lxml.de/xpathxslt.html#xpath
             # see: http://stackoverflow.com/a/13352109
             pass
 
+    d2 = {'tag': element.tag}
     if element.text:
-        d['#text'] = element.text
+        d2.update({'#text': element.text})
+    if element.attrib:
+        # get all attribs
+        attribs = element.attrib.items()
+        # prefix attrib names
+        attribs = [('@' + k, v) for k, v in attribs]
+        # attribs = {k, v for k, v in attribs}
+        attribs = OrderedDict(attribs)
+        # if attribs:
+        #     # d['attribs'] = {'tags': attribs, 'count': attribs_count}
+        #     d['attribs'] = attribs
+        d2.update({'attributes': attribs})
+    d['content'] = d2
 
-    # get all attribs
-    # children = element.iterfind('.')
-    attribs = element.attrib.items()
-    # attribs_count = len(attribs)
-    # prefix attrib names
-    attribs = [('@' + k, v) for k, v in attribs]
-    # # filter out duplicates
-    # attribs = set(attribs)
-    # # sorted
-    # attribs = sorted(attribs)
-    # if attribs_count:
-    if attribs:
-        # d['attribs'] = {'tags': attribs, 'count': attribs_count}
-        d['attribs'] = attribs
+    d['metrics'] = {}
 
     # get all direct children
     # children = element.iterfind('.')
     children = element.findall('./*')
     children_count = len(children)
-    # convert to tag names
-    children = [child.tag for child in children]
-    # filter out duplicates
-    children = set(children)
-    # sorted
-    children = sorted(children)
+
     if children_count:
-        d['metrics']['children'] = {'tags': children, 'count': children_count}
+        d2 = {'count': children_count}
+        d2.update({'tags': (sorted(get_distinct_tag_names(children)))})
+        d['metrics']['children'] = d2
 
     # get all descendants
     descendants = element.findall('.//')
-    # convert to tag names
-    descendants = [descendent.tag for descendent in descendants]
     descendants_count = len(descendants)
-    # filter out duplicates
-    descendants = set(descendants)
-    # sorted
-    descendants = sorted(descendants)
+
     if descendants_count:
-        d['metrics']['descendants'] = {'tags': descendants, 'count': descendants_count}
+        d2 = {'count': descendants_count}
+        d2.update({'tags': (sorted(get_distinct_tag_names(descendants)))})
+        d['metrics']['descendants'] = d2
     return d
 
 
