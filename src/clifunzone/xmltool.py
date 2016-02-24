@@ -403,16 +403,19 @@ def find(input, xpath, **kwargs):
         <e z="1"/>
 
         $ echo 'Find all elements with attribute @z except those with @z=2:'
-        $ echo '<a><b z="1"><c/></b><b z="2"><d z="1"><e z="2"/></d></b></a>' | python xmltool.py find -x '//*[@z and @z!="2"]'
+        $ echo '<a><b z="1"><c/></b><b z="2"><d z="1"><e z="2"/></d></b></a>' | \\
+        python xmltool.py find -x '//*[@z and @z!="2"]'
         <b z="1"><c/></b>
         <d z="1"><e z="2"/></d>
 
         $ echo 'Find all elements with attribute @z=1 and a node position greater than 2:'
-        $ echo '<a><b z="1"><c/></b><b z="2"><d z="1"><e z="2"/></d></b></a>' | python xmltool.py find -x '//*[@z="1" and position()>2]'
+        $ echo '<a><b z="1"><c/></b><b z="2"><d z="1"><e z="2"/></d></b></a>' | \\
+        python xmltool.py find -x '//*[@z="1" and position()>2]'
         <d z="1"><e z="2"/></d>
 
         $ echo 'Find all elements with text that contains "3":'
-        $ echo '<z><a>1a1</a><b>2b1</b><c>3c1</c><a>4a2</a><b>5b2</b><c>6c2</c><a>7a3</a></z>' | python xmltool.py find -x '//*[contains(text(),"3")]'
+        $ echo '<z><a>1a1</a><b>2b1</b><c>3c1</c><a>4a2</a><b>5b2</b><c>6c2</c><a>7a3</a></z>' | \\
+        python xmltool.py find -x '//*[contains(text(),"3")]'
         <c>3c1</c>
         <a>7a3</a>
     """
