@@ -252,6 +252,10 @@ def elements(input, verbose, pretty, **kwargs):
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--whitespace', '-w', is_flag=True, type=click.BOOL,
+              help='removes any leading/trailing whitespace.')
+@click.option('--empty', '-e', is_flag=True, type=click.BOOL,
+              help='removes all empty elements.')
 @click.option('--xpath', '-x', 'xpaths', type=click.STRING, multiple=True,
               help='removes all elements matching a given XPath expression.'
                    ' Repeatable. (Can be specified multiple times.)')
@@ -261,9 +265,7 @@ def elements(input, verbose, pretty, **kwargs):
               help='removes all attributes from all elements.')
 @click.option('--all-text', 'all_text', is_flag=True, type=click.BOOL,
               help='removes all text content from all elements.')
-@click.option('--empty', '-e', is_flag=True, type=click.BOOL,
-              help='removes all empty elements.')
-def strip(input, xpaths, whitespace, all_attributes, all_text, empty, **kwargs):
+def strip(input, whitespace, empty, xpaths, all_attributes, all_text, **kwargs):
     """
     Removes specified portions of XML data from the input.
 
