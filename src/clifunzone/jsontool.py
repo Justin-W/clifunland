@@ -324,7 +324,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
                    ' for more options, use the jsontool.format command.')
 def clean(input, prune_null, style, **kwargs):
     """
-    Removes specified portions of XML data from the input. Requires valid input.
+    Removes specified portions of data from the input. Requires valid input.
     """
     if style == 'compact':
         dumps_separators = (',', ':')
