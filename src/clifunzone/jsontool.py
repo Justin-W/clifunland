@@ -215,6 +215,27 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
 
     See the docs of the json.dumps() function (in python's built-in json module) for additional details
     about the various low-level formatting options.
+
+    Examples:
+
+        \b
+        Example: Compact format:
+        $ echo '{"a": {"b": null, "c": "null", "d": "", "e": {"f": {}}}}' | python jsontool.py format -c
+        {"a":{"b":null,"c":"null","d":"","e":{"f":{}}}}
+
+        \b
+        Example: Pretty format:
+        $ echo '{"a": {"b": null, "c": "null", "d": "", "e": {"f": []}}}' | python jsontool.py format -p
+        {
+          "a": {
+            "b": null,
+            "c": "null",
+            "d": "",
+            "e": {
+              "f": []
+            }
+          }
+        }
     """
     if style == 'compact':
         separators = (',', ':')
