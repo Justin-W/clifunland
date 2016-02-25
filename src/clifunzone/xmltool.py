@@ -265,13 +265,17 @@ def elements(input, verbose, pretty, **kwargs):
 @click.option('--attribute', '--attrib', '-a', 'attributes', type=click.STRING, multiple=True,
               help='removes all attributes with the specified name from all elements.'
                    ' Repeatable. (Can be specified multiple times.)')
+@click.option('--attribute-value', '-av', 'attribute_values', type=click.STRING, multiple=True,
+              help='removes all attributes with the specified name from all elements.'
+                   ' Repeatable. (Can be specified multiple times.)')
 @click.option('--empty-attributes', '-ea', 'empty_attributes', is_flag=True, type=click.BOOL,
               help='removes all attributes with empty values from all elements.')
 @click.option('--all-attributes', 'all_attributes', is_flag=True, type=click.BOOL,
               help='removes all attributes from all elements.')
 @click.option('--all-text', 'all_text', is_flag=True, type=click.BOOL,
               help='removes all text content from all elements.')
-def strip(input, whitespace, empty, xpaths, tags, attributes, empty_attributes, all_attributes, all_text, **kwargs):
+def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, empty_attributes, all_attributes,
+          all_text, **kwargs):
     """
     Removes specified portions of XML data from the input.
 
@@ -322,6 +326,9 @@ def strip(input, whitespace, empty, xpaths, tags, attributes, empty_attributes, 
             if attributes:
                 for attrib_name in attributes:
                     xml_utils.remove_attributes_with_name(root, attrib_name)
+            if attribute_values:
+                for attrib_value in attribute_values:
+                    xml_utils.remove_attributes_with_value(root, attrib_value)
         if all_text:
             for i in [i for i in root.iter() if i.text]:
                 i.text = ''
