@@ -262,11 +262,13 @@ def elements(input, verbose, pretty, **kwargs):
 @click.option('--tag', '-t', 'tags', type=click.STRING, multiple=True,
               help='removes all elements with the specified tag.'
                    ' Repeatable. (Can be specified multiple times.)')
+@click.option('--empty-attributes', '-ea', 'empty_attributes', is_flag=True, type=click.BOOL,
+              help='removes all attributes with empty values from all elements.')
 @click.option('--all-attributes', 'all_attributes', is_flag=True, type=click.BOOL,
               help='removes all attributes from all elements.')
 @click.option('--all-text', 'all_text', is_flag=True, type=click.BOOL,
               help='removes all text content from all elements.')
-def strip(input, whitespace, empty, xpaths, tags, all_attributes, all_text, **kwargs):
+def strip(input, whitespace, empty, xpaths, tags, empty_attributes, all_attributes, all_text, **kwargs):
     """
     Removes specified portions of XML data from the input.
 
@@ -311,6 +313,9 @@ def strip(input, whitespace, empty, xpaths, tags, all_attributes, all_text, **kw
         if all_attributes:
             for i in [i for i in root.iter() if i.attrib]:
                 i.attrib.clear()
+        else:
+            if empty_attributes:
+                xml_utils.remove_attributes_with_empty_value(root)
         if all_text:
             for i in [i for i in root.iter() if i.text]:
                 i.text = ''
