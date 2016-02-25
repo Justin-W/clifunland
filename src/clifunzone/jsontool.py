@@ -322,7 +322,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
 @click.option('--flat', '-f', 'style', flag_value='flat',
               help='output format style that generates multi-line, non-indented output.'
                    ' for more options, use the jsontool.format command.')
-def clean(input, prune_null, style, **kwargs):
+def strip(input, prune_null, style, **kwargs):
     """
     Removes specified portions of data from the input. Requires valid input.
     """
