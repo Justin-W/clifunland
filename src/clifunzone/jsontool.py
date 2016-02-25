@@ -53,7 +53,7 @@ def cli(debug):
             click.echo('I am about to invoke subcommand: %s.' % subcommand)
 
 
-@cli.command()
+@cli.command(short_help='echo the unparsed input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 def echo(input, **kwargs):
@@ -67,7 +67,7 @@ def echo(input, **kwargs):
         click.echo(s)
 
 
-@cli.command(name='repr')
+@cli.command(name='repr', short_help='show the repr() of the parsed input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 def reprcommand(input, **kwargs):
@@ -82,7 +82,7 @@ def reprcommand(input, **kwargs):
         click.echo(s)
 
 
-@cli.command()
+@cli.command(short_help='validate the input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--silent', '-s', is_flag=True, type=click.BOOL,
@@ -140,7 +140,7 @@ def info(input, verbose, **kwargs):
         click.echo(s)
 
 
-@cli.command()
+@cli.command(short_help='merges JSON fragments under a single parent')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--root', '-r', default='root', help='the name of the new root element')
@@ -242,7 +242,7 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
             click.echo(s)
 
 
-@cli.command(name='flatten')
+@cli.command(name='flatten', short_help='flattens deeply nested JSON input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input."
                    " Or '-' to use stdin (e.g. piped input).")
@@ -286,7 +286,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
         click.echo(s)
 
 
-@cli.command()
+@cli.command(short_help='removes portions of the input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input."
                    " Or '-' to use stdin (e.g. piped input).")

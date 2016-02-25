@@ -61,7 +61,7 @@ def cli(debug):
             click.echo('I am about to invoke subcommand: %s.' % subcommand)
 
 
-@cli.command()
+@cli.command(short_help='echo the unparsed input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 def echo(input, **kwargs):
@@ -75,7 +75,7 @@ def echo(input, **kwargs):
         click.echo(s)
 
 
-@cli.command()
+@cli.command(short_help='validate the input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--silent', '-s', is_flag=True, type=click.BOOL,
@@ -173,7 +173,7 @@ def info(input, verbose, **kwargs):
 #     process(**kwargs)
 
 
-@cli.command()
+@cli.command(short_help='converts XML input to JSON output')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 # @click.argument('input', type=click.File('rb'))
@@ -206,7 +206,7 @@ def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribu
     click.echo(output)
 
 
-@cli.command()
+@cli.command(short_help='outputs info about every element in the input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--verbose', '-v', is_flag=True, type=click.BOOL,
@@ -255,7 +255,7 @@ def elements(input, verbose, pretty, **kwargs):
                 click.echo(line)
 
 
-@cli.command()
+@cli.command(short_help='removes portions of the input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--whitespace', '-w', is_flag=True, type=click.BOOL,
@@ -359,7 +359,7 @@ def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, 
         click.echo(output)
 
 
-@cli.command()
+@cli.command(short_help='outputs matching portions of the input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--xpath', '-x', type=click.STRING,
