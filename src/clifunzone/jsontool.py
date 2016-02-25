@@ -325,6 +325,13 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
 def strip(input, prune_null, style, **kwargs):
     """
     Removes specified portions of data from the input. Requires valid input.
+
+    Examples:
+
+        \b
+        Example: Remove all elements with value=null:
+        $ echo '{"a":{"b":null,"c":"null","d":"","e":{"f":null},"g":{},"h":[]}}' | python jsontool.py strip -n
+        {"a": {"c": "null", "d": "", "e": {}, "g": {}, "h": []}}
     """
     if style == 'compact':
         dumps_separators = (',', ':')
