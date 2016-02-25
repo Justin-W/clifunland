@@ -106,7 +106,7 @@ def validate(input, silent, **kwargs):
               help='enables more detailed output.')
 def info(input, verbose, **kwargs):
     """
-    Provides info about the input.
+    Provides info about the input. Requires valid input.
     """
     if not input:
         input = '-'
@@ -187,7 +187,7 @@ def info(input, verbose, **kwargs):
               help='causes XML attributes to be ignored.')
 def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribute, **kwargs):
     """
-    Converts the XML input to JSON output.
+    Converts the XML input to JSON output. Requires valid input.
     """
     # output = xml2json.json2xml(input)
 
@@ -214,7 +214,7 @@ def tojson(input, pretty, echo, strip_whitespace, strip_namespace, strip_attribu
 @click.option('--pretty', '-p', is_flag=True, default=False, help='pretty format')
 def elements(input, verbose, pretty, **kwargs):
     """
-    Prints information about each element (i.e. tag) in the input.
+    Prints information about each element (i.e. tag) in the input. Requires valid input.
 
     Examples:
 
@@ -283,10 +283,13 @@ def elements(input, verbose, pretty, **kwargs):
 def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, empty_attributes, all_attributes,
           all_text, **kwargs):
     """
-    Removes specified portions of XML data from the input.
+    Removes specified portions of XML data from the input. Requires valid input.
 
     This command can be used to simplify complex data (by discarding specific portions of it).
     Such simplification might be used (for example) as part of an interactive data analysis process.
+
+    Note: The 'find' command is both similar to and different than the 'strip -x' command.
+    The 'find' command outputs MATCHING input, while 'strip -x' outputs NON-matching input.
 
     Examples:
 
@@ -371,9 +374,12 @@ def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, 
               help='prevents the root tag from being added to the output.')
 def find(input, xpath, root_tag, no_root, **kwargs):
     """
-    Extracts specified portions of XML data from the input.
+    Extracts specified portions of XML data from the input. Requires valid input.
 
     This command can be used to extract a data subset from within more complex data.
+
+    Note: The 'find' command is both similar to and different than the 'strip -x' command.
+    The 'find' command outputs MATCHING input, while 'strip -x' outputs NON-matching input.
 
     Note: The ElementTree package (Python builtin) has limited XPath support.
     Therefore, some of the examples below will only work if the lxml package is used (instead of ElementTree).
