@@ -278,6 +278,13 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
 def flattencommand(input, separator, sort_keys, style, **kwargs):
     """
     Flattens JSON input with nested or hierarchical structure into a flat (depth 1) hierarchy. Requires valid input.
+
+    Examples:
+
+        \b
+        Example: Basic usage:
+        $ echo '{"a":{"b":null,"c":"null","d":"","e":{"f":null},"g":{},"h":[]}}' | python jsontool.py flatten -c
+        {"a__b":null,"a__c":"null","a__d":"","a__e__f":null,"a__h":[]}
     """
     if style == 'compact':
         dumps_separators = (',', ':')
