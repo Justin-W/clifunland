@@ -259,13 +259,14 @@ def elements(input, verbose, pretty, **kwargs):
 @click.option('--xpath', '-x', 'xpaths', type=click.STRING, multiple=True,
               help='removes all elements matching a given XPath expression.'
                    ' Repeatable. (Can be specified multiple times.)')
-@click.option('--whitespace', '-w', is_flag=True, type=click.BOOL,
-              help='removes any leading/trailing whitespace.')
+@click.option('--tag', '-t', 'tags', type=click.STRING, multiple=True,
+              help='removes all elements with the specified tag.'
+                   ' Repeatable. (Can be specified multiple times.)')
 @click.option('--all-attributes', 'all_attributes', is_flag=True, type=click.BOOL,
               help='removes all attributes from all elements.')
 @click.option('--all-text', 'all_text', is_flag=True, type=click.BOOL,
               help='removes all text content from all elements.')
-def strip(input, whitespace, empty, xpaths, all_attributes, all_text, **kwargs):
+def strip(input, whitespace, empty, xpaths, tags, all_attributes, all_text, **kwargs):
     """
     Removes specified portions of XML data from the input.
 
@@ -299,6 +300,12 @@ def strip(input, whitespace, empty, xpaths, all_attributes, all_text, **kwargs):
         # click.echo('tree: %s' % dir(tree))
         # click.echo('root: %s' % reflection_utils.varsdict(root))
         # click.echo('root: %s' % dir(root))
+
+        if tags:
+            # convert each tag to an xpath
+            if not xpaths:
+                xpaths = []
+            xpaths += ['//{tag}'.format(tag=s) for s in tags]
         for xpath in xpaths:
             xml_utils.remove_elements(root, xpath=xpath)
         if all_attributes:
