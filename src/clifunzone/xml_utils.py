@@ -330,6 +330,69 @@ def remove_elements(obj, xpath):
     return count
 
 
+def remove_attributes_with_name(element, attrib_name):
+    """
+    Removes all occurrences of a specific attribute from all elements.
+
+    :param element: an XML element object.
+    :param attrib_name: the name of the attribute to remove.
+    """
+    if attrib_name.startswith('@'):
+        # remove the optional leading '@'
+        attrib_name = attrib_name[1:]
+    # find all elements that have the attribute
+    xpath = '//*[@{attrib}]'.format(attrib=attrib_name)
+    elements = get_elements(element, xpath=xpath)
+    for i in elements:
+        del i.attrib[attrib_name]
+
+
+def remove_attributes_with_value(element, attrib_value):
+    """
+    Removes all attributes with a specified value from all elements.
+
+    :param element: an XML element object.
+    :param attrib_value: the attribute value to match on.
+    """
+    # find all elements that have 1+ matching attributes
+    xpath = '//*[@*="{value}"]'.format(value=(attrib_value.replace('"', '\\"')))
+    elements = get_elements(element, xpath=xpath)
+    for i in elements:
+        # determine the matching keys/attributes
+        keys = (k for k in i.attrib.keys() if i.attrib[k] == attrib_value)
+        for attrib_name in keys:
+            # remove each matching attribute from the current element
+            del i.attrib[attrib_name]
+
+
+def remove_attributes_with_empty_value(element):
+    """
+    Removes all attributes with an empty value from all elements.
+
+    :param element: an XML element object.
+    """
+    remove_attributes_with_value(element, '')
+
+
+# def remove_attributes_if(element, attrib_name, func):
+#     """
+#     Removes all occurrences of a specific attribute from all elements.
+#
+#     :param element: an XML element object.
+#     :param attrib_name: the name of the attribute to remove.
+#     :param func: a predicate function (i.e. returns a bool) with the signature:
+#         f(attribute_name, attribute_value)
+#     """
+#     if attrib_name.startswith('@'):
+#         # remove the optional leading '@'
+#         attrib_name = attrib_name[1:]
+#     # find all elements that have the attribute
+#     xpath = '//*[@{attrib}]'.format(attrib=attrib_name)
+#     elements = xml_utils.get_elements(element, xpath=xpath)
+#     for i in elements:
+#         del i.attrib[attrib_name]
+
+
 def main():
     import doctest
     fail, total = doctest.testmod(optionflags=(doctest.REPORT_NDIFF | doctest.REPORT_ONLY_FIRST_FAILURE))
