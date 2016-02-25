@@ -72,7 +72,7 @@ def echo(input, **kwargs):
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 def reprcommand(input, **kwargs):
     """
-    Provides the python repr() representation of the parsed input.
+    Provides the python repr() representation of the parsed input. Requires valid input.
     """
     if not input:
         input = '-'
@@ -113,7 +113,7 @@ def validate(input, silent, **kwargs):
               help='enables more detailed output.')
 def info(input, verbose, **kwargs):
     """
-    Provides info about the input.
+    Provides info about the input. Requires valid input.
     """
     if not input:
         input = '-'
@@ -197,7 +197,24 @@ def mergelines(input, root, **kwargs):
 def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, check_circular, allow_nan,
                   item_separator, dict_separator, **kwargs):
     """
-    Formats the JSON input. See the docs of the json.dumps() function (in python's builtin json module) for details.
+    (Re)formats the JSON input. Requires valid input.
+
+    Supports several predefined, named format 'styles' (e.g. -p, -c, -f, -l),
+    as well as various 'low-level' formatting options/parameters.
+
+    Many common formatting scenarios can be satisfied by applying a single 'named style' option.
+    However, usage scenarios with atypical and/or inflexible formatting requirements can instead
+    use the low-level formatting options to achieve a wide variety of customized formats.
+
+    Note that the 'named' format styles are mutually exclusive (with the other named styles
+    and in many cases also with the various low-level formatting options).
+    Usually, only a single 'named style' option will be used (i.e. with no other options),
+    or else 1+ 'low-level' formatting options will be used (i.e. with no 'named style' options).
+    When 'conflicting' options are used simultaneously, the tool will usually ignore the conflicts and do its best.
+    E.g. If you use both the 'pretty' and 'compact' options simultaneously, it will ignore one of those two options.
+
+    See the docs of the json.dumps() function (in python's built-in json module) for additional details
+    about the various low-level formatting options.
     """
     if style == 'compact':
         separators = (',', ':')
@@ -260,7 +277,7 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
                    ' for more options, use the jsontool.format command.')
 def flattencommand(input, separator, sort_keys, style, **kwargs):
     """
-    Flattens JSON input with nested or hierarchical structure into a flat hierarchy.
+    Flattens JSON input with nested or hierarchical structure into a flat (depth 1) hierarchy. Requires valid input.
     """
     if style == 'compact':
         dumps_separators = (',', ':')
@@ -307,7 +324,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
                    ' for more options, use the jsontool.format command.')
 def clean(input, prune_null, style, **kwargs):
     """
-    Flattens JSON input with nested or hierarchical structure into a flat hierarchy.
+    Removes specified portions of XML data from the input. Requires valid input.
     """
     if style == 'compact':
         dumps_separators = (',', ':')
