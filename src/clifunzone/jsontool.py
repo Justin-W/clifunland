@@ -3,10 +3,10 @@ import sys
 from pprint import pformat
 
 import click
-
 import click_utils
 import json_utils
-from dict_utils import flatten, filter_none_values
+from dict_utils import filter_none_values
+from dict_utils import flatten
 from reflection_utils import varsdict
 
 

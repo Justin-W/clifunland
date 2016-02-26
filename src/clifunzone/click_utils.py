@@ -1,5 +1,6 @@
-import click
 from pprint import pformat
+
+import click
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 

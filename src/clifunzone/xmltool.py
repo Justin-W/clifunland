@@ -1,8 +1,8 @@
-import click
 import json
 import sys
 from pprint import pformat
 
+import click
 import click_utils
 import dict_utils
 import xml_utils

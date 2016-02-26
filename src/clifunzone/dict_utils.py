@@ -1,5 +1,7 @@
 import collections
-from collections import OrderedDict, MutableMapping, defaultdict
+from collections import MutableMapping
+from collections import OrderedDict
+from collections import defaultdict
 
 
 def flatten(d, separator='_', parent_key=None):

@@ -30,8 +30,6 @@ R. White, 2006 November 6
 import json
 import optparse
 import sys
-# import os
-
 import xml.etree.cElementTree as ET
 from collections import OrderedDict
 

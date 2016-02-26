@@ -3,7 +3,6 @@ from collections import OrderedDict
 from pprint import pformat
 
 import click
-
 import click_utils
 import xml_utils
 from reflection_utils import varsdict
