@@ -3,3 +3,6 @@
 
 # Tox
 tox==2.3.1
+
+# isort
+isort==4.2.2

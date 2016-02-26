@@ -33,6 +33,7 @@ include scripts
 include scripts/.init.sh
 include scripts/tox.check.sh
 include scripts/tox.clean.sh
+include scripts/tox.fixisort.sh
 include scripts/tox.sh
 include scripts/tox.tests.sh
 include scripts/venv.activate.sh
@@ -65,6 +66,7 @@ include .idea/runConfigurations/run_tests__Precommit.xml
 include .idea/runConfigurations/run_tests__tests_only.xml
 include .idea/runConfigurations/tox_check_sh.xml
 include .idea/runConfigurations/tox_clean_sh.xml
+include .idea/runConfigurations/tox_fixisort_sh.xml
 include .idea/runConfigurations/tox_sh.xml
 include .idea/runConfigurations/tox_tests_sh.xml
 include .idea/runConfigurations/venv__refresh__fast_.xml
