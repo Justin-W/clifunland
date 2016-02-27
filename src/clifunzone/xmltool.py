@@ -84,7 +84,10 @@ def validate(input, silent, **kwargs):
     """
     Validates whether the input is syntactically valid and well-formed.
     """
-    debug_ = click.get_current_context().parent.params['debug']
+    try:
+        debug_ = click.get_current_context().parent.params.get('debug', False)
+    except AttributeError:
+        debug_ = False
     if debug_:
         click.echo('Debug mode: %s' % ('enabled' if debug_ else 'disabled'))
         click.echo('input: %s' % input)
