@@ -42,3 +42,17 @@ def helper_test_echo(runner, input_text):
     result = runner.invoke(sut.echo, [], input=as_piped_input(input_text))
     assert result.output == expected + '\n'
     assert result.exit_code == 0
+
+
+def test_validate():
+    runner = CliRunner()
+
+    helper_test_validate(runner, '<abc/>', expected='True', exit_code=0)
+    helper_test_validate(runner, '<a>\n<b/>\n</a>', expected='True', exit_code=0)
+    helper_test_validate(runner, '<<<', expected='False', exit_code=1)
+
+
+def helper_test_validate(runner, input_text, expected, exit_code):
+    result = runner.invoke(sut.validate, [], input=as_piped_input(input_text))
+    assert result.output == expected + '\n'
+    assert result.exit_code == exit_code
