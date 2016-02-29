@@ -1,7 +1,7 @@
 from collections import OrderedDict
 
-import reflection_utils
-import xml2json
+from clifunzone import reflection_utils
+from clifunzone import xml2json
 
 try:
     from lxml import etree as ET

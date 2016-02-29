@@ -3,9 +3,10 @@ from collections import OrderedDict
 from pprint import pformat
 
 import click
-import click_utils
-import xml_utils
-from reflection_utils import varsdict
+
+from clifunzone import click_utils
+from clifunzone import xml_utils
+from clifunzone.reflection_utils import varsdict
 
 try:
     from lxml import etree as ET

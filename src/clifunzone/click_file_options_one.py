@@ -1,7 +1,8 @@
 import sys
 
 import click
-import click_utils
+
+from clifunzone import click_utils
 
 
 def process(**kwargs):

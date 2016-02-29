@@ -3,11 +3,12 @@ import sys
 from pprint import pformat
 
 import click
-import click_utils
-import json_utils
-from dict_utils import filter_none_values
-from dict_utils import flatten
-from reflection_utils import varsdict
+
+from clifunzone import click_utils
+from clifunzone import json_utils
+from clifunzone.dict_utils import filter_none_values
+from clifunzone.dict_utils import flatten
+from clifunzone.reflection_utils import varsdict
 
 
 def process(**kwargs):
