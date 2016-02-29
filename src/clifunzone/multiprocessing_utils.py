@@ -55,7 +55,7 @@ def _simple__process_func(name, max_delay, exception_probability):
 
 def main():
     import json
-    import configparser_utils
+    from clifunzone import configparser_utils
 
     cp = configparser_utils.get_configparser(extended_interpolation=False)
     cp.read(configparser_utils.get_default_ini(__file__))

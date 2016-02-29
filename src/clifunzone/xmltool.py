@@ -319,7 +319,7 @@ def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, 
         else:
             tree = ET.parse(f)
         root = tree.getroot()
-        # import reflection_utils
+        # from clifunzone import reflection_utils
         # click.echo('tree: %s' % reflection_utils.varsdict(tree))
         # click.echo('tree: %s' % dir(tree))
         # click.echo('root: %s' % reflection_utils.varsdict(root))
