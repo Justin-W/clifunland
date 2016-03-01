@@ -62,35 +62,45 @@ def test_info():
     runner = CliRunner()
 
     # test valid input
-    expected = '{\n  "root": {\n    "content": {\n      "tag": "abc"\n    }, \n    "metrics": {}\n  }\n}'
+    expected = '\n'.join([
+        '{',
+        '  "root": {',
+        '    "content": {',
+        '      "tag": "abc"',
+        '    }, ',
+        '    "metrics": {}',
+        '  }',
+        '}'
+    ])
     helper_test_info(runner, '<abc/>', expected=expected + '\n', exit_code=0)
 
-    expected = \
-        '{' + '\n' + \
-        '  "root": {' + '\n' + \
-        '    "content": {' + '\n' + \
-        '      "#text": "\\t", ' + '\n' + \
-        '      "tag": "a"' + '\n' + \
-        '    }, ' + '\n' + \
-        '    "metrics": {' + '\n' + \
-        '      "children": {' + '\n' + \
-        '        "attributes": [], ' + '\n' + \
-        '        "count": 1, ' + '\n' + \
-        '        "tags": [' + '\n' + \
-        '          "b"' + '\n' + \
-        '        ]' + '\n' + \
-        '      }, ' + '\n' + \
-        '      "descendants": {' + '\n' + \
-        '        "attributes": [], ' + '\n' + \
-        '        "count": 2, ' + '\n' + \
-        '        "tags": [' + '\n' + \
-        '          "b", ' + '\n' + \
-        '          "c"' + '\n' + \
-        '        ]' + '\n' + \
-        '      }' + '\n' + \
-        '    }' + '\n' + \
-        '  }' + '\n' + \
+    expected = '\n'.join([
+        '{',
+        '  "root": {',
+        '    "content": {',
+        '      "#text": "\\t", ',
+        '      "tag": "a"',
+        '    }, ',
+        '    "metrics": {',
+        '      "children": {',
+        '        "attributes": [], ',
+        '        "count": 1, ',
+        '        "tags": [',
+        '          "b"',
+        '        ]',
+        '      }, ',
+        '      "descendants": {',
+        '        "attributes": [], ',
+        '        "count": 2, ',
+        '        "tags": [',
+        '          "b", ',
+        '          "c"',
+        '        ]',
+        '      }',
+        '    }',
+        '  }',
         '}'
+    ])
     helper_test_info(runner, '<a>\t<b><c/> </b></a>', expected=expected + '\n', exit_code=0)
 
     # test invalid input
