@@ -83,18 +83,20 @@ def helper_test_echo(runner, input_text):
     assert result.exit_code == 0
 
 
-def test_validate():
-    runner = CliRunner()
-
-    helper_test_validate(runner, '<abc/>', expected='True', exit_code=0)
-    helper_test_validate(runner, '<a>\n<b/>\n</a>', expected='True', exit_code=0)
-    helper_test_validate(runner, '<<<', expected='False', exit_code=1)
-
-
-def helper_test_validate(runner, input_text, expected, exit_code):
-    result = runner.invoke(sut.validate, [], input=as_piped_input(input_text))
-    assert result.output == expected + '\n'
-    assert result.exit_code == exit_code
+@pytest.mark.parametrize("input_text,exit_code,expected", [
+    ('<abc/>', 0, 'True'),
+    ('<a>\n<b/>\n</a>', 0, 'True'),
+    ('<a>\n<b><c/> </b></a>', 0, 'True'),
+    ('<a>\t<b><c/> </b></a>', 0, 'True'),
+    ('', 1, 'False'),
+    ('<<<', 1, 'False'),
+    ('>', 1, 'False'),
+    ('<a>', 1, 'False'),
+    ('abc', 1, 'False'),
+    ('{"a": null}', 1, 'False')
+])
+def test_validate(input_text, exit_code, expected):
+    invoke_sut_piped_input(sut.validate, [], input_text, exit_code=exit_code, expected=expected)
 
 
 @pytest.mark.parametrize("input_text,expected", [
