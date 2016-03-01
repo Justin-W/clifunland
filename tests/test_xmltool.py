@@ -19,6 +19,16 @@ def assert_exit_code(actual, expected):
 
 
 def assert_out_eq(actual, expected, encode=True, strict=False):
+    """
+    Utility assertion function. Helps keep the test code cleaner.
+
+    :param actual:
+    :param expected: a list of strings representing lines of output, or else a combined output string.
+        A trailing newline gets appended automatically if expected is not False-y.
+        If only a single newline is expected, pass [''].
+    :param encode:
+    :param strict:
+    """
     __tracebackhide__ = True
     output_expected = bool(expected)
     if isinstance(expected, list):
