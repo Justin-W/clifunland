@@ -51,6 +51,13 @@ def as_piped_input(input_text):
     # return ReasonableBytesIO(input_text.encode('utf-8'))
 
 
+def invoke_sut_piped_input(cli, args, input_text, exit_code, expected):
+    runner = CliRunner()
+    result = runner.invoke(cli, args, input=as_piped_input(input_text))
+    assert_out_ok(result.output, expected)
+    assert_exit_code(result.exit_code, exit_code)
+
+
 def test_none():
     runner = CliRunner()
     result = runner.invoke(sut.cli, [])
@@ -130,7 +137,7 @@ def helper_test_validate(runner, input_text, expected, exit_code):
     ])
 ])
 def test_info(input_text, expected):
-    invoke_info(input_text, exit_code=0, expected=expected)
+    invoke_sut_piped_input(sut.info, [], input_text, exit_code=0, expected=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -142,11 +149,4 @@ def test_info(input_text, expected):
     '{"a": null}'
 ])
 def test_info_invalid_input(input_text):
-    invoke_info(input_text, exit_code=-1, expected='')
-
-
-def invoke_info(input_text, exit_code, expected):
-    runner = CliRunner()
-    result = runner.invoke(sut.info, [], input=as_piped_input(input_text))
-    assert_out_ok(result.output, expected)
-    assert_exit_code(result.exit_code, exit_code)
+    invoke_sut_piped_input(sut.info, [], input_text, exit_code=-1, expected='')
