@@ -169,3 +169,58 @@ def test_info(input_text, expected):
 ])
 def test_info_invalid_input(input_text):
     invoke_sut_piped_input(sut.info, [], input_text, exit_code=-1, expected=None)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<abc/>', [], '{"abc": null}'),
+    ('<abc/>', ['--echo'], [
+        '',
+        'XML:',
+        '<abc/>',
+        '',
+        'JSON:',
+        '{"abc": null}'
+    ]),
+    ('<abc/>', ['-p'], [
+        '{',
+        '    "abc": null',
+        '}'
+    ]),
+    ('<a>\n<b/>\n</a>', ['-p', '-sws'], [
+        '{',
+        '    "a": {',
+        '        "b": null',
+        '    }',
+        '}'
+    ]),
+    ('<a>\n<b/>\n</a>', [], '{"a": {"b": {"#tail": "\\n"}, "#text": "\\n"}}'),
+    ('<a>\n<b/>\n</a>', ['-sws'], '{"a": {"b": null}}'),
+    ('<a id="1">\t<b id="2">\t<c x="" y="a" z="0"> hi\t</c> </b></a>', [],
+     '{"a": {"@id": "1", "b": {"@id": "2", "c": {"@y": "a", "@x": "", "@z": "0", "#tail": " ", "#text": " hi\\t"}, '
+     '"#text": "\\t"}, "#text": "\\t"}}'),
+    ('<a id="1">\t<b id="2">\t<c x="" y="a" z="0"> hi\t</c> </b></a>', ['-sws'],
+     '{"a": {"@id": "1", "b": {"@id": "2", "c": {"@y": "a", "@x": "", "@z": "0", "#text": "hi"}}}}'),
+    ('<a id="1">\t<b id="2">\t<c x="" y="a" z="0"> hi\t</c> </b></a>', ['-sa'],
+     '{"a": {"b": {"c": {"#tail": " ", "#text": " hi\\t"}, "#text": "\\t"}, "#text": "\\t"}}'),
+    ('<a id="1">\t<b id="2">\t<c x="" y="a" z="0"> hi\t</c> </b></a>', ['-sns'],
+     '{"a": {"@id": "1", "b": {"@id": "2", "c": {"@y": "a", "@x": "", "@z": "0", "#tail": " ", "#text": " hi\\t"}, '
+     '"#text": "\\t"}, "#text": "\\t"}}'),
+    ('<a id="1">\t<b id="2">\t<c x="" y="a" z="0"> hi\t</c> </b></a>', ['-sws', '-sa', '-sns'], [
+        '{"a": {"b": {"c": "hi"}}}'
+    ])
+])
+def test_tojson(input_text, cli_args, expected):
+    invoke_sut_piped_input(sut.tojson, cli_args, input_text, exit_code=0, expected=expected)
+
+
+@pytest.mark.parametrize("input_text", [
+    '',
+    ' ',
+    '<<<',
+    '>',
+    '<a>',
+    'abc',
+    '{"a": null}'
+])
+def test_tojson_invalid_input(input_text):
+    invoke_sut_piped_input(sut.tojson, [], input_text, exit_code=-1, expected=None)
