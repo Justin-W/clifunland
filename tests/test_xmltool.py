@@ -238,6 +238,13 @@ def test_elements(input_text, expected):
     invoke_sut_piped_input(sut.elements, [], input_text, exit_code=0, expected=expected)
 
 
+@pytest.mark.parametrize("input_text,expected", [
+    ('<a/>', '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
+])
+def test_elements_pretty(input_text, expected):
+    invoke_sut_piped_input(sut.elements, ['-p'], input_text, exit_code=0, expected=expected)
+
+
 @pytest.mark.parametrize("input_text", [
     '',
     ' ',
