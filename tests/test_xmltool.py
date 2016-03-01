@@ -78,20 +78,20 @@ def test_none():
     assert result.exit_code == 0
 
 
-def test_echo():
-    runner = CliRunner()
-
-    helper_test_echo(runner, '<abc/>')
-    helper_test_echo(runner, '<a>\n<b/>\n</a>')
-    helper_test_echo(runner, '<<<')
-
-
-def helper_test_echo(runner, input_text):
-    expected = input_text
-
-    result = runner.invoke(sut.echo, [], input=as_piped_input(input_text))
-    assert result.output == expected + '\n'
-    assert result.exit_code == 0
+@pytest.mark.parametrize("input_text", [
+    '<abc/>',
+    '<a>\n<b/>\n</a>',
+    '',
+    ' ',
+    '<<<',
+    '>',
+    '<a>',
+    'abc',
+    '{"a": null}'
+])
+def test_echo(input_text):
+    expected = input_text or ['']
+    invoke_sut_piped_input(sut.echo, [], input_text, exit_code=0, expected=expected)
 
 
 @pytest.mark.parametrize("input_text,exit_code,expected", [
