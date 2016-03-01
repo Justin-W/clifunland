@@ -325,3 +325,40 @@ def test_elements_pretty(input_text, expected):
 ])
 def test_elements_invalid_input(input_text):
     invoke_sut_piped_input(sut.elements, [], input_text, exit_code=-1, expected=None)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x', '//b/d'], '<a><b><c/></b><b/></a>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //b/d'], '<a><b><c/></b><b/></a>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //b'], '<a/>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d'], '<a><b><c/></b><b/></a>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d[1]'], '<a><b><c/></b><b><d/></b></a>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d[2]'], '<a><b><c/></b><b><d><e/></d></b></a>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d[5]'], '<a><b><c/></b><b><d><e/></d><d/></b></a>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-x //*[count(.//*)<=1]'], '<a><b id="b2"/></a>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-x //*[count(*)=0]'],
+     '<a><b id="b1"/><b id="b2"><d/></b></a>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-x //*[count(.//*)=3]'],
+     '<a><b id="b1"><c/></b></a>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-x /*//*[count(./*)=2]'],
+     '<a><b id="b1"><c/></b></a>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-x //*[count(.//*)<1]'],
+     '<a><b id="b1"/><b id="b2"><d/></b></a>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d[count(*)>=1]'], '<a><b><c/></b><b><d/></b></a>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d[count(*)!=1]'], '<a><b><c/></b><b><d><e/></d></b></a>')
+])
+def test_strip(input_text, cli_args, expected):
+    invoke_sut_piped_input(sut.strip, cli_args, input_text, exit_code=0, expected_xml=expected)
+
+
+@pytest.mark.parametrize("input_text", [
+    '',
+    ' ',
+    '<<<',
+    '>',
+    '<a>',
+    'abc',
+    '{"a": null}'
+])
+def test_strip_invalid_input(input_text):
+    invoke_sut_piped_input(sut.strip, [], input_text, exit_code=-1, expected=None)
