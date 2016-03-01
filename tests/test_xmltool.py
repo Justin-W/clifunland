@@ -1,3 +1,6 @@
+import json
+import logging
+
 import pytest
 from click._compat import PY2
 from click.testing import CliRunner
@@ -55,6 +58,53 @@ def assert_out_ok(actual, expected, encode=True):
     assert_out_eq(actual, expected, encode=encode, strict=False)
 
 
+def assert_json_eq(actual, expected):
+    """
+    Utility assertion function. Helps keep the test code cleaner.
+
+    :param actual:
+    :param expected: a list of strings representing lines of output, or else a combined output string.
+        A trailing newline gets appended automatically if expected is not False-y.
+        If only a single newline is expected, pass [''].
+    """
+    __tracebackhide__ = True
+    output_expected = bool(expected)
+    # if expected is None:
+    #     expected = ''
+    if isinstance(expected, list):
+        # treat the list as a list of output lines
+        expected = '\n'.join(expected)
+    if output_expected:
+        # automatically add a trailing newline only if some output is expected
+        expected += '\n'
+
+    # actual = ReasonableStringIO(actual).read()
+    # expected = ReasonableStringIO(expected).read()
+    #
+    # actual = actual.strip()
+    # expected = expected.strip()
+
+    try:
+        actual = json.loads(actual)
+        expected = json.loads(expected)
+    except ValueError:
+        logging.exception('json.loads() error.\nactual=%s.\nexpected=%s.', actual, expected)
+        raise
+
+    # if not strict:
+    try:
+        actual = json.dumps(actual, sort_keys=True, separators=(',', ':'))
+        expected = json.dumps(expected, sort_keys=True, separators=(',', ':'))
+    except ValueError:
+        logging.exception('json.dumps() error.\nactual=%s.\nexpected=%s.', actual, expected)
+        raise
+    # else:
+    #     actual = json.dumps(actual, sort_keys=False, separators=(',', ':'))
+    #     expected = json.dumps(expected, sort_keys=False, separators=(',', ':'))
+
+    assert actual == expected
+
+
 def py3_json_agnostic(actual):
     return actual.replace(', \n', ',\n')
 
@@ -66,10 +116,16 @@ def as_piped_input(input_text):
     # return ReasonableBytesIO(input_text.encode('utf-8'))
 
 
-def invoke_sut_piped_input(cli, args, input_text, exit_code, expected):
+def invoke_sut_piped_input(cli, args, input_text, exit_code, expected=None, expected_json=None, expected_xml=None):
     runner = CliRunner()
     result = runner.invoke(cli, args, input=as_piped_input(input_text))
-    assert_out_ok(result.output, expected)
+    if expected is not None:
+        assert_out_ok(result.output, expected)
+    if expected_json is not None:
+        assert_json_eq(result.output, expected_json)
+    if expected_xml is not None:
+        # assert_xml_eq(result.output, expected_xml)
+        assert_out_ok(result.output, expected_xml)
     assert_exit_code(result.exit_code, exit_code)
 
 
@@ -155,7 +211,7 @@ def test_validate(input_text, exit_code, expected):
     ])
 ])
 def test_info(input_text, expected):
-    invoke_sut_piped_input(sut.info, [], input_text, exit_code=0, expected=expected)
+    invoke_sut_piped_input(sut.info, [], input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -173,14 +229,6 @@ def test_info_invalid_input(input_text):
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
     ('<abc/>', [], '{"abc": null}'),
-    ('<abc/>', ['--echo'], [
-        '',
-        'XML:',
-        '<abc/>',
-        '',
-        'JSON:',
-        '{"abc": null}'
-    ]),
     ('<abc/>', ['-p'], [
         '{',
         '    "abc": null',
@@ -210,6 +258,20 @@ def test_info_invalid_input(input_text):
     ])
 ])
 def test_tojson(input_text, cli_args, expected):
+    invoke_sut_piped_input(sut.tojson, cli_args, input_text, exit_code=0, expected_json=expected)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<abc/>', ['--echo'], [
+        '',
+        'XML:',
+        '<abc/>',
+        '',
+        'JSON:',
+        '{"abc": null}'
+    ])
+])
+def test_tojson_echo(input_text, cli_args, expected):
     invoke_sut_piped_input(sut.tojson, cli_args, input_text, exit_code=0, expected=expected)
 
 
@@ -227,7 +289,7 @@ def test_tojson_invalid_input(input_text):
 
 
 @pytest.mark.parametrize("input_text,expected", [
-    ('<abc/>', '{"path":"/abc","content":{"tag":"abc"}}'),
+    ('<abc/>', ['{"path":"/abc","content":{"tag":"abc"}}']),
     ('<a>\t<b><c/> </b></a>', [
         '{"path":"/a","content":{"tag":"a","#text":"\\t"},' +
         '"metrics":{"children":{"count":1,"tags":["b"]},"descendants":{"count":2,"tags":["b","c"]}}}',
@@ -237,14 +299,16 @@ def test_tojson_invalid_input(input_text):
     ])
 ])
 def test_elements(input_text, expected):
-    invoke_sut_piped_input(sut.elements, [], input_text, exit_code=0, expected=expected)
+    # expected = '{"output":{[%s]}}' % ','.join(expected)
+    expected = '[%s]' % ','.join(expected)
+    invoke_sut_piped_input(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text,expected", [
     ('<a/>', '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
 ])
 def test_elements_pretty(input_text, expected):
-    invoke_sut_piped_input(sut.elements, ['-p'], input_text, exit_code=0, expected=expected)
+    invoke_sut_piped_input(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [
