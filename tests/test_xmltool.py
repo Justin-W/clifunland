@@ -12,6 +12,37 @@ else:
     # from io import StringIO as ReasonableStringIO
 
 
+def assert_exit_code(actual, expected):
+    __tracebackhide__ = True
+    assert actual == expected
+
+
+def assert_out_eq(actual, expected, encode=True, strict=False):
+    __tracebackhide__ = True
+    if isinstance(expected, list):
+        # treat the list as a list of output lines
+        expected = '\n'.join(expected)
+    if expected:
+        # automatically add a trailing newline only if some output is expected
+        expected += '\n'
+    if not strict:
+        actual = py3_json_agnostic(actual)
+        expected = py3_json_agnostic(expected)
+    if encode:
+        actual = actual.encode()
+        expected = expected.encode()
+    assert actual == expected
+
+
+def assert_out_ok(actual, expected, encode=True):
+    __tracebackhide__ = True
+    assert_out_eq(actual, expected, encode=encode, strict=False)
+
+
+def py3_json_agnostic(actual):
+    return actual.replace(', \n', ',\n')
+
+
 def as_piped_input(input_text):
     # return PipedInput(input_text)
     # return ReasonableBytesIO(input_text)
@@ -59,10 +90,8 @@ def helper_test_validate(runner, input_text, expected, exit_code):
 
 
 def test_info():
-    runner = CliRunner()
-
     # test valid input
-    expected = '\n'.join([
+    expected = [
         '{',
         '  "root": {',
         '    "content": {',
@@ -71,10 +100,10 @@ def test_info():
         '    "metrics": {}',
         '  }',
         '}'
-    ])
-    helper_test_info(runner, '<abc/>', expected=expected + '\n', exit_code=0)
+    ]
+    invoke_info('<abc/>', exit_code=0, expected=expected)
 
-    expected = '\n'.join([
+    expected = [
         '{',
         '  "root": {',
         '    "content": {',
@@ -100,17 +129,18 @@ def test_info():
         '    }',
         '  }',
         '}'
-    ])
-    helper_test_info(runner, '<a>\t<b><c/> </b></a>', expected=expected + '\n', exit_code=0)
+    ]
+    invoke_info('<a>\t<b><c/> </b></a>', exit_code=0, expected=expected)
 
     # test invalid input
-    helper_test_info(runner, '', expected='', exit_code=-1)
-    helper_test_info(runner, '<<<', expected='', exit_code=-1)
-    helper_test_info(runner, '>', expected='', exit_code=-1)
-    helper_test_info(runner, '<a>', expected='', exit_code=-1)
+    invoke_info('', exit_code=-1, expected='')
+    invoke_info('<<<', exit_code=-1, expected='')
+    invoke_info('>', exit_code=-1, expected='')
+    invoke_info('<a>', exit_code=-1, expected='')
 
 
-def helper_test_info(runner, input_text, expected, exit_code):
+def invoke_info(input_text, exit_code, expected):
+    runner = CliRunner()
     result = runner.invoke(sut.info, [], input=as_piped_input(input_text))
-    assert result.output.replace(', \n', ',\n').encode() == expected.replace(', \n', ',\n').encode()
-    assert result.exit_code == exit_code
+    assert_out_ok(result.output, expected)
+    assert_exit_code(result.exit_code, exit_code)
