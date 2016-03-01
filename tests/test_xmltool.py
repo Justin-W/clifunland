@@ -31,6 +31,8 @@ def assert_out_eq(actual, expected, encode=True, strict=False):
     """
     __tracebackhide__ = True
     output_expected = bool(expected)
+    if expected is None:
+        expected = ''
     if isinstance(expected, list):
         # treat the list as a list of output lines
         expected = '\n'.join(expected)
@@ -41,8 +43,10 @@ def assert_out_eq(actual, expected, encode=True, strict=False):
         actual = py3_json_agnostic(actual)
         expected = py3_json_agnostic(expected)
     if encode:
-        actual = actual.encode()
-        expected = expected.encode()
+        if actual is not None:
+            actual = actual.encode()
+        if expected is not None:
+            expected = expected.encode()
     assert actual == expected
 
 
@@ -164,4 +168,4 @@ def test_info(input_text, expected):
     '{"a": null}'
 ])
 def test_info_invalid_input(input_text):
-    invoke_sut_piped_input(sut.info, [], input_text, exit_code=-1, expected='')
+    invoke_sut_piped_input(sut.info, [], input_text, exit_code=-1, expected=None)
