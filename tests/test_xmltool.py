@@ -90,6 +90,7 @@ def helper_test_echo(runner, input_text):
     ('<a>\n<b><c/> </b></a>', 0, 'True'),
     ('<a>\t<b><c/> </b></a>', 0, 'True'),
     ('', 1, 'False'),
+    (' ', 1, 'False'),
     ('<<<', 1, 'False'),
     ('>', 1, 'False'),
     ('<a>', 1, 'False'),
@@ -145,6 +146,7 @@ def test_info(input_text, expected):
 
 @pytest.mark.parametrize("input_text", [
     '',
+    ' ',
     '<<<',
     '>',
     '<a>',
