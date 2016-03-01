@@ -56,3 +56,51 @@ def helper_test_validate(runner, input_text, expected, exit_code):
     result = runner.invoke(sut.validate, [], input=as_piped_input(input_text))
     assert result.output == expected + '\n'
     assert result.exit_code == exit_code
+
+
+def test_info():
+    runner = CliRunner()
+
+    # test valid input
+    expected = '{\n  "root": {\n    "content": {\n      "tag": "abc"\n    }, \n    "metrics": {}\n  }\n}'
+    helper_test_info(runner, '<abc/>', expected=expected + '\n', exit_code=0)
+
+    expected = \
+        '{' + '\n' + \
+        '  "root": {' + '\n' + \
+        '    "content": {' + '\n' + \
+        '      "#text": "\\t", ' + '\n' + \
+        '      "tag": "a"' + '\n' + \
+        '    }, ' + '\n' + \
+        '    "metrics": {' + '\n' + \
+        '      "children": {' + '\n' + \
+        '        "attributes": [], ' + '\n' + \
+        '        "count": 1, ' + '\n' + \
+        '        "tags": [' + '\n' + \
+        '          "b"' + '\n' + \
+        '        ]' + '\n' + \
+        '      }, ' + '\n' + \
+        '      "descendants": {' + '\n' + \
+        '        "attributes": [], ' + '\n' + \
+        '        "count": 2, ' + '\n' + \
+        '        "tags": [' + '\n' + \
+        '          "b", ' + '\n' + \
+        '          "c"' + '\n' + \
+        '        ]' + '\n' + \
+        '      }' + '\n' + \
+        '    }' + '\n' + \
+        '  }' + '\n' + \
+        '}'
+    helper_test_info(runner, '<a>\t<b><c/> </b></a>', expected=expected + '\n', exit_code=0)
+
+    # test invalid input
+    helper_test_info(runner, '', expected='', exit_code=-1)
+    helper_test_info(runner, '<<<', expected='', exit_code=-1)
+    helper_test_info(runner, '>', expected='', exit_code=-1)
+    helper_test_info(runner, '<a>', expected='', exit_code=-1)
+
+
+def helper_test_info(runner, input_text, expected, exit_code):
+    result = runner.invoke(sut.info, [], input=as_piped_input(input_text))
+    assert result.output.encode() == expected.encode()
+    assert result.exit_code == exit_code
