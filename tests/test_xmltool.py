@@ -90,9 +90,8 @@ def helper_test_validate(runner, input_text, expected, exit_code):
     assert result.exit_code == exit_code
 
 
-def test_info():
-    # test valid input
-    expected = [
+@pytest.mark.parametrize("input_text,expected", [
+    ('<abc/>', [
         '{',
         '  "root": {',
         '    "content": {',
@@ -101,10 +100,8 @@ def test_info():
         '    "metrics": {}',
         '  }',
         '}'
-    ]
-    invoke_info('<abc/>', exit_code=0, expected=expected)
-
-    expected = [
+    ]),
+    ('<a>\t<b><c/> </b></a>', [
         '{',
         '  "root": {',
         '    "content": {',
@@ -130,8 +127,10 @@ def test_info():
         '    }',
         '  }',
         '}'
-    ]
-    invoke_info('<a>\t<b><c/> </b></a>', exit_code=0, expected=expected)
+    ])
+])
+def test_info(input_text, expected):
+    invoke_info(input_text, exit_code=0, expected=expected)
 
 
 @pytest.mark.parametrize("input_text", [
