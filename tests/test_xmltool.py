@@ -20,10 +20,11 @@ def assert_exit_code(actual, expected):
 
 def assert_out_eq(actual, expected, encode=True, strict=False):
     __tracebackhide__ = True
+    output_expected = bool(expected)
     if isinstance(expected, list):
         # treat the list as a list of output lines
         expected = '\n'.join(expected)
-    if expected:
+    if output_expected:
         # automatically add a trailing newline only if some output is expected
         expected += '\n'
     if not strict:
