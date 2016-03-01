@@ -112,5 +112,5 @@ def test_info():
 
 def helper_test_info(runner, input_text, expected, exit_code):
     result = runner.invoke(sut.info, [], input=as_piped_input(input_text))
-    assert result.output.encode() == expected.encode()
+    assert result.output.replace(', \n', ',\n').encode() == expected.replace(', \n', ',\n').encode()
     assert result.exit_code == exit_code
