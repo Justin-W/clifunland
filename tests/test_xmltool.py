@@ -1,3 +1,4 @@
+import pytest
 from click._compat import PY2
 from click.testing import CliRunner
 
@@ -132,11 +133,15 @@ def test_info():
     ]
     invoke_info('<a>\t<b><c/> </b></a>', exit_code=0, expected=expected)
 
-    # test invalid input
-    invoke_info('', exit_code=-1, expected='')
-    invoke_info('<<<', exit_code=-1, expected='')
-    invoke_info('>', exit_code=-1, expected='')
-    invoke_info('<a>', exit_code=-1, expected='')
+
+@pytest.mark.parametrize("input_text", [
+    '',
+    '<<<',
+    '>',
+    '<a>'
+])
+def test_info_invalid_input(input_text):
+    invoke_info(input_text, exit_code=-1, expected='')
 
 
 def invoke_info(input_text, exit_code, expected):
