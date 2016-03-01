@@ -229,7 +229,7 @@ def test_tojson_invalid_input(input_text):
 @pytest.mark.parametrize("input_text,expected", [
     ('<abc/>', '{"path":"/abc","content":{"tag":"abc"}}'),
     ('<a>\t<b><c/> </b></a>', [
-        '{"path":"/a","content":{"#text":"\\t","tag":"a"},' +
+        '{"path":"/a","content":{"tag":"a","#text":"\\t"},' +
         '"metrics":{"children":{"count":1,"tags":["b"]},"descendants":{"count":2,"tags":["b","c"]}}}',
         '{"path":"/a/b","content":{"tag":"b"},' +
         '"metrics":{"children":{"count":1,"tags":["c"]},"descendants":{"count":1,"tags":["c"]}}}',
