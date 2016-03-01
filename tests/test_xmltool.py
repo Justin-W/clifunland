@@ -137,7 +137,9 @@ def test_info(input_text, expected):
     '',
     '<<<',
     '>',
-    '<a>'
+    '<a>',
+    'abc',
+    '{"a": null}'
 ])
 def test_info_invalid_input(input_text):
     invoke_info(input_text, exit_code=-1, expected='')
