@@ -66,6 +66,20 @@ def cli(debug):
         logging.exception('debug_context error')
 
 
+@cli.command(short_help='echo the unparsed input')
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+def echo(input, **kwargs):
+    """
+    Echo the (unparsed) input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        s = f.read()
+        click.echo(s)
+
+
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
@@ -105,20 +119,6 @@ def info(input, verbose, **kwargs):
             s = pformat(d)
         else:
             s = json.dumps(d, indent=2, sort_keys=True)
-        click.echo(s)
-
-
-@cli.command(short_help='echo the unparsed input')
-@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
-              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
-def echo(input, **kwargs):
-    """
-    Echo the (unparsed) input.
-    """
-    if not input:
-        input = '-'
-    with click.open_file(input, mode='rb') as f:
-        s = f.read()
         click.echo(s)
 
 
