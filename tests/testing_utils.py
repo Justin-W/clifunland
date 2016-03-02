@@ -24,6 +24,12 @@ def munge_object_mem_refs(s, replacement=None):
     >>> munge_object_mem_refs('abc')
     'abc'
 
+    >>> munge_object_mem_refs('AAA object at 0x1234567890abcdef>ZZZ')
+    'AAA object at 0x...>ZZZ'
+
+    >>> munge_object_mem_refs('AAA object at 0x12345678>ZZZ')
+    'AAA object at 0x...>ZZZ'
+
     >>> munge_object_mem_refs('<abcd.efg.HiClass object at 0x102345678>')
     '<abcd.efg.HiClass object at 0x...>'
 
@@ -54,11 +60,11 @@ def munge_object_mem_refs(s, replacement=None):
     >>> munge_object_mem_refs('AAA object at 0x109abcdeg>ZZZ')
     'AAA object at 0x109abcdeg>ZZZ'
 
-    >>> munge_object_mem_refs('AAA object at 0x109abcde>ZZZ')
-    'AAA object at 0x109abcde>ZZZ'
+    >>> munge_object_mem_refs('AAA object at 0x1234567>ZZZ')
+    'AAA object at 0x1234567>ZZZ'
 
-    >>> munge_object_mem_refs('AAA object at 0x109abcdef0>ZZZ')
-    'AAA object at 0x109abcdef0>ZZZ'
+    >>> munge_object_mem_refs('AAA object at 0x1234567890abcdef7>ZZZ')
+    'AAA object at 0x1234567890abcdef7>ZZZ'
 
     """
     if s is None:
@@ -69,6 +75,6 @@ def munge_object_mem_refs(s, replacement=None):
         # replacement = ''
     # pattern = r' object at 0x[0-9a-fA-F]+'
     # pattern = r' object at 0x[0-9a-fA-F]+>'
-    pattern = r' object at 0x[0-9a-fA-F]{9}>'
+    pattern = r' object at 0x[0-9a-fA-F]{8,16}>'
     repl = ' object at 0x{}>'.format(replacement)
     return re.sub(pattern, repl, s)
