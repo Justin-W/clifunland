@@ -117,7 +117,7 @@ def as_piped_input(input_text):
     # return ReasonableBytesIO(input_text.encode('utf-8'))
 
 
-def invoke_sut_piped_input(cli, args, input_text, exit_code, expected=None, expected_json=None, expected_xml=None):
+def clirunner_invoke_piped(cli, args, input_text, exit_code, expected=None, expected_json=None, expected_xml=None):
     runner = CliRunner()
     result = runner.invoke(cli, args, input=as_piped_input(input_text))
     if expected is not None:
@@ -152,7 +152,7 @@ def test_none():
 ])
 def test_echo(input_text):
     expected = input_text or ['']
-    invoke_sut_piped_input(sut.echo, [], input_text, exit_code=0, expected=expected)
+    clirunner_invoke_piped(sut.echo, [], input_text, exit_code=0, expected=expected)
 
 
 @pytest.mark.parametrize("input_text,exit_code,expected", [
@@ -169,7 +169,7 @@ def test_echo(input_text):
     ('{"a": null}', 1, 'False')
 ])
 def test_validate(input_text, exit_code, expected):
-    invoke_sut_piped_input(sut.validate, [], input_text, exit_code=exit_code, expected=expected)
+    clirunner_invoke_piped(sut.validate, [], input_text, exit_code=exit_code, expected=expected)
 
 
 @pytest.mark.parametrize("input_text,expected", [
@@ -212,7 +212,7 @@ def test_validate(input_text, exit_code, expected):
     ])
 ])
 def test_info(input_text, expected):
-    invoke_sut_piped_input(sut.info, [], input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.info, [], input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -225,7 +225,7 @@ def test_info(input_text, expected):
     '{"a": null}'
 ])
 def test_info_invalid_input(input_text):
-    invoke_sut_piped_input(sut.info, [], input_text, exit_code=-1, expected=None)
+    clirunner_invoke_piped(sut.info, [], input_text, exit_code=-1, expected=None)
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
@@ -259,7 +259,7 @@ def test_info_invalid_input(input_text):
     ])
 ])
 def test_tojson(input_text, cli_args, expected):
-    invoke_sut_piped_input(sut.tojson, cli_args, input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.tojson, cli_args, input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
@@ -273,7 +273,7 @@ def test_tojson(input_text, cli_args, expected):
     ])
 ])
 def test_tojson_echo(input_text, cli_args, expected):
-    invoke_sut_piped_input(sut.tojson, cli_args, input_text, exit_code=0, expected=expected)
+    clirunner_invoke_piped(sut.tojson, cli_args, input_text, exit_code=0, expected=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -286,7 +286,7 @@ def test_tojson_echo(input_text, cli_args, expected):
     '{"a": null}'
 ])
 def test_tojson_invalid_input(input_text):
-    invoke_sut_piped_input(sut.tojson, [], input_text, exit_code=-1, expected=None)
+    clirunner_invoke_piped(sut.tojson, [], input_text, exit_code=-1, expected=None)
 
 
 @pytest.mark.parametrize("input_text,expected", [
@@ -304,14 +304,14 @@ def test_tojson_invalid_input(input_text):
 def test_elements(input_text, expected):
     # expected = '{"output":{[%s]}}' % ','.join(expected)
     expected = '[%s]' % ','.join(expected)
-    invoke_sut_piped_input(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text,expected", [
     ('<a/>', '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
 ])
 def test_elements_pretty(input_text, expected):
-    invoke_sut_piped_input(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -324,7 +324,7 @@ def test_elements_pretty(input_text, expected):
     '{"a": null}'
 ])
 def test_elements_invalid_input(input_text):
-    invoke_sut_piped_input(sut.elements, [], input_text, exit_code=-1, expected=None)
+    clirunner_invoke_piped(sut.elements, [], input_text, exit_code=-1, expected=None)
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
@@ -369,7 +369,7 @@ def test_elements_invalid_input(input_text):
     ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d[count(*)!=1]'], '<a><b><c/></b><b><d><e/></d></b></a>')
 ])
 def test_strip(input_text, cli_args, expected):
-    invoke_sut_piped_input(sut.strip, cli_args, input_text, exit_code=0, expected_xml=expected)
+    clirunner_invoke_piped(sut.strip, cli_args, input_text, exit_code=0, expected_xml=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -382,7 +382,7 @@ def test_strip(input_text, cli_args, expected):
     '{"a": null}'
 ])
 def test_strip_invalid_input(input_text):
-    invoke_sut_piped_input(sut.strip, [], input_text, exit_code=-1, expected=None)
+    clirunner_invoke_piped(sut.strip, [], input_text, exit_code=-1, expected=None)
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
@@ -445,7 +445,7 @@ def test_strip_invalid_input(input_text):
      '<b id="b1"><c/></b>'),
 ])
 def test_find(input_text, cli_args, expected):
-    invoke_sut_piped_input(sut.find, cli_args, input_text, exit_code=0, expected_xml=expected)
+    clirunner_invoke_piped(sut.find, cli_args, input_text, exit_code=0, expected_xml=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -458,4 +458,4 @@ def test_find(input_text, cli_args, expected):
     '{"a": null}'
 ])
 def test_find_invalid_input(input_text):
-    invoke_sut_piped_input(sut.find, [], input_text, exit_code=-1, expected=None)
+    clirunner_invoke_piped(sut.find, [], input_text, exit_code=-1, expected=None)
