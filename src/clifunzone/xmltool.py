@@ -310,6 +310,8 @@ def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, 
         if whitespace:
             try:
                 parser = ET.XMLParser(remove_blank_text=True)
+                # since the parser will take care of the whitespace removal, we don't need to do it manually below
+                whitespace = False
             except TypeError:
                 # TypeError: __init__() got an unexpected keyword argument 'remove_blank_text'
                 # lxml not imported?
