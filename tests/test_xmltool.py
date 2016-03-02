@@ -362,3 +362,53 @@ def test_strip(input_text, cli_args, expected):
 ])
 def test_strip_invalid_input(input_text):
     invoke_sut_piped_input(sut.strip, [], input_text, exit_code=-1, expected=None)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<a><b><c/></b></a>', ['-x //b'], '<results>\n<b><c/></b>\n</results>'),
+    ('<a><b><c/></b></a>', ['-x //b', '-nr'], '<b><c/></b>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-rR', '-x //b/d'], '<R>\n<d><e/></d>\n<d/>\n</R>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-rR', '-x //b'], '<R>\n<b><c/></b>\n<b><d><e/></d><d/></b>\n</R>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-rR', '-x //d'], '<R>\n<d><e/></d>\n<d/>\n</R>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-nr', '-x //d[1]'], '<d><e/></d>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-nr', '-x //d[2]'], '<d/>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-rR', '-x //d[5]'], '<R>\n</R>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-nr', '-x //d[5]'], ''),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-rR', '-x //*[count(.//*)<=1]'],
+     '<R>\n<b id="b1"><c/></b>\n<c/>\n<d><e/></d>\n<e/>\n<d/>\n</R>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-rR', '-x //*[count(*)=0]'],
+     '<R>\n<c/>\n<e/>\n<d/>\n</R>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-rR', '-x //*[count(.//*)<1]'],
+     '<R>\n<c/>\n<e/>\n<d/>\n</R>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //*[count(.//*)=3]'],
+     '<b id="b2"><d><e/></d><d/></b>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x /*//*[count(./*)=2]'],
+     '<b id="b2"><d><e/></d><d/></b>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-nr', '-x //d[count(*)>=1]'], '<d><e/></d>'),
+    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-nr', '-x //d[count(*)!=1]'], '<d/>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //*[./e]'],
+     '<d><e/></d>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //*[./e]'],
+     '<d><e/></d>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //b[@id="b1"]'],
+     '<b id="b1"><c/></b>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //b[@id="b1"]', '-x //*[./e]'],
+     '<d><e/></d>'),
+    ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //*[./e]', '-x //b[@id="b1"]'],
+     '<b id="b1"><c/></b>'),
+])
+def test_find(input_text, cli_args, expected):
+    invoke_sut_piped_input(sut.find, cli_args, input_text, exit_code=0, expected_xml=expected)
+
+
+@pytest.mark.parametrize("input_text", [
+    '',
+    ' ',
+    '<<<',
+    '>',
+    '<a>',
+    'abc',
+    '{"a": null}'
+])
+def test_find_invalid_input(input_text):
+    invoke_sut_piped_input(sut.find, [], input_text, exit_code=-1, expected=None)
