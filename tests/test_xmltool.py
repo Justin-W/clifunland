@@ -328,7 +328,6 @@ def test_elements_invalid_input(input_text):
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
-    ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x', '//b/d'], '<a><b><c/></b><b/></a>'),
     ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //b/d'], '<a><b><c/></b><b/></a>'),
     ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //b'], '<a/>'),
     ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d'], '<a><b><c/></b><b/></a>'),
