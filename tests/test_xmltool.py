@@ -1,7 +1,6 @@
 import sys
 
 import pytest
-from click.testing import CliRunner
 
 import clifunzone.xmltool as sut
 from click_testing_utils import clirunner_invoke_piped
