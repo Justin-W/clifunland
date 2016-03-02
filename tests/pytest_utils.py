@@ -4,6 +4,8 @@ import logging
 from click._compat import PY2
 from click.testing import CliRunner
 
+from testing_utils import munge_object_mem_refs
+
 # Use the most reasonable io that users would use for the python version.
 if PY2:
     from cStringIO import StringIO as ReasonableBytesIO
@@ -31,6 +33,8 @@ def assert_out_eq(actual, expected, encode=True, strict=False):
     """
     __tracebackhide__ = True
     output_expected = bool(expected)
+    munge_json = not strict
+    munge_mem_refs = not strict
     if expected is None:
         expected = ''
     if isinstance(expected, list):
@@ -39,9 +43,12 @@ def assert_out_eq(actual, expected, encode=True, strict=False):
     if output_expected:
         # automatically add a trailing newline only if some output is expected
         expected += '\n'
-    if not strict:
+    if munge_json:
         actual = py3_json_agnostic(actual)
         expected = py3_json_agnostic(expected)
+    if munge_mem_refs:
+        actual = munge_object_mem_refs(actual)
+        expected = munge_object_mem_refs(expected)
     if encode:
         if actual is not None:
             actual = actual.encode()

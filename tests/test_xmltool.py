@@ -12,6 +12,37 @@ def test_none():
     clirunner_invoke_piped(sut.cli, [], '', exit_code=0, expected=expected)
 
 
+def test_none_debug():
+    expected = [
+        '',
+        "ctx:",
+        "{'_close_callbacks': [],",
+        " '_depth': 2,",
+        " '_meta': {},",
+        " 'allow_extra_args': True,",
+        " 'allow_interspersed_args': False,",
+        " 'args': [],",
+        " 'auto_envvar_prefix': None,",
+        " 'color': None,",
+        " 'command': <click.core.Group object at 0x10c6d5ed0>,",
+        " 'default_map': None,",
+        " 'help_option_names': ['-h', '--help'],",
+        " 'ignore_unknown_options': False,",
+        " 'info_name': 'cli',",
+        " 'invoked_subcommand': None,",
+        " 'max_content_width': None,",
+        " 'obj': None,",
+        " 'params': {'debug': True},",
+        " 'parent': None,",
+        " 'protected_args': [],",
+        " 'resilient_parsing': False,",
+        " 'terminal_width': None,",
+        " 'token_normalize_func': None}",
+        '',
+        'I was invoked without a subcommand...']
+    clirunner_invoke_piped(sut.cli, ['-d'], '', exit_code=0, expected=expected)
+
+
 @pytest.mark.parametrize("input_text", [
     '<abc/>',
     '<a>\n<b/>\n</a>',
