@@ -26,8 +26,13 @@ def inherit_parent_params(ctx, params):
     :param ctx: a <click.core.Context> object
     :param params: an iterable of param names/keys
     """
+    if not ctx or not params:
+        return
+    parent = ctx.parent
+    if not parent:
+        return
     for k in params:
-        ctx.params[k] = ctx.parent.params[k]
+        ctx.params[k] = parent.params[k]
 
 # def main():
 #     cli()
