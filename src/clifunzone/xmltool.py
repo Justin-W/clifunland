@@ -128,9 +128,9 @@ def info(input, verbose, **kwargs):
         if verbose:
             d['_object'] = {
                 'type': type(root),
-                # 'repr': repr(data),
-                # 'vars': sorted(vars(data)),
-                # 'dir': sorted(dir(data)),
+                # 'repr': repr(root),
+                # 'vars': sorted(vars(root)),
+                # 'dir': sorted(dir(root)),
                 'members': sorted(varsdict(root).keys())
             }
         # click.echo(d)
