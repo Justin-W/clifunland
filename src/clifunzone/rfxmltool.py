@@ -1,4 +1,5 @@
 import json
+import logging
 from collections import OrderedDict
 from pprint import pformat
 
@@ -18,7 +19,7 @@ except ImportError:
 # import xml.etree.ElementTree as ET
 
 
-def process(**kwargs):
+def debug_context(**kwargs):
     ctx = click.get_current_context()
 
     # debug_ = ctx.params.get('debug') or ctx.parent.params.get('debug') if ctx.parent else False
@@ -34,9 +35,8 @@ def process(**kwargs):
         click_utils.echo_context(ctx)
         click_utils.echo_kwargs(kwargs)
 
-    subcommand = ctx.invoked_subcommand
-    if subcommand == 'info':
-        pass
+        subcommand = ctx.invoked_subcommand
+        click.echo('subcommand: %s' % subcommand)
 
 
 @click.group(context_settings=click_utils.CONTEXT_SETTINGS, invoke_without_command=True)
@@ -58,7 +58,12 @@ def cli(debug):
         click.echo('I was invoked without a subcommand...')
     else:
         if debug:
-            click.echo('I am about to invoke subcommand: %s.' % subcommand)
+            click.echo('I was invoked with subcommand: %s.' % subcommand)
+
+    try:
+        debug_context(**{})
+    except:
+        logging.exception('debug_context error')
 
 
 @cli.command()
