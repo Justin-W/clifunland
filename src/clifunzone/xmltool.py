@@ -422,11 +422,6 @@ def find(input, xpath, root_tag, no_root, **kwargs):
         <d><e/></d>
 
         \b
-        Example: Find all d elements with a child e element:
-        $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//d/e/parent::*' -nr
-        <d><e/></d>
-
-        \b
         Example: Find all elements with exactly 1 inner element:
         $ echo '<a><b><c/></b><b><d><e/></d><d/></b></a>' | python xmltool.py find -x '//*[count(*)=1]' -nr
         <b><c/></b>
