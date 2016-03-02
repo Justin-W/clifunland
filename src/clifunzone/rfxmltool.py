@@ -73,7 +73,7 @@ def cli(debug):
               help='enables more detailed output.')
 def info(input, verbose, **kwargs):
     """
-    Provides info about the input.
+    Provides info about the input. Requires valid input.
     """
     if not input:
         input = '-'
