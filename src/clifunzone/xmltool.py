@@ -142,46 +142,6 @@ def info(input, verbose, **kwargs):
         click.echo(s)
 
 
-# @cli.command()
-# @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
-#               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
-# def dominfo(input, **kwargs):
-#     """
-#     Provides info about the input.
-#     """
-#     if not input:
-#         input = '-'
-#     with click.open_file(input, mode='rb') as f:
-#         # process(**kwargs)
-#         # from xml.dom.minidom import parse, parseString
-#         # dom1 = parse('c:\\temp\\mydata.xml') # parse an XML file by name
-#         # datasource = open('c:\\temp\\mydata.xml')
-#         # dom2 = parse(datasource)   # parse an open file
-#         # dom3 = parseString('<myxml>Some data<empty/> some more data</myxml>')
-#         from xml.dom.minidom import parse
-#         dom = parse(f)
-#         click.echo('\nINFO about:\n{}\n'.format(input))
-#         obj = vars(dom)
-#         obj = pformat(obj)
-#         click.echo('\nvars(dom):\n{obj}\n'.format(obj=obj))
-#         click.echo('\ndom content:\n{content}\n'.format(content=dom))
-
-
-# @cli.command()
-# @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
-#               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
-# @click.option('--output', '-o', type=click.Path(exists=False), help='the path to the output file')
-# @click.option('--encoding', '-e', type=click.Choice(['json', 'xml']), default='json',
-#               help='the encoding format to use for the output')
-# @click.option('--verbose', '-v', is_flag=True, help='verbose mode')
-# @click.option('--ini', '-i', type=click.Path(exists=True), help='the path to the INI file')
-# def convert(**kwargs):
-#     """
-#     Reformat the input.
-#     """
-#     process(**kwargs)
-
-
 @cli.command(short_help='converts XML input to JSON output')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
