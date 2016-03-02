@@ -109,8 +109,8 @@ def assert_json_eq(actual, expected):
     assert actual == expected
 
 
-def py3_json_agnostic(actual):
-    return actual.replace(', \n', ',\n')
+def py3_json_agnostic(s):
+    return s.replace(', \n', ',\n')
 
 
 def as_piped_input(input_text):
