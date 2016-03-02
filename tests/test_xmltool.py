@@ -8,12 +8,8 @@ from pytest_utils import clirunner_invoke_piped
 
 
 def test_none():
-    runner = CliRunner()
-    result = runner.invoke(sut.cli, [])
-
-    assert result.output == 'I was invoked without a subcommand...\n'
-    # assert 'I was invoked without a subcommand...' in result.output
-    assert result.exit_code == 0
+    expected = 'I was invoked without a subcommand...'
+    clirunner_invoke_piped(sut.cli, [], '', exit_code=0, expected=expected)
 
 
 @pytest.mark.parametrize("input_text", [
