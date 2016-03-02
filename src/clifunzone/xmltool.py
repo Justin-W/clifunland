@@ -328,8 +328,8 @@ def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, 
         if tags:
             # convert each tag to an xpath
             if not xpaths:
-                xpaths = []
-            xpaths += ['//{tag}'.format(tag=s) for s in tags]
+                xpaths = tuple()
+            xpaths += tuple('//{tag}'.format(tag=s) for s in tags)
         for xpath in xpaths:
             xml_utils.remove_elements(root, xpath=xpath)
         if all_attributes:
