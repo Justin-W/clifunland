@@ -184,11 +184,12 @@ def test_elements(input_text, expected):
     clirunner_invoke_piped(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
 
 
-@pytest.mark.parametrize("input_text,expected", [
-    ('<a/>', '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<a/>', ['-p'],
+     '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
 ])
-def test_elements_pretty(input_text, expected):
-    clirunner_invoke_piped(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
+def test_elements_pretty(input_text, cli_args, expected):
+    clirunner_invoke_piped(sut.elements, cli_args, input_text, exit_code=0, expected_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [
