@@ -15,6 +15,9 @@ else:
     # from io import StringIO as ReasonableStringIO
 
 
+log = logging.getLogger(__name__)
+
+
 def assert_exit_code(actual, expected):
     __tracebackhide__ = True
     assert actual == expected
@@ -92,7 +95,7 @@ def assert_json_eq(actual, expected):
         actual = json.loads(actual)
         expected = json.loads(expected)
     except ValueError:
-        logging.exception('json.loads() error.\nactual=%s.\nexpected=%s.', actual, expected)
+        log.exception('json.loads() error.\nactual=%s.\nexpected=%s.', actual, expected)
         raise
 
     # if not strict:
@@ -100,7 +103,7 @@ def assert_json_eq(actual, expected):
         actual = json.dumps(actual, sort_keys=True, separators=(',', ':'))
         expected = json.dumps(expected, sort_keys=True, separators=(',', ':'))
     except ValueError:
-        logging.exception('json.dumps() error.\nactual=%s.\nexpected=%s.', actual, expected)
+        log.exception('json.dumps() error.\nactual=%s.\nexpected=%s.', actual, expected)
         raise
     # else:
     #     actual = json.dumps(actual, sort_keys=False, separators=(',', ':'))
