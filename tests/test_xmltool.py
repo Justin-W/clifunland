@@ -263,6 +263,8 @@ def test_strip_invalid_input(input_text):
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<a><b><c/></b></a>', [], '<results>\n</results>'),
+    ('<a><b><c/></b></a>', ['-nr'], ''),
     ('<a><b><c/></b></a>', ['-x //b'], '<results>\n<b><c/></b>\n</results>'),
     ('<a><b><c/></b></a>', ['-x //b', '-nr'], '<b><c/></b>'),
     ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-rR', '-x //b'],
