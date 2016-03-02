@@ -166,9 +166,17 @@ def test_tojson_invalid_input(input_text):
     clirunner_invoke_piped(sut.tojson, [], input_text, exit_code=-1, expected=None)
 
 
-@pytest.mark.parametrize("input_text,expected", [
-    ('<abc/>', ['{"path":"/abc","content":{"tag":"abc"}}']),
-    ('<a>\t<b><c/> </b></a>', [
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<abc/>', [], ['{"path":"/abc","content":{"tag":"abc"}}']),
+    ('<a/>', ['-p'],
+     '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
+])
+def test_elements(input_text, cli_args, expected):
+    clirunner_invoke_piped(sut.elements, cli_args, input_text, exit_code=0, expected_json=expected)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('<a>\t<b><c/> </b></a>', [], [
         '{"path":"/a","content":{"tag":"a","#text":"\\t"},' +
         '"metrics":{"children":{"count":1,"tags":["b"]},"descendants":{"count":2,"tags":["b","c"]}}}',
         '{"path":"/a/b","content":{"tag":"b"},' +
@@ -178,18 +186,10 @@ def test_tojson_invalid_input(input_text):
 ])
 @pytest.mark.skipif(sys.version_info > (3,3),
                     reason="fails on the py35 travis build")
-def test_elements(input_text, expected):
+def test_elements_as_lines(input_text, cli_args, expected):
     # expected = '{"output":{[%s]}}' % ','.join(expected)
-    expected = '[%s]' % ','.join(expected)
-    clirunner_invoke_piped(sut.elements, ['-p'], input_text, exit_code=0, expected_json=expected)
-
-
-@pytest.mark.parametrize("input_text,cli_args,expected", [
-    ('<a/>', ['-p'],
-     '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
-])
-def test_elements_pretty(input_text, cli_args, expected):
-    clirunner_invoke_piped(sut.elements, cli_args, input_text, exit_code=0, expected_json=expected)
+    # expected = '[%s]' % ','.join(expected)
+    clirunner_invoke_piped(sut.elements, cli_args, input_text, exit_code=0, expected=expected)
 
 
 @pytest.mark.parametrize("input_text", [
