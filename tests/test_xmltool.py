@@ -302,7 +302,7 @@ def test_elements_invalid_input(input_text):
     ('<a><b><c/></b><b><d><e/></d><d/></b></a>', ['-x //d[count(*)!=1]'], '<a><b><c/></b><b><d><e/></d></b></a>')
 ])
 def test_strip(input_text, cli_args, expected):
-    clirunner_invoke_piped(sut.strip, cli_args, input_text, exit_code=0, expected_xml=expected)
+    clirunner_invoke_piped(sut.strip, cli_args, input_text, exit_code=0, out_xml=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -380,7 +380,7 @@ def test_strip_invalid_input(input_text):
      '<b id="b1"><c/></b>'),
 ])
 def test_find(input_text, cli_args, expected):
-    clirunner_invoke_piped(sut.find, cli_args, input_text, exit_code=0, expected_xml=expected)
+    clirunner_invoke_piped(sut.find, cli_args, input_text, exit_code=0, out_xml=expected)
 
 
 @pytest.mark.parametrize("input_text", [
