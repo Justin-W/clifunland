@@ -244,9 +244,4 @@ def main():
 
 
 if __name__ == '__main__':
-    # main(default_map={
-    #     'info': {
-    #         'input': 'rfxml_parse.input.01.xml'
-    #     }
-    # })
     main()
