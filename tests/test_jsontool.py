@@ -89,6 +89,25 @@ def test_echo(input_text):
 
 
 @pytest.mark.parametrize("input_text,exit_code,expected", [
+    ('{"a": null}', 0, "OrderedDict([(u'a', None)])"),
+    ('{"a": 0}', 0, "OrderedDict([(u'a', 0)])"),
+    ('{"a": {"b": [{"c": 0}, {"d": 1}]}}', 0,
+     "OrderedDict([(u'a', OrderedDict([(u'b', [OrderedDict([(u'c', 0)]), OrderedDict([(u'd', 1)])])]))])"),
+    ('', -1, None),
+    (' ', -1, None),
+    ('{{{', -1, None),
+    ('}', -1, None),
+    ('{a}', -1, None),
+    ('abc', -1, None),
+    ('<abc/>', -1, None)
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_repr(input_text, exit_code, expected):
+    clirunner_invoke_piped(sut.reprcommand, [], input_text, exit_code=exit_code, expected=expected)
+
+
+@pytest.mark.parametrize("input_text,exit_code,expected", [
     ('{"a": null}', 0, 'True'),
     ('{"a": 0}', 0, 'True'),
     ('{"a": {"b": [{"c": 0}, {"d": 1}]}}', 0, 'True'),
