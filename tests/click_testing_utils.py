@@ -137,13 +137,15 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
     :param input_text: a string or a list of strings.
     :param exit_code: the expected exit code.
     :param out_ok: the expected output.
-        The actual output will be compared to this using plain text comparisons.
+        The actual output will be compared to this using assert_out_ok().
     :param out_json: the expected output.
-        The actual output will be compared to this using JSON comparisons.
+        The actual output will be compared to this using assert_json_eq().
         E.g. Differences between actual and expected output 'irrelevant' to the JSON format may be ignored.
     :param out_xml: the expected output.
-        The actual output will be compared to this using XML comparisons.
-        E.g. Differences between actual and expected output 'irrelevant' to the XML format may be ignored.
+        The actual output will be compared to this using assert_out_ok().
+        (Note: This param currently behaves identically to the out_ok param.
+        However, in the future it may trigger the use of more XML-specific comparisons.
+        E.g. Differences between actual and expected output 'irrelevant' to the XML format may be ignored.)
     :return: the value returned by invoking CliRunner().invoke(...).
     """
     runner = CliRunner()
