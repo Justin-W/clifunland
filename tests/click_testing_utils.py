@@ -126,7 +126,7 @@ def as_piped_input(input_text):
 def clirunner_invoke_piped(cli, args, input_text, exit_code=None, expected=None, expected_json=None, expected_xml=None):
     """
     Invokes a CLI command (using <CliRunner>) in a way that simulates 'piped input',
-    and performs assertions on the exit code and output.
+    and (conditionally) performs various assertions on the exit code and output.
 
     E.g. Can simulate CLI commands such as:
     $ cat my.txt | python -m mypkg.mycli
@@ -143,6 +143,7 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None, expected=None,
     :param expected_xml: the expected output.
         The actual output will be compared to this using XML comparisons.
         E.g. Differences between actual and expected output 'irrelevant' to the XML format may be ignored.
+    :return: the value returned by invoking CliRunner().invoke(...).
     """
     runner = CliRunner()
     result = runner.invoke(cli, args, input=as_piped_input(input_text))
@@ -155,3 +156,4 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None, expected=None,
         assert_out_ok(result.output, expected_xml)
     if exit_code is not None:
         assert_exit_code(result.exit_code, exit_code)
+    return result
