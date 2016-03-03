@@ -123,7 +123,8 @@ def as_piped_input(input_text):
     # return ReasonableBytesIO(input_text.encode('utf-8'))
 
 
-def clirunner_invoke_piped(cli, args, input_text, exit_code=None, expected=None, expected_json=None, expected_xml=None):
+def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
+                           expected=None, expected_json=None, expected_xml=None):
     """
     Invokes a CLI command (using <CliRunner>) in a way that simulates 'piped input',
     and (conditionally) performs various assertions on the exit code and output.
