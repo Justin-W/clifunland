@@ -239,7 +239,7 @@ def test_elements(input_text, cli_args, expected):
         '{"path":"/a/b/c","content":{"tag":"c"}}'
     ])
 ])
-@pytest.mark.skipif(sys.version_info > (3,3),
+@pytest.mark.skipif(sys.version_info > (3, 3),
                     reason="fails on the py35 travis build")
 def test_elements_as_lines(input_text, cli_args, expected):
     # expected = '{"output":{[%s]}}' % ','.join(expected)
