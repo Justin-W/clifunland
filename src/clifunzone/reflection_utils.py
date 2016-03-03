@@ -1,5 +1,46 @@
 from collections import MutableMapping
 
+from six import string_types
+
+
+def is_string(obj):
+    """
+    Indicates whether a specified value is a 'string-like' object.
+
+    :param obj: the object/value.
+    :return:
+
+    >>> is_string(None)
+    False
+
+    >>> is_string(1)
+    False
+
+    >>> is_string('')
+    True
+
+    >>> is_string('1')
+    True
+
+    >>> is_string('abc')
+    True
+
+    >>> is_string(['1'])
+    False
+
+    >>> is_string(('1',))
+    False
+
+    >>> is_string(set(('1',)))
+    False
+
+    >>> is_string({'1': '2'})
+    False
+    """
+    if obj is None:
+        return False
+    return isinstance(obj, string_types)
+
 
 def is_file_like(obj):
     """
