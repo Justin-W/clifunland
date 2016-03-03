@@ -124,7 +124,7 @@ def as_piped_input(input_text):
 
 
 def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
-                           expected=None, expected_json=None, out_xml=None):
+                           expected=None, out_json=None, out_xml=None):
     """
     Invokes a CLI command (using <CliRunner>) in a way that simulates 'piped input',
     and (conditionally) performs various assertions on the exit code and output.
@@ -138,7 +138,7 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
     :param exit_code: the expected exit code.
     :param expected: the expected output.
         The actual output will be compared to this using plain text comparisons.
-    :param expected_json: the expected output.
+    :param out_json: the expected output.
         The actual output will be compared to this using JSON comparisons.
         E.g. Differences between actual and expected output 'irrelevant' to the JSON format may be ignored.
     :param out_xml: the expected output.
@@ -150,8 +150,8 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
     result = runner.invoke(cli, args, input=as_piped_input(input_text))
     if expected is not None:
         assert_out_ok(result.output, expected)
-    if expected_json is not None:
-        assert_json_eq(result.output, expected_json)
+    if out_json is not None:
+        assert_json_eq(result.output, out_json)
     if out_xml is not None:
         # assert_xml_eq(result.output, out_xml)
         assert_out_ok(result.output, out_xml)

@@ -132,7 +132,7 @@ def test_validate(input_text, exit_code, expected):
 @pytest.mark.skipif(sys.version_info > (3, 3),
                     reason="currently broken for py35")
 def test_info(input_text, expected):
-    clirunner_invoke_piped(sut.info, [], input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.info, [], input_text, exit_code=0, out_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [

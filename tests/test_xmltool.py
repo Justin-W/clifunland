@@ -144,7 +144,7 @@ def test_validate(input_text, exit_code, expected):
     ])
 ])
 def test_info(input_text, expected):
-    clirunner_invoke_piped(sut.info, [], input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.info, [], input_text, exit_code=0, out_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [
@@ -191,7 +191,7 @@ def test_info_invalid_input(input_text):
     ])
 ])
 def test_tojson(input_text, cli_args, expected):
-    clirunner_invoke_piped(sut.tojson, cli_args, input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.tojson, cli_args, input_text, exit_code=0, out_json=expected)
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [
@@ -227,7 +227,7 @@ def test_tojson_invalid_input(input_text):
      '[\n    {\n        "path": "/a",\n        "content": {\n            "tag": "a"\n        }\n    }\n]')
 ])
 def test_elements(input_text, cli_args, expected):
-    clirunner_invoke_piped(sut.elements, cli_args, input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.elements, cli_args, input_text, exit_code=0, out_json=expected)
 
 
 @pytest.mark.parametrize("input_text,cli_args,expected", [

@@ -93,7 +93,7 @@ def test_echo(input_text):
      '"descendants":{"attributes":[],"count":2,"tags":["b","c"]}}}}')
 ])
 def test_info(input_text, expected):
-    clirunner_invoke_piped(sut.info, [], input_text, exit_code=0, expected_json=expected)
+    clirunner_invoke_piped(sut.info, [], input_text, exit_code=0, out_json=expected)
 
 
 @pytest.mark.parametrize("input_text", [
