@@ -1,5 +1,8 @@
 # Dependencies always required by the package
 
+# python3 compatibility
+six==1.10.0
+
 # python3 backports
 configparser==3.5.0b2
 
