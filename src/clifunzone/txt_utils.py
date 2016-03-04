@@ -73,14 +73,12 @@ def get_info(s):
     return d
 
 
-
 def get_words(s):
     # pattern = r"[\w']+"
     # return re.findall(pattern, s)
     # pattern = r'\W+'
     pattern = r"[^\w'\-]"
     return re.split(pattern, s)
-
 
 
 def get_sentences(s):
