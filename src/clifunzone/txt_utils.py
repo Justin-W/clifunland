@@ -1,3 +1,4 @@
+import itertools
 import re
 from collections import Counter
 from collections import OrderedDict
@@ -173,6 +174,49 @@ def find_all(item, items, regex=False, regex_flags=None):
         return [(index, value) for index, value in enumerate(items) if re.search(item, value, flags=flags)]
     else:
         return [(index, value) for index, value in enumerate(items) if value == item]
+
+
+def get_index_distance_stats(indexes1, indexes2):
+    """
+    Calculates statistics about the distances between
+
+    Adapted from: http://stackoverflow.com/a/33389155
+
+    :param indexes1: an iterable of numeric values.
+    :param indexes2: an iterable of numeric values.
+    :return: a dict of statistical values.
+
+    >>> get_index_distance_stats([], [])
+    Traceback (most recent call last):
+    ValueError: indexes1 is invalid
+
+    >>> get_index_distance_stats([1, 3, 5, 7, 9], [])
+    Traceback (most recent call last):
+    ValueError: indexes2 is invalid
+
+    >>> get_index_distance_stats([1, 3, 5, 7, 9], [1, 4, 9, 16, 25, 36, 49])
+    {'max': 48, 'mean': 16.65714285714286, 'min': 0}
+
+    >>> get_index_distance_stats([4, 16, 36, 64], [9, 25, 49, 81])
+    {'max': 77, 'mean': 30.25, 'min': 5}
+    """
+    if not indexes1:
+        raise ValueError('indexes1 is invalid')
+    if not indexes2:
+        raise ValueError('indexes2 is invalid')
+    distances = [abs(x[0] - x[1]) for x in itertools.product(indexes1, indexes2)]
+    try:
+        min_dist = min(distances)
+        max_dist = max(distances)
+        mean_dist = sum(distances) / float(len(distances))
+    except ValueError:
+        min_dist = None
+        max_dist = None
+    try:
+        mean_dist = sum(distances) / float(len(distances))
+    except ZeroDivisionError:
+        mean_dist = None
+    return {'min': min_dist, 'max': max_dist, 'mean': mean_dist}
 
 
 def main():
