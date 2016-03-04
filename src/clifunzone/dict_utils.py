@@ -494,13 +494,13 @@ def pformat_od(od, mode='dict', s="", indent=' ' * 4, level=0):
 
     >>> from collections import OrderedDict as OD
     >>> d=OD([('a', OD([('a1',1),('a2','sss')])),('b', OD([('b1', OD([('bb1',1),('bb2',4.5)])),('b2',4.5)])),])
-    >>> pformat_od(d)
-    '"a": {\\n    "a1": 1,\\n    "a2": "sss"\\n},\\n"b": {\\n    "b1": {\\n        "bb1": 1,\\n        "bb2": 4.5\\n    },\\n    "b2": 4.5\\n}\\n'
+    >>> pformat_od(d)  #doctest: +ELLIPSIS
+    '"a": {\\n    "a1": 1,\\n    "a2": "sss"\\n},\\n"b": {..."b1": {..."bb1": 1,... "bb2": 4.5...},..."b2": 4.5\\n}\\n'
 
     >>> from collections import OrderedDict as OD
     >>> d=OD([('a', OD([('a1',1),('a2','sss')])),('b', {'b1': OD([('bb1',1),('bb2',4.5),('b2',4.5)])}),])
-    >>> pformat_od(d)
-    '"a": {\\n    "a1": 1,\\n    "a2": "sss"\\n},\\n"b": {\\n    "b1": {\\n        "bb1": 1,\\n        "bb2": 4.5,\\n        "b2": 4.5\\n    }\\n}\\n'
+    >>> pformat_od(d)  #doctest: +ELLIPSIS
+    '"a": {\\n    "a1": 1,\\n    "a2": "sss"\\n},\\n"b": {..."b1": {..."bb1": 1,..."bb2": 4.5,..."b2": 4.5...}\\n}\\n'
     """
 
     def is_number(s):
