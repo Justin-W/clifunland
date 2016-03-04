@@ -13,6 +13,12 @@ def lorem_ipsum():
     See: [lipsum.com](http://www.lipsum.com/)
 
     :return:
+
+    >>> lorem_ipsum()  #doctest: +ELLIPSIS
+    'Lorem ipsum dolor sit amet, consectetur ..., hendrerit nulla.'
+
+    >>> len(lorem_ipsum())
+    6877
     """
     return '''Lorem ipsum dolor sit amet, consectetur adipiscing elit. In vestibulum ut odio vel fermentum. Donec tristique dignissim tortor, vel hendrerit justo suscipit iaculis. Maecenas pellentesque orci aliquam facilisis faucibus. Aenean tempor, augue non ornare volutpat, ex orci faucibus purus, ut viverra velit lacus id nulla. Vivamus egestas auctor eros, sit amet tristique urna ultrices dignissim. Proin urna elit, rhoncus et interdum id, sollicitudin nec nunc. Nunc ac nisl vitae erat porta lobortis. Sed maximus mattis ligula, ac imperdiet lacus dignissim non. Aenean et metus eros. Praesent augue felis, posuere nec ex quis, placerat consequat nisl. Donec quis neque nibh. Pellentesque sollicitudin, nunc sed faucibus placerat, felis urna cursus erat, a bibendum nisl ante eu ipsum. Quisque quis mollis nibh. Nam et condimentum justo. In hac habitasse platea dictumst.
 
