@@ -4,6 +4,7 @@ import logging
 from click._compat import PY2
 from click.testing import CliRunner
 
+from clifunzone.reflection_utils import is_string
 from testing_utils import munge_object_mem_refs
 
 # Use the most reasonable io that users would use for the python version.
@@ -58,6 +59,51 @@ def assert_out_eq(actual, expected, encode=True, strict=False):
         if expected is not None:
             expected = expected.encode()
     assert actual == expected
+
+
+def assert_out_contains(actual, expected, encode=True, sequential=False):
+    """
+    Utility assertion function. Helps keep the test code cleaner.
+
+    :param actual:
+    :param expected: a string or iterable of strings representing 1+ substrings that the output string should contain.
+    :param encode:
+    :param strict:
+    :param sequential:
+    """
+    __tracebackhide__ = True
+    if expected is None:
+        expected = []
+    elif is_string(expected):
+        expected = [expected]
+    if encode:
+        if actual is not None:
+            actual = actual.encode()
+    if sequential:
+        pos = 0
+        for i, s in enumerate(expected):
+            if encode:
+                if s is not None:
+                    s = s.encode()
+            try:
+                pos2 = actual.index(s, pos)
+                # move pos to the beginning of the current match
+                pos = pos2
+            except ValueError:
+                msg = "Expected #{index} not found in Actual[{start}:{end}]." +\
+                      "\nExpected #{index}: ({value})." + \
+                      "\nActual: ...{actual}..."
+                # TODO: set max_actual dynamically based on the verbosity setting
+                max_actual = 80
+                assert False, msg.format(index=repr(i), value=repr(s), start=repr(pos), end=repr(len(actual)),
+                                         actual=repr(actual[pos:pos + max_actual]))
+
+            # Note: if we disallow nested substrings here, it would make sense to do so when sequential==False, too.
+            # # move pos to the end of the current match (so that nested substrings are ignored)
+            # pos += len(s)
+    else:
+        for s in expected:
+            assert s in actual
 
 
 def assert_out_ok(actual, expected, encode=True):
@@ -124,7 +170,8 @@ def as_piped_input(input_text):
 
 
 def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
-                           out_eq=None, out_ok=None, out_json=None, out_xml=None):
+                           out_eq=None, out_ok=None, out_contains=None, out_contains_seq=None,
+                           out_json=None, out_xml=None):
     """
     Invokes a CLI command (using <CliRunner>) in a way that simulates 'piped input',
     and (conditionally) performs various assertions on the exit code and output.
@@ -140,6 +187,10 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
         The actual output will be compared to this using assert_out_eq().
     :param out_ok: the expected output.
         The actual output will be compared to this using assert_out_ok().
+    :param out_contains: the expected output.
+        The actual output will be compared to this using out_contains(sequential=False).
+    :param out_contains_seq: the expected output.
+        The actual output will be compared to this using out_contains(sequential=True).
     :param out_json: the expected output.
         The actual output will be compared to this using assert_json_eq().
         E.g. Differences between actual and expected output 'irrelevant' to the JSON format may be ignored.
@@ -156,6 +207,10 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
         assert_out_eq(result.output, out_eq)
     if out_ok is not None:
         assert_out_ok(result.output, out_ok)
+    if out_contains is not None:
+        assert_out_contains(result.output, out_contains, sequential=False)
+    if out_contains_seq is not None:
+        assert_out_contains(result.output, out_contains_seq, sequential=True)
     if out_json is not None:
         assert_json_eq(result.output, out_json)
     if out_xml is not None:
