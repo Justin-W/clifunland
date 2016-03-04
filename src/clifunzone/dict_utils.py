@@ -479,6 +479,62 @@ def remove_if(obj, test_func, output=False):
         return obj
 
 
+def pformat_od(od, mode='dict', s="", indent=' ' * 4, level=0):
+    """
+    Similar to pprint.pformat(...), but compatible with OrderedDicts.
+
+    adapted from: [stackoverflow answer #28886405](http://stackoverflow.com/a/28886405)
+
+    :param od:
+    :param mode:
+    :param s:
+    :param indent:
+    :param level:
+    :return:
+
+    >>> from collections import OrderedDict as OD
+    >>> d=OD([('a', OD([('a1',1),('a2','sss')])),('b', OD([('b1', OD([('bb1',1),('bb2',4.5)])),('b2',4.5)])),])
+    >>> pformat_od(d)
+    '"a": {\\n    "a1": 1,\\n    "a2": "sss"\\n},\\n"b": {\\n    "b1": {\\n        "bb1": 1,\\n        "bb2": 4.5\\n    },\\n    "b2": 4.5\\n}\\n'
+
+    >>> from collections import OrderedDict as OD
+    >>> d=OD([('a', OD([('a1',1),('a2','sss')])),('b', {'b1': OD([('bb1',1),('bb2',4.5),('b2',4.5)])}),])
+    >>> pformat_od(d)
+    '"a": {\\n    "a1": 1,\\n    "a2": "sss"\\n},\\n"b": {\\n    "b1": {\\n        "bb1": 1,\\n        "bb2": 4.5,\\n        "b2": 4.5\\n    }\\n}\\n'
+    """
+
+    def is_number(s):
+        try:
+            float(s)
+            return True
+        except ValueError:
+            return False
+
+    def fstr(s):
+        return s if is_number(s) else '"%s"' % s
+
+    if mode != 'dict':
+        kv_tpl = '("%s", %s)'
+        ST = 'OrderedDict([\n';
+        END = '])'
+    else:
+        kv_tpl = '"%s": %s'
+        ST = '{\n';
+        END = '}'
+    for i, k in enumerate(od.keys()):
+        if type(od[k]) in [dict, OrderedDict]:
+            level += 1
+            s += (level - 1) * indent + kv_tpl % (
+                k, ST + pformat_od(od[k], mode=mode, indent=indent, level=level) + (level - 1) * indent + END)
+            level -= 1
+        else:
+            s += level * indent + kv_tpl % (k, fstr(od[k]))
+        if i != len(od) - 1:
+            s += ","
+        s += "\n"
+    return s
+
+
 def _test_flatten(expected_value, d, separator=None):
     flattened = flatten(d, separator=separator)
     # print 'before:\t\t{}\nflattened:\t{}'.format(d, flattened)
