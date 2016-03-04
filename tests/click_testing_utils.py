@@ -15,7 +15,6 @@ else:
     from io import BytesIO as ReasonableBytesIO
     # from io import StringIO as ReasonableStringIO
 
-
 log = logging.getLogger(__name__)
 
 
@@ -90,7 +89,7 @@ def assert_out_contains(actual, expected, encode=True, sequential=False):
                 # move pos to the beginning of the current match
                 pos = pos2
             except ValueError:
-                msg = "Expected #{index} not found in Actual[{start}:{end}]." +\
+                msg = "Expected #{index} not found in Actual[{start}:{end}]." + \
                       "\nExpected #{index}: ({value})." + \
                       "\nActual: ...{actual}..."
                 # TODO: set max_actual dynamically based on the verbosity setting

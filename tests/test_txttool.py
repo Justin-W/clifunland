@@ -119,12 +119,12 @@ def test_echo(input_text):
         "'words': {'counts': {'distinct': 2, 'total': 4, 'each': OrderedDict([('', 3), ('abc', 1)])}}})])}"
     ]),
     ('{"abc": null}', ['-od'], [
-     "{\'content\': OrderedDict([(\'length\', 13), (\'metrics\', {\'chars\': {" +
-     "\'counts\': {\'distinct\': 11, \'total\': 13, " +
-     "\'each\': OrderedDict([(\' \', 1), (\'\"\', 2), (\':\', 1), (\'a\', 1), (\'b\', 1), (\'c\', 1), (\'l\', 2), " +
-     "(\'n\', 1), (\'u\', 1), (\'{\', 1), (\'}\', 1)])}}, " +
-     "\'words\': {\'counts\': {\'distinct\': 3, \'total\': 7, " +
-     "\'each\': OrderedDict([(\'\', 5), (\'abc\', 1), (\'null\', 1)])}}})])}"
+        "{\'content\': OrderedDict([(\'length\', 13), (\'metrics\', {\'chars\': {" +
+        "\'counts\': {\'distinct\': 11, \'total\': 13, " +
+        "\'each\': OrderedDict([(\' \', 1), (\'\"\', 2), (\':\', 1), (\'a\', 1), (\'b\', 1), (\'c\', 1), (\'l\', 2), " +
+        "(\'n\', 1), (\'u\', 1), (\'{\', 1), (\'}\', 1)])}}, " +
+        "\'words\': {\'counts\': {\'distinct\': 3, \'total\': 7, " +
+        "\'each\': OrderedDict([(\'\', 5), (\'abc\', 1), (\'null\', 1)])}}})])}"
     ]),
     ('{"abc": null}', ['-f'], [
         '{',
