@@ -101,6 +101,47 @@ def get_sentences(s):
     # return re.findall(pattern, s)
 
 
+def find_all(item, items, regex=False, regex_flags=None):
+    """
+    Finds the indexes and values for all values matching a given item.
+
+    :param item: the value (or pattern) to match/find.
+    :param items: an iterable of items to match against.
+    :param regex: If True, item will be treated as a regex pattern.
+    :param regex_flags: Optional flags for re.search().
+    :return: an iterable of (index, value) tuples.
+
+    >>> find_all('own',['Is', 'that', 'your', 'own', 'brown', 'cow'])
+    [(3, 'own')]
+
+    >>> find_all('own',['Is', 'that', 'your', 'own', 'brown', 'cow'], regex=True)
+    [(3, 'own'), (4, 'brown')]
+
+    >>> find_all('^own$',['Is', 'that', 'your', 'own', 'brown', 'cow'], regex=True)
+    [(3, 'own')]
+
+    >>> find_all('ow',['How', 'now', 'brown', 'cow'])
+    []
+
+    >>> find_all('ow$',['How', 'now', 'brown', 'cow'], regex=True)
+    [(0, 'How'), (1, 'now'), (3, 'cow')]
+
+    >>> find_all('[a-z]ow(?![\w])',['How', 'now', 'brown', 'cow'], regex=True)
+    [(1, 'now'), (3, 'cow')]
+
+    >>> find_all('(?<!\w)[a-z]ow',['How', 'now', 'brown', 'cow'], regex=True, regex_flags=re.IGNORECASE)
+    [(0, 'How'), (1, 'now'), (3, 'cow')]
+
+    >>> find_all('(?<=\w)[a-z]ow',['How', 'now', 'brown', 'cow'], regex=True, regex_flags=re.IGNORECASE)
+    [(2, 'brown')]
+    """
+    if regex:
+        flags = regex_flags or 0
+        return [(index, value) for index, value in enumerate(items) if re.search(item, value, flags=flags)]
+    else:
+        return [(index, value) for index, value in enumerate(items) if value == item]
+
+
 def main():
     import doctest
     fail, total = doctest.testmod(optionflags=(doctest.REPORT_NDIFF | doctest.REPORT_ONLY_FIRST_FAILURE))
