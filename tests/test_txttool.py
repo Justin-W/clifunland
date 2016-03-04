@@ -116,15 +116,15 @@ def test_echo(input_text):
         "{'content': OrderedDict([('length', 6), ('metrics', {" +
         "'chars': {'counts': {'distinct': 6, 'total': 6, " +
         "'each': OrderedDict([('/', 1), ('<', 1), ('>', 1), ('a', 1), ('b', 1), ('c', 1)])}}, " +
-        "'words': {'counts': {'distinct': 2, 'total': 4, 'each': OrderedDict([('', 3), ('abc', 1)])}}})])}"
+        "'words': {'counts': {'distinct': 1, 'total': 1, 'each': OrderedDict([('abc', 1)])}}})])}"
     ]),
     ('{"abc": null}', ['-od'], [
         "{\'content\': OrderedDict([(\'length\', 13), (\'metrics\', {\'chars\': {" +
         "\'counts\': {\'distinct\': 11, \'total\': 13, " +
         "\'each\': OrderedDict([(\' \', 1), (\'\"\', 2), (\':\', 1), (\'a\', 1), (\'b\', 1), (\'c\', 1), (\'l\', 2), " +
         "(\'n\', 1), (\'u\', 1), (\'{\', 1), (\'}\', 1)])}}, " +
-        "\'words\': {\'counts\': {\'distinct\': 3, \'total\': 7, " +
-        "\'each\': OrderedDict([(\'\', 5), (\'abc\', 1), (\'null\', 1)])}}})])}"
+        "\'words\': {\'counts\': {\'distinct\': 2, \'total\': 2, " +
+        "\'each\': OrderedDict([(\'abc\', 1), (\'null\', 1)])}}})])}"
     ]),
     ('{"abc": null}', ['-f'], [
         '{',
@@ -142,11 +142,10 @@ def test_echo(input_text):
         '  "content_metrics_chars_counts_each_{": 1,',
         '  "content_metrics_chars_counts_each_}": 1,',
         '  "content_metrics_chars_counts_total": 13,',
-        '  "content_metrics_words_counts_distinct": 3,',
-        '  "content_metrics_words_counts_each_": 5,',
+        '  "content_metrics_words_counts_distinct": 2,',
         '  "content_metrics_words_counts_each_abc": 1,',
         '  "content_metrics_words_counts_each_null": 1,',
-        '  "content_metrics_words_counts_total": 7',
+        '  "content_metrics_words_counts_total": 2',
         '}'
     ]),
 ])
@@ -163,14 +162,13 @@ def test_info(input_text, cli_args, expected):
         '"content_metrics_chars_counts_each_ ": 12,',
         '"content_metrics_chars_counts_each_y": 3,',
         '"content_metrics_chars_counts_total": 57,',
-        '"content_metrics_words_counts_distinct": 12,',
-        '"content_metrics_words_counts_each_": 4,',
+        '"content_metrics_words_counts_distinct": 11,',
         '"content_metrics_words_counts_each_is": 2,',
         '"content_metrics_words_counts_each_john": 1,',
         '"content_metrics_words_counts_each_name": 2,',
         '"content_metrics_words_counts_each_paul": 1,',
         '"content_metrics_words_counts_each_what": 1,',
-        '"content_metrics_words_counts_total": 17'
+        '"content_metrics_words_counts_total": 13'
     ]),
     ("Hi! How are you? My name is John-Paul. What's your name?", ['-f'], [
         '"content_length": 56,',
@@ -179,13 +177,12 @@ def test_info(input_text, cli_args, expected):
         '"content_metrics_chars_counts_each_!": 1,',
         '"content_metrics_chars_counts_each_\'": 1,',
         '"content_metrics_chars_counts_total": 56,',
-        '"content_metrics_words_counts_distinct": 11,',
-        '"content_metrics_words_counts_each_": 4,',
+        '"content_metrics_words_counts_distinct": 10,',
         '"content_metrics_words_counts_each_is": 1,',
         '"content_metrics_words_counts_each_john-paul": 1,',
         '"content_metrics_words_counts_each_name": 2,',
         '"content_metrics_words_counts_each_what\'s": 1,',
-        '"content_metrics_words_counts_total": 15'
+        '"content_metrics_words_counts_total": 11'
     ]),
 ])
 @pytest.mark.skipif(sys.version_info > (3, 3),
