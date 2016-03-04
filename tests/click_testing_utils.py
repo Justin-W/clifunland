@@ -169,7 +169,8 @@ def as_piped_input(input_text):
     # return ReasonableBytesIO(input_text.encode('utf-8'))
 
 
-def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
+def clirunner_invoke_piped(cli, args, input_text=None,
+                           exit_code=None,
                            out_eq=None, out_ok=None, out_contains=None, out_contains_seq=None,
                            out_json=None, out_xml=None):
     """
@@ -182,6 +183,7 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
     :param cli: the CLI function (i.e. click command) to invoke.
     :param args: the CLI args to pass to the cli command.
     :param input_text: a string or a list of strings.
+        If passed, the strings will be passed to the invoked command in a way that simulates 'piped input'.
     :param exit_code: the expected exit code.
     :param out_eq: the expected output.
         The actual output will be compared to this using assert_out_eq().
@@ -201,11 +203,13 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
         E.g. Differences between actual and expected output 'irrelevant' to the XML format may be ignored.)
     :return: the value returned by invoking CliRunner().invoke(...).
     """
-    log.debug('actual input:%s.' % repr(input_text))
+    if input_text is not None:
+        log.debug('input_text=%s' % repr(input_text))
     runner = CliRunner()
-    result = runner.invoke(cli, args, input=as_piped_input(input_text))
+    input_stream = as_piped_input(input_text) if input_text is not None else None
+    result = runner.invoke(cli, args, input=input_stream)
     actual = result.output
-    log.debug('actual output:%s.' % repr(actual))
+    log.debug('actual output=%s' % repr(actual))
     # if result.exc_info:
     #     log.info('actual exception info:%s.' % str(result.exc_info), exc_info=result.exc_info)
     if exit_code is not None:
