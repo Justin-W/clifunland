@@ -108,6 +108,15 @@ def info(input, output_format, verbose, flat, **kwargs):
         click.echo(s)
 
 
+@cli.command(short_help='outputs lorem ipsum text')
+def lorem(**kwargs):
+    """
+    Outputs 'lorem ipsum' text.
+    """
+    s = txt_utils.lorem_ipsum()
+    click.echo(s)
+
+
 def main():
     cli()
 

@@ -189,3 +189,16 @@ def test_info(input_text, cli_args, expected):
                     reason="currently broken for py35")
 def test_info_fragments(input_text, cli_args, expected):
     clirunner_invoke_piped(sut.info, cli_args, input_text, exit_code=0, out_contains_seq=expected)
+
+
+@pytest.mark.parametrize("cli_args,expected", [
+    ([], [
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        'Praesent quis erat vel ex egestas lobortis non nec augue.',
+        'Etiam cursus nibh vel mattis cursus. Vivamus lectus erat, dictum et mauris eu, viverra tincidunt velit.',
+    ]),
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_lorem(cli_args, expected):
+    clirunner_invoke_piped(sut.lorem, cli_args, exit_code=0, out_contains_seq=expected)
