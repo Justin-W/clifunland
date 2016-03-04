@@ -126,7 +126,9 @@ def lorem(**kwargs):
               help='splits the input at word boundaries.')
 @click.option('--sentence', 'split_scope', flag_value='sentence',
               help='splits the input at sentence boundaries.')
-def split(input, split_scope, **kwargs):
+@click.option('--separator', '-sep', type=click.STRING,
+              help='the token separator to use for the output. Default is a newline.')
+def split(input, split_scope, separator, **kwargs):
     """
     Splits the input into tokens.
     """
@@ -145,8 +147,11 @@ def split(input, split_scope, **kwargs):
         #     tokens = txt_utils.get_sentences(data)
         else:
             raise NotImplementedError('Unsupported split scope: %s' % split_scope)
-        for s in tokens:
-            click.echo(s)
+        if separator:
+            click.echo(separator.join(tokens))
+        else:
+            for s in tokens:
+                click.echo(s)
 
 
 def main():

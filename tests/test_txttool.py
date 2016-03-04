@@ -226,6 +226,10 @@ def test_split(input_text, cli_args, expected):
      "Hi\nHow\nare\nyou\nMy\nname\nis\nJohn-Paul\nWhat's\nyour\nname"),
     ("Hi! How are you? My name is John Paul. What is your name?", ['-sw'],
      "Hi\nHow\nare\nyou\nMy\nname\nis\nJohn\nPaul\nWhat\nis\nyour\nname"),
+    ("Hi! How are you? My name is John-Paul. What's your name?", ['-sw', '-sep', ', '],
+     "Hi, How, are, you, My, name, is, John-Paul, What's, your, name"),
+    ("Hi! How are you? My name is John-Paul. What's your name?", ['-sw', '-sep', '|'],
+     "Hi|How|are|you|My|name|is|John-Paul|What's|your|name"),
 ])
 @pytest.mark.skipif(sys.version_info > (3, 3),
                     reason="currently broken for py35")
