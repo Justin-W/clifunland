@@ -173,7 +173,8 @@ def clirunner_invoke_piped(cli, args, input_text=None,
                            runner=None,
                            exit_code=None,
                            out_eq=None, out_ok=None, out_contains=None, out_contains_seq=None,
-                           out_json=None, out_xml=None):
+                           out_json=None, out_xml=None,
+                           kwargs_invoke=None):
     """
     Invokes a CLI command (using <CliRunner>) in a way that simulates 'piped input',
     and (conditionally) performs various assertions on the exit code and output.
@@ -185,7 +186,8 @@ def clirunner_invoke_piped(cli, args, input_text=None,
     :param args: the CLI args to pass to the cli command.
     :param input_text: a string or a list of strings.
         If passed, the strings will be passed to the invoked command in a way that simulates 'piped input'.
-    :param runner: optional. a <CliRunner> instance. Allows the caller to reuse or configure the CliRunner instance.
+    :param runner: optional. a <CliRunner> instance.
+        Allows the caller to reuse or configure the CliRunner instance.
     :param exit_code: the expected exit code.
     :param out_eq: the expected output.
         The actual output will be compared to this using assert_out_eq().
@@ -203,14 +205,22 @@ def clirunner_invoke_piped(cli, args, input_text=None,
         (Note: This param currently behaves identically to the out_ok param.
         However, in the future it may trigger the use of more XML-specific comparisons.
         E.g. Differences between actual and expected output 'irrelevant' to the XML format may be ignored.)
+    :param kwargs_invoke: optional kwargs that will be passed through to the CliRunner.invoke() function.
+        Allows the caller to customize the invocation of CliRunner().invoke(...).
     :return: the value returned by invoking CliRunner().invoke(...).
     """
     if input_text is not None:
         log.debug('input_text=%s' % repr(input_text))
     if not runner:
         runner = CliRunner()
-    input_stream = as_piped_input(input_text) if input_text is not None else None
-    result = runner.invoke(cli, args, input=input_stream)
+    if kwargs_invoke is None:
+        kwargs_invoke = {}
+    if input_text is not None:
+        input_stream = as_piped_input(input_text)
+        kwargs_invoke['input'] = input_stream
+    if args is not None:
+        kwargs_invoke['args'] = args
+    result = runner.invoke(cli, **kwargs_invoke)
     actual = result.output
     log.debug('actual output=%s' % repr(actual))
     # if result.exc_info:
