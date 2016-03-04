@@ -3,6 +3,8 @@ import re
 from collections import Counter
 from collections import OrderedDict
 
+from clifunzone.reflection_utils import is_string
+
 
 def lorem_ipsum():
     """
@@ -217,6 +219,55 @@ def get_index_distance_stats(indexes1, indexes2):
     except ZeroDivisionError:
         mean_dist = None
     return {'min': min_dist, 'max': max_dist, 'mean': mean_dist}
+
+
+def find_distances(item1, item2, items, regex=False, regex_flags=None):
+    """
+    Uses find_all() and get_index_distance_stats() to calculate distance stats for 2 items (or 2 sets of items)
+    within a given list of items. E.g. The distances of 2 words (or 2 word sets) within a given list of words.
+
+    Adapted from: http://stackoverflow.com/a/33389155
+
+    :param item1: the value (or pattern) to match/find.
+        If it is not a string, it will be treated as an iterable of values/patterns to match.
+    :param item2: the value (or pattern) to match/find.
+        If it is not a string, it will be treated as an iterable of values/patterns to match.
+    :param items: an iterable of items to match against.
+    :param regex: If True, item will be treated as a regex pattern.
+    :param regex_flags: Optional flags for re.search().
+    :return:
+
+    >>> words = get_words(lorem_ipsum())
+    >>> find_distances(['lorem'], ['ipsum'], words)
+    {'max': 893, 'mean': 402.56, 'min': 83}
+
+    >>> words = get_words(lorem_ipsum())
+    >>> find_distances(['lorem', 'dolor'], ['consectetur', 'adipiscing'], words)
+    {'max': 889, 'mean': 467.0740740740741, 'min': 3}
+
+    >>> words = get_words(lorem_ipsum())
+    >>> w1 = ['^Pellentesque$']
+    >>> w2 = ['^Vivamus']
+    >>> find_distances(w1, w2, words, regex=True, regex_flags=re.IGNORECASE)
+    {'max': 910, 'mean': 287.1212121212121, 'min': 21}
+    """
+
+    def find_distinct_indexes(find_items, all_items, regex, regex_flags):
+        all_indexes = set()
+        for item in find_items:
+            indexes = find_all(item, all_items, regex=regex, regex_flags=regex_flags)
+            indexes = (index for (index, value) in indexes)
+            all_indexes.update(indexes)
+        return all_indexes
+
+    if is_string(item1):
+        item1 = [item1]
+    if is_string(item2):
+        item2 = [item2]
+
+    indexes1 = find_distinct_indexes(item1, items, regex, regex_flags)
+    indexes2 = find_distinct_indexes(item2, items, regex, regex_flags)
+    return get_index_distance_stats(indexes1, indexes2)
 
 
 def main():
