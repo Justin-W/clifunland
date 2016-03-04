@@ -117,6 +117,38 @@ def lorem(**kwargs):
     click.echo(s)
 
 
+@cli.command()
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--whitespace', '--space', '-ws', 'split_scope', flag_value='whitespace',
+              help='splits the input at any whitespace.')
+@click.option('--words', '-w', 'split_scope', flag_value='word',
+              help='splits the input at word boundaries.')
+@click.option('--sentence', 'split_scope', flag_value='sentence',
+              help='splits the input at sentence boundaries.')
+def split(input, split_scope, **kwargs):
+    """
+    Splits the input into tokens.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        data = f.read()
+
+        if not split_scope:
+            split_scope = 'whitespace'
+        if split_scope == 'whitespace':
+            tokens = data.split()
+        elif split_scope == 'word':
+            tokens = txt_utils.get_words(data)
+        # elif split_scope == 'sentence':
+        #     tokens = txt_utils.get_sentences(data)
+        else:
+            raise NotImplementedError('Unsupported split scope: %s' % split_scope)
+        for s in tokens:
+            click.echo(s)
+
+
 def main():
     cli()
 

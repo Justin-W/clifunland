@@ -202,3 +202,32 @@ def test_info_fragments(input_text, cli_args, expected):
                     reason="currently broken for py35")
 def test_lorem(cli_args, expected):
     clirunner_invoke_piped(sut.lorem, cli_args, exit_code=0, out_contains_seq=expected)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ("Hi! How are you? My name is John-Paul. What's your name?", [], [
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+        'Praesent quis erat vel ex egestas lobortis non nec augue.',
+        'Etiam cursus nibh vel mattis cursus. Vivamus lectus erat, dictum et mauris eu, viverra tincidunt velit.',
+    ]),
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_split(input_text, cli_args, expected):
+    clirunner_invoke_piped(sut.split, cli_args, input_text, exit_code=0, out_contains_seq=expected)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ("Hi! How are you? My name is John-Paul. What's your name?", [],
+     "Hi!\nHow\nare\nyou?\nMy\nname\nis\nJohn-Paul.\nWhat's\nyour\nname?"),
+    ("Hi! How are you? My name is John-Paul. What's your name?", ['-ws'],
+     "Hi!\nHow\nare\nyou?\nMy\nname\nis\nJohn-Paul.\nWhat's\nyour\nname?"),
+    ("Hi! How are you? My name is John-Paul. What's your name?", ['-w'],
+     "Hi\nHow\nare\nyou\nMy\nname\nis\nJohn-Paul\nWhat's\nyour\nname"),
+    ("Hi! How are you? My name is John Paul. What is your name?", ['-w'],
+     "Hi\nHow\nare\nyou\nMy\nname\nis\nJohn\nPaul\nWhat\nis\nyour\nname"),
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_split(input_text, cli_args, expected):
+    clirunner_invoke_piped(sut.split, cli_args, input_text, exit_code=0, out_eq=expected)
