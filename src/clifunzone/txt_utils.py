@@ -74,11 +74,25 @@ def get_info(s):
 
 
 def get_words(s):
+    """
+
+    :param s:
+    :return:
+
+    >>> get_words("Hi! My name is Anne-Marie. What is yours?")
+    ['Hi', 'My', 'name', 'is', 'Anne-Marie', 'What', 'is', 'yours']
+
+    >>> get_words("Hi! My name is Anne-Marie. What's yours?")
+    ['Hi', 'My', 'name', 'is', 'Anne-Marie', "What's", 'yours']
+    """
     # pattern = r"[\w']+"
     # return re.findall(pattern, s)
     # pattern = r'\W+'
     pattern = r"[^\w'\-]"
-    return re.split(pattern, s)
+    words = re.split(pattern, s)
+    # remove 'empty' words
+    words = [w for w in words if w]
+    return words
 
 
 def get_sentences(s):
