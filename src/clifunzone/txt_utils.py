@@ -36,7 +36,7 @@ Mauris id tristique enim. Praesent commodo feugiat metus, sit amet elementum ris
 
 Vestibulum at nibh lorem. Nullam euismod lacus lacus, ut bibendum quam ullamcorper non. Curabitur ac orci et dui dignissim semper ut id turpis. Morbi ultricies, elit vel fringilla ullamcorper, turpis nunc vehicula tortor, vitae porta lectus ante non sapien. Aenean nec est a tortor rhoncus bibendum. In hac habitasse platea dictumst. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec pellentesque lacus et tincidunt sagittis. Aliquam non nunc elit. Suspendisse eleifend eros vitae ligula dapibus pulvinar. Interdum et malesuada fames ac ante ipsum primis in faucibus.
 
-Phasellus semper sem vulputate turpis laoreet accumsan. Nullam sollicitudin nisi vel nibh aliquet, sed feugiat felis volutpat. Suspendisse potenti. Cras ac urna rutrum, rhoncus diam eleifend, hendrerit nulla.'''
+Phasellus semper sem vulputate turpis laoreet accumsan. Nullam sollicitudin nisi vel nibh aliquet, sed feugiat felis volutpat. Suspendisse potenti. Cras ac urna rutrum, rhoncus diam eleifend, hendrerit nulla.'''  # noqa
 
 
 def get_info(s):
