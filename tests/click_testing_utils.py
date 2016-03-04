@@ -93,8 +93,8 @@ def assert_out_contains(actual, expected, encode=True, sequential=False):
                       "\nExpected #{index}: ({value})." + \
                       "\nActual: ...{actual}..."
                 # TODO: set max_actual dynamically based on the verbosity setting
-                max_actual = 80
-                # max_actual = 8000
+                # max_actual = 80
+                max_actual = 800
                 assert False, msg.format(index=repr(i), value=repr(s), start=repr(pos), end=repr(len(actual)),
                                          actual=repr(actual[pos:pos + max_actual]))
 
