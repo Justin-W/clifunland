@@ -515,11 +515,11 @@ def pformat_od(od, mode='dict', s="", indent=' ' * 4, level=0):
 
     if mode != 'dict':
         kv_tpl = '("%s", %s)'
-        ST = 'OrderedDict([\n';
+        ST = 'OrderedDict([\n'
         END = '])'
     else:
         kv_tpl = '"%s": %s'
-        ST = '{\n';
+        ST = '{\n'
         END = '}'
     for i, k in enumerate(od.keys()):
         if type(od[k]) in [dict, OrderedDict]:
