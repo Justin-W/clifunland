@@ -220,11 +220,11 @@ def test_split(input_text, cli_args, expected):
 @pytest.mark.parametrize("input_text,cli_args,expected", [
     ("Hi! How are you? My name is John-Paul. What's your name?", [],
      "Hi!\nHow\nare\nyou?\nMy\nname\nis\nJohn-Paul.\nWhat's\nyour\nname?"),
-    ("Hi! How are you? My name is John-Paul. What's your name?", ['-ws'],
+    ("Hi! How are you? My name is John-Paul. What's your name?", ['-ss'],
      "Hi!\nHow\nare\nyou?\nMy\nname\nis\nJohn-Paul.\nWhat's\nyour\nname?"),
-    ("Hi! How are you? My name is John-Paul. What's your name?", ['-w'],
+    ("Hi! How are you? My name is John-Paul. What's your name?", ['-sw'],
      "Hi\nHow\nare\nyou\nMy\nname\nis\nJohn-Paul\nWhat's\nyour\nname"),
-    ("Hi! How are you? My name is John Paul. What is your name?", ['-w'],
+    ("Hi! How are you? My name is John Paul. What is your name?", ['-sw'],
      "Hi\nHow\nare\nyou\nMy\nname\nis\nJohn\nPaul\nWhat\nis\nyour\nname"),
 ])
 @pytest.mark.skipif(sys.version_info > (3, 3),

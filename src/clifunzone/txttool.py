@@ -120,9 +120,9 @@ def lorem(**kwargs):
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
-@click.option('--whitespace', '--space', '-ws', 'split_scope', flag_value='whitespace',
+@click.option('--whitespace', '--space', '-ss', 'split_scope', flag_value='whitespace',
               help='splits the input at any whitespace.')
-@click.option('--words', '-w', 'split_scope', flag_value='word',
+@click.option('--words', '-sw', 'split_scope', flag_value='word',
               help='splits the input at word boundaries.')
 @click.option('--sentence', 'split_scope', flag_value='sentence',
               help='splits the input at sentence boundaries.')
