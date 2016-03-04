@@ -170,6 +170,7 @@ def as_piped_input(input_text):
 
 
 def clirunner_invoke_piped(cli, args, input_text=None,
+                           runner=None,
                            exit_code=None,
                            out_eq=None, out_ok=None, out_contains=None, out_contains_seq=None,
                            out_json=None, out_xml=None):
@@ -184,6 +185,7 @@ def clirunner_invoke_piped(cli, args, input_text=None,
     :param args: the CLI args to pass to the cli command.
     :param input_text: a string or a list of strings.
         If passed, the strings will be passed to the invoked command in a way that simulates 'piped input'.
+    :param runner: optional. a <CliRunner> instance. Allows the caller to reuse or configure the CliRunner instance.
     :param exit_code: the expected exit code.
     :param out_eq: the expected output.
         The actual output will be compared to this using assert_out_eq().
@@ -205,7 +207,8 @@ def clirunner_invoke_piped(cli, args, input_text=None,
     """
     if input_text is not None:
         log.debug('input_text=%s' % repr(input_text))
-    runner = CliRunner()
+    if not runner:
+        runner = CliRunner()
     input_stream = as_piped_input(input_text) if input_text is not None else None
     result = runner.invoke(cli, args, input=input_stream)
     actual = result.output
