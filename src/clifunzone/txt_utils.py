@@ -117,12 +117,13 @@ def get_info(s):
 
 def get_words(s):
     """
+    Splits a string into an iterable of words.
 
-    :param s:
-    :return:
+    :param s: the string to split.
+    :return: an iterable.
 
-    >>> get_words("Hi! My name is Anne-Marie. What is yours?")
-    ['Hi', 'My', 'name', 'is', 'Anne-Marie', 'What', 'is', 'yours']
+    >>> get_words("Hi! My name is Anne Marie. What is yours?")
+    ['Hi', 'My', 'name', 'is', 'Anne', 'Marie', 'What', 'is', 'yours']
 
     >>> get_words("Hi! My name is Anne-Marie. What's yours?")
     ['Hi', 'My', 'name', 'is', 'Anne-Marie', "What's", 'yours']
