@@ -95,6 +95,7 @@ def assert_out_contains(actual, expected, encode=True, sequential=False):
                       "\nActual: ...{actual}..."
                 # TODO: set max_actual dynamically based on the verbosity setting
                 max_actual = 80
+                # max_actual = 8000
                 assert False, msg.format(index=repr(i), value=repr(s), start=repr(pos), end=repr(len(actual)),
                                          actual=repr(actual[pos:pos + max_actual]))
 
@@ -201,21 +202,26 @@ def clirunner_invoke_piped(cli, args, input_text, exit_code=None,
         E.g. Differences between actual and expected output 'irrelevant' to the XML format may be ignored.)
     :return: the value returned by invoking CliRunner().invoke(...).
     """
+    log.debug('actual input:%s.' % repr(input_text))
     runner = CliRunner()
     result = runner.invoke(cli, args, input=as_piped_input(input_text))
-    if out_eq is not None:
-        assert_out_eq(result.output, out_eq)
-    if out_ok is not None:
-        assert_out_ok(result.output, out_ok)
-    if out_contains is not None:
-        assert_out_contains(result.output, out_contains, sequential=False)
-    if out_contains_seq is not None:
-        assert_out_contains(result.output, out_contains_seq, sequential=True)
-    if out_json is not None:
-        assert_json_eq(result.output, out_json)
-    if out_xml is not None:
-        # assert_xml_eq(result.output, out_xml)
-        assert_out_ok(result.output, out_xml)
+    actual = result.output
+    log.debug('actual output:%s.' % repr(actual))
+    # if result.exc_info:
+    #     log.info('actual exception info:%s.' % str(result.exc_info), exc_info=result.exc_info)
     if exit_code is not None:
         assert_exit_code(result.exit_code, exit_code)
+    if out_eq is not None:
+        assert_out_eq(actual, out_eq)
+    if out_ok is not None:
+        assert_out_ok(actual, out_ok)
+    if out_contains is not None:
+        assert_out_contains(actual, out_contains, sequential=False)
+    if out_contains_seq is not None:
+        assert_out_contains(actual, out_contains_seq, sequential=True)
+    if out_json is not None:
+        assert_json_eq(actual, out_json)
+    if out_xml is not None:
+        # assert_xml_eq(result.output, out_xml)
+        assert_out_ok(actual, out_xml)
     return result
