@@ -188,27 +188,38 @@ def distance(input, delimiter, values1, values2, regex, regex_ignore_case, **kwa
 
         \b
         Example: Simple 1x2 (tiny input):
-        $ echo 'Lorem ipsum dolor sit amet' | python -m clifunzone.txttool split -sw | python -m clifunzone.txttool distance -v1 Lorem -v2 sit -v2 amet
+        $ echo 'Lorem ipsum dolor sit amet' | python -m clifunzone.txttool split -sw | \
+        python -m clifunzone.txttool distance -v1 Lorem -v2 sit -v2 amet
+        {'max': 4, 'mean': 3.5, 'min': 3}
+
+        \b
+        Example: Simple 1x2 (tiny input):
+        $ echo 'Lorem ipsum dolor sit amet' | python -m clifunzone.txttool split -sw | \
+        python -m clifunzone.txttool distance -v -v1 Lorem -v2 sit -v2 amet
         {'max': 4, 'mean': 3.5, 'min': 3}
 
         \b
         Example: Simple 1x2 (larger input):
-        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | python -m clifunzone.txttool distance -v1 Lorem -v2 sit -v2 amet
+        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | \
+        python -m clifunzone.txttool distance -v1 Lorem -v2 sit -v2 amet
         {'max': 852, 'mean': 483.5, 'min': 3}
 
         \b
         Example: Simple 2x2:
-        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | python -m clifunzone.txttool distance -v1 lorem -v1 dolor -v2 consectetur -v2 adipiscing
+        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | \
+        python -m clifunzone.txttool distance -v1 lorem -v1 dolor -v2 consectetur -v2 adipiscing
         {'max': 889, 'mean': 467.0740740740741, 'min': 3}
 
         \b
         Example: Regex 1x1:
-        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | python -m clifunzone.txttool distance -r -v1 '^Pellentesque$' -v2 '^Vivamus'
+        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | \
+        python -m clifunzone.txttool distance -r -v1 '^Pellentesque$' -v2 '^Vivamus'
         {'max': 528, 'mean': 222.66666666666666, 'min': 24}
 
         \b
         Example: Regex 1x1 (case insensitive):
-        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | python -m clifunzone.txttool distance -r -ri -v1 '^Pellentesque$' -v2 '^Vivamus'
+        $ python -m clifunzone.txttool lorem | python -m clifunzone.txttool split -sw | \
+        python -m clifunzone.txttool distance -r -ri -v1 '^Pellentesque$' -v2 '^Vivamus'
         {'max': 910, 'mean': 287.1212121212121, 'min': 21}
     """
     if not input:
