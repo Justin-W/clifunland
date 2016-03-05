@@ -4,6 +4,7 @@ import pytest
 
 import clifunzone.txttool as sut
 from click_testing_utils import clirunner_invoke_piped
+from clifunzone import txt_utils
 
 
 def test_none():
@@ -235,3 +236,34 @@ def test_split(input_text, cli_args, expected):
                     reason="currently broken for py35")
 def test_split(input_text, cli_args, expected):
     clirunner_invoke_piped(sut.split, cli_args, input_text, exit_code=0, out_eq=expected)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('Lorem ipsum dolor sit amet', ['-v1', 'Lorem', '-v2', 'sit', '-v2', 'amet'],
+     "{'max': 4, 'mean': 3.5, 'min': 3}"),
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_distance(input_text, cli_args, expected):
+    input_text = txt_utils.get_words(input_text)
+    input_text = '\n'.join(input_text)
+    clirunner_invoke_piped(sut.distance, cli_args, input_text, exit_code=0, out_eq=expected)
+
+
+@pytest.mark.parametrize("cli_args,expected", [
+    (['-v1', 'Lorem', '-v2', 'sit', '-v2', 'amet'],
+     "{'max': 852, 'mean': 483.5, 'min': 3}"),
+    (['-v1', 'lorem', '-v1', 'dolor', '-v2', 'consectetur', '-v2', 'adipiscing'],
+     "{'max': 889, 'mean': 467.0740740740741, 'min': 3}"),
+    (['-r', '-v1', '^Pellentesque$', '-v2', '^Vivamus'],
+     "{'max': 528, 'mean': 222.66666666666666, 'min': 24}"),
+    (['-r', '-ri', '-v1', '^Pellentesque$', '-v2', '^Vivamus'],
+     "{'max': 910, 'mean': 287.1212121212121, 'min': 21}"),
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_distance_lorem(cli_args, expected):
+    input_text = txt_utils.lorem_ipsum()
+    input_text = txt_utils.get_words(input_text)
+    input_text = '\n'.join(input_text)
+    clirunner_invoke_piped(sut.distance, cli_args, input_text, exit_code=0, out_eq=expected)
