@@ -228,7 +228,7 @@ def get_index_distance_stats(indexes1, indexes2):
     return {'min': min_dist, 'max': max_dist, 'mean': mean_dist}
 
 
-def find_distances(item1, item2, items, regex=False, regex_flags=None):
+def find_distances(item1, item2, items, regex=False, regex_flags=None, verbose=False):
     """
     Uses find_all() and get_index_distance_stats() to calculate distance stats for 2 items (or 2 sets of items)
     within a given list of items. E.g. The distances of 2 words (or 2 word sets) within a given list of words.
@@ -267,6 +267,21 @@ def find_distances(item1, item2, items, regex=False, regex_flags=None):
             all_indexes.update(indexes)
         return all_indexes
 
+    def get_matches_detail(indexes, items):
+        # details = ((i, items[i]) for i in indexes)
+        # details = [(i, items[i]) for i in indexes]
+        # details = {i: items[i] for i in indexes}
+        # details = dict((items[i], i) for i in indexes)
+        details = {}
+        for i in indexes:
+            value = items[i]
+            if value not in details:
+                details[value] = set()
+                # details[value] = []
+            details[value].add(i)
+            # details[value].append(i)
+        return details
+
     if is_string(item1):
         item1 = [item1]
     if is_string(item2):
@@ -274,7 +289,11 @@ def find_distances(item1, item2, items, regex=False, regex_flags=None):
 
     indexes1 = find_distinct_indexes(item1, items, regex, regex_flags)
     indexes2 = find_distinct_indexes(item2, items, regex, regex_flags)
-    return get_index_distance_stats(indexes1, indexes2)
+    d = get_index_distance_stats(indexes1, indexes2)
+    if verbose:
+        d.update({'matches1': get_matches_detail(indexes1, items)})
+        d.update({'matches2': get_matches_detail(indexes2, items)})
+    return d
 
 
 def main():
