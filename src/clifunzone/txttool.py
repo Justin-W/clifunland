@@ -1,9 +1,9 @@
 import json
 import logging
+import re
 from pprint import pformat
 
 import click
-import re
 
 from clifunzone import click_utils
 from clifunzone import dict_utils
