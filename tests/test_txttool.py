@@ -259,6 +259,17 @@ def test_distance(input_text, cli_args, expected):
      "{'max': 528, 'mean': 222.66666666666666, 'min': 24}"),
     (['-r', '-ri', '-v1', '^Pellentesque$', '-v2', '^Vivamus'],
      "{'max': 910, 'mean': 287.1212121212121, 'min': 21}"),
+    (['-v1', 'Lorem', '-v2', 'sit', '-v2', 'amet', '-v'],
+     "{'max': 852, 'mean': 483.5, 'matches1': {'Lorem': set([0])}, " +
+     "'matches2': {'amet': set([449, 386, 4, 722, 206, 50, 563, 852, 821, 787]), " +
+     "'sit': set([448, 385, 3, 721, 205, 49, 562, 851, 820, 786])}, 'min': 3}"),
+    (['-r', '-v1', '^Pellentesque$', '-v2', '^Vivamus', '-v'],
+     "{'max': 528, 'mean': 222.66666666666666, 'matches1': {'Pellentesque': set([328, 99, 213, 478])}, " +
+     "'matches2': {'Vivamus': set([45, 270, 143, 529, 627, 502])}, 'min': 24}"),
+    (['-r', '-ri', '-v1', '^Pellentesque$', '-v2', '^Vivamus', '-v'],
+     "{'max': 910, 'mean': 287.1212121212121, 'matches1': {'pellentesque': set([406, 839, 329, 207, 182, 24, 955]), " +
+     "'Pellentesque': set([328, 99, 213, 478])}, " +
+     "'matches2': {'Vivamus': set([45, 270, 143, 529, 627, 502])}, 'min': 21}"),
 ])
 @pytest.mark.skipif(sys.version_info > (3, 3),
                     reason="currently broken for py35")

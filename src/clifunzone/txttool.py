@@ -171,7 +171,9 @@ def split(input, split_scope, separator, **kwargs):
               help="causes all 'search' values (-v1 and -v2) to be processed as regex patterns.")
 @click.option('--regex-ignore-case', '-ri', 'regex_ignore_case', is_flag=True, type=click.BOOL,
               help='causes regex operations to be performed case-insensitively.')
-def distance(input, delimiter, values1, values2, regex, regex_ignore_case, **kwargs):
+@click.option('--verbose', '-v', is_flag=True, type=click.BOOL,
+              help='enables more detailed output.')
+def distance(input, delimiter, values1, values2, regex, regex_ignore_case, verbose, **kwargs):
     """
     Calculates distance metrics for 2 sets of 'search' values against a sequence of tokens.
 
@@ -231,7 +233,7 @@ def distance(input, delimiter, values1, values2, regex, regex_ignore_case, **kwa
 
         tokens = data.split(delimiter)
         flags = re.IGNORECASE if regex_ignore_case else None
-        output = txt_utils.find_distances(values1, values2, tokens, regex=regex, regex_flags=flags)
+        output = txt_utils.find_distances(values1, values2, tokens, regex=regex, regex_flags=flags, verbose=verbose)
         click.echo(output)
 
 
