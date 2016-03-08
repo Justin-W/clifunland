@@ -48,9 +48,9 @@ def load_requirements_file(fp=None, **kwargs):
     """
     if not fp:
         fp = 'requirements.txt'
-    with open(fp) as f:
-        # values = f.read().splitlines()
-        values = [line for line in f.readlines()]
+    with open(fp) as req_file:
+        # values = req_file.read().splitlines()
+        values = [line for line in req_file.readlines()]
     # strip the values
     values = [i.strip() for i in values]
     # filter out comment lines
