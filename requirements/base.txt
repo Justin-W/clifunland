@@ -11,3 +11,7 @@ click==6.2
 
 # lxml
 lxml==3.5.0
+
+# gherkin
+#gherkin-parser==0.1.0
+gherkin-official==3.2.0
