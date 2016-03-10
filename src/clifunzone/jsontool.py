@@ -9,6 +9,7 @@ from clifunzone import click_utils
 from clifunzone import json_utils
 from clifunzone.dict_utils import filter_none_values
 from clifunzone.dict_utils import flatten
+from clifunzone.mustache_utils import render as mustache_render
 from clifunzone.reflection_utils import varsdict
 
 
@@ -391,6 +392,56 @@ def strip(input, prune_null, style, **kwargs):
             data = filter_none_values(data, recursive=True)
         s = json.dumps(data, indent=dumps_indent, separators=dumps_separators)
         click.echo(s)
+
+
+@cli.command(short_help='renders a mustache template using JSON input')
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--template', '-t', 'tf', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the template. Or '-' to use stdin (e.g. piped input).")
+@click.option('--template-string', '-ts', '-s', 'ts',
+              help="a mustache-format template string. Ignored if '-t' is used.")
+def mustache(input, tf, ts):
+    """
+    Renders a mustache template using JSON input as the template context. Requires valid input.
+
+    Examples:
+
+        \b
+        Example: Simple template and data:
+        $ echo '{"p": "Jay", "g": "Hi"}' | python -mclifunzone.jsontool mustache -s '{{g}} {{p}}!'
+        Hi Jay!
+
+        \b
+        Example: File template and data:
+        $ echo '{"p": "Jay", "g": "Hi"}' | python -mclifunzone.jsontool mustache -t mytemplate.mustache
+        (output depends on the content of mytemplate.mustache.)
+
+        \b
+        Example: Data with nested values:
+        $ echo '{"p": "J", "g": {"e": "Hi", "s": "Hola"}}' | python -mclifunzone.jsontool mustache -s '{{g.e}} {{p}}!'
+        Hi J!
+
+        \b
+        Example: Data with nested values:
+        $ echo '{"p": "J", "g": {"e": "Hi", "s": "Hola"}}' | python -mclifunzone.jsontool mustache -s '{{g.s}} {{p}}!'
+        Hola J!
+
+        \b
+        Example: Simple data, with a shell-command-generated template:
+        $ echo '{"p": "Jay", "g": "Hi"}' | python -mclifunzone.jsontool mustache -s "`echo '{{g}} {{p}}'`"
+        Hi Jay
+    """
+    if tf:
+        with click.open_file(tf, mode='rb') as f:
+            ts = f.read()
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        # data = json_utils.load_ordered(f)
+        data = json.load(f)
+    output = mustache_render(ts, **data)
+    click.echo(output)
 
 
 def main():

@@ -146,3 +146,14 @@ def test_info(input_text, expected):
 ])
 def test_info_invalid_input(input_text):
     clirunner_invoke_piped(sut.info, [], input_text, exit_code=-1, out_ok=None)
+
+
+@pytest.mark.parametrize("input_text,template,expected", [
+    ('{"p": "Jay", "g": "Hi"}', '{{g}} {{p}}!', 'Hi Jay!'),
+    ('{"p": "J", "g": {"e": "Hi", "s": "Hola"}}', '{{g.e}} {{p}}!', 'Hi J!'),
+    ('{"p": "J", "g": {"e": "Hi", "s": "Hola"}}', '{{g.s}} {{p}}!', 'Hola J!'),
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_mustache(input_text, template, expected):
+    clirunner_invoke_piped(sut.mustache, ['-s', template], input_text, exit_code=0, out_eq=expected)
