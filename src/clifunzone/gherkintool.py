@@ -1,4 +1,5 @@
 import json
+from collections import Counter
 from pprint import pformat
 
 import click
@@ -6,6 +7,7 @@ from gherkin.parser import Parser
 
 from clifunzone import click_utils
 from clifunzone.reflection_utils import varsdict
+from clifunzone.walk_items import walk_items
 
 
 # from gherkin.pickles.compiler import compile  #as gherkin_compile
@@ -56,19 +58,39 @@ def info(input, verbose, **kwargs):
         # pickles = compile(feature, "path/to/the.feature")
         # click.echo(pickles)
 
-        d = {}
-        d.update({'feature': feature})
+        data = {}
+        data.update({'feature': feature})
 
-        info = {
-            'keys': feature.keys(),
-        }
-        if 'scenarioDefinitions' in feature:
-            scenarios = [s['name'] for s in feature['scenarioDefinitions']]
-            info.update({'scenarios': scenarios})
-        d.update({'info': info})
+        metrics = {}
+        # metrics.update({'keys': feature.keys()})
+        # if 'scenarioDefinitions' in feature:
+        #     scenarios = [s['name'] for s in feature['scenarioDefinitions']]
+        #     metrics.update({'scenarios': scenarios})
+        steps = [a[-1] for d, k, v, a in walk_items(feature) if k == 'type' and v == 'Step']
+        scenarios = [a[-1] for d, k, v, a in walk_items(feature) if k == 'type' and v == 'Scenario']
+        # tables = [a[-1] for d, k, v, a in walk_items(feature) if k == 'type' and v == 'DataTable']
+        # step_count = len([v for d, k, v in walk_items(feature, ancestors=False)
+        #                   if k == 'type' and v == 'Step'])
+        # data_table_count = len([v for d, k, v in walk_items(feature, ancestors=False)
+        #                         if k == 'type' and v == 'DataTable'])
+        ctr_type = Counter((v for d, k, v in walk_items(feature, ancestors=False) if k == 'type'))
+        ctr_kw = Counter((v for d, k, v in walk_items(feature, ancestors=False) if k == 'keyword'))
+        metrics.update({'count': {
+            # 'Scenarios': len(scenarios),
+            # 'Steps': len(steps),
+            # 'DataTables': len(tables),
+            'Keywords': ctr_kw,
+            'Types': ctr_type,
+        }})
+        metrics.update({'content': {
+            'Scenarios': [d['name'] for d in scenarios],
+            'Steps': [d['text'] for d in steps],
+            # 'tables': len(tables)
+        }})
+        data.update({'info': metrics})
 
         if verbose:
-            d['_object'] = {
+            data['_object'] = {
                 'type': type(feature),
                 # 'repr': repr(feature),
                 # 'vars': sorted(vars(feature)),
@@ -78,9 +100,9 @@ def info(input, verbose, **kwargs):
         # click.echo(d)
         # click.echo(sorted(d.items()))
         if verbose:
-            s = pformat(d)
+            s = pformat(data)
         else:
-            s = json.dumps(d, indent=2, sort_keys=True)
+            s = json.dumps(data, indent=2, sort_keys=True)
         click.echo(s)
 
 
