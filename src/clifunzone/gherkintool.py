@@ -1,5 +1,4 @@
 import json
-import logging
 from pprint import pformat
 
 import click
@@ -81,7 +80,6 @@ def info(input, verbose, **kwargs):
         else:
             s = json.dumps(d, indent=2, sort_keys=True)
         click.echo(s)
-
 
 
 def main():
