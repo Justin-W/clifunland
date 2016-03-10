@@ -15,3 +15,6 @@ lxml==3.5.0
 # gherkin
 #gherkin-parser==0.1.0
 gherkin-official==3.2.0
+
+# pystache
+pystache==0.5.4
