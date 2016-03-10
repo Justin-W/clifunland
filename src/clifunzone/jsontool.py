@@ -229,12 +229,12 @@ def formatcommand(input, style, indent, skip_keys, sort_keys, ensure_ascii, chec
 
         \b
         Example: Compact format:
-        $ echo '{"a": {"b": null, "c": "null", "d": "", "e": {"f": {}}}}' | python jsontool.py format -c
+        $ echo '{"a": {"b": null, "c": "null", "d": "", "e": {"f": {}}}}' | python -mclifunzone.jsontool format -c
         {"a":{"b":null,"c":"null","d":"","e":{"f":{}}}}
 
         \b
         Example: Pretty format:
-        $ echo '{"a": {"b": null, "c": "null", "d": "", "e": {"f": []}}}' | python jsontool.py format -p
+        $ echo '{"a": {"b": null, "c": "null", "d": "", "e": {"f": []}}}' | python -mclifunzone.jsontool format -p
         {
           "a": {
             "b": null,
@@ -313,7 +313,7 @@ def flattencommand(input, separator, sort_keys, style, **kwargs):
 
         \b
         Example: Basic usage:
-        $ echo '{"a":{"b":null,"c":"null","d":"","e":{"f":null},"g":{},"h":[]}}' | python jsontool.py flatten -c
+        $ echo '{"a":{"b":null,"c":"null","d":"","e":{"f":null},"g":{},"h":[]}}' | python -mclifunzone.jsontool flatten -c
         {"a__b":null,"a__c":"null","a__d":"","a__e__f":null,"a__h":[]}
     """
     if style == 'compact':
@@ -367,7 +367,7 @@ def strip(input, prune_null, style, **kwargs):
 
         \b
         Example: Remove all elements with value=null:
-        $ echo '{"a":{"b":null,"c":"null","d":"","e":{"f":null},"g":{},"h":[]}}' | python jsontool.py strip -n
+        $ echo '{"a":{"b":null,"c":"null","d":"","e":{"f":null},"g":{},"h":[]}}' | python -mclifunzone.jsontool strip -n
         {"a": {"c": "null", "d": "", "e": {}, "g": {}, "h": []}}
     """
     if style == 'compact':
