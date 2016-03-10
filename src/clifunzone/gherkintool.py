@@ -16,8 +16,6 @@ from clifunzone.walk_items import walk_items
 @click.group(context_settings=click_utils.CONTEXT_SETTINGS, invoke_without_command=True)
 @click.version_option(version='1.0.0')
 @click.option('--debug/--silent', '-d/-s', 'debug', default=False)
-# @click.option('--debug', '-d', 'debug', flag_value=True, default=True)
-# @click.option('--silent', '-s', 'debug', flag_value=False)
 def cli(debug):
     """
     Provides CLI commands for interacting with Gherkin data/files (.feature format).
@@ -62,43 +60,26 @@ def info(input, verbose, **kwargs):
         data.update({'feature': feature})
 
         metrics = {}
-        # metrics.update({'keys': feature.keys()})
-        # if 'scenarioDefinitions' in feature:
-        #     scenarios = [s['name'] for s in feature['scenarioDefinitions']]
-        #     metrics.update({'scenarios': scenarios})
         steps = [a[-1] for d, k, v, a in walk_items(feature) if k == 'type' and v == 'Step']
         scenarios = [a[-1] for d, k, v, a in walk_items(feature) if k == 'type' and v == 'Scenario']
         # tables = [a[-1] for d, k, v, a in walk_items(feature) if k == 'type' and v == 'DataTable']
-        # step_count = len([v for d, k, v in walk_items(feature, ancestors=False)
-        #                   if k == 'type' and v == 'Step'])
-        # data_table_count = len([v for d, k, v in walk_items(feature, ancestors=False)
-        #                         if k == 'type' and v == 'DataTable'])
         ctr_type = Counter((v for d, k, v in walk_items(feature, ancestors=False) if k == 'type'))
         ctr_kw = Counter((v for d, k, v in walk_items(feature, ancestors=False) if k == 'keyword'))
         metrics.update({'count': {
-            # 'Scenarios': len(scenarios),
-            # 'Steps': len(steps),
-            # 'DataTables': len(tables),
             'Keywords': ctr_kw,
             'Types': ctr_type,
         }})
         metrics.update({'content': {
             'Scenarios': [d['name'] for d in scenarios],
             'Steps': [d['text'] for d in steps],
-            # 'tables': len(tables)
         }})
         data.update({'info': metrics})
 
         if verbose:
             data['_object'] = {
                 'type': type(feature),
-                # 'repr': repr(feature),
-                # 'vars': sorted(vars(feature)),
-                # 'dir': sorted(dir(feature)),
                 'members': sorted(varsdict(feature).keys())
             }
-        # click.echo(d)
-        # click.echo(sorted(d.items()))
         if verbose:
             s = pformat(data)
         else:
