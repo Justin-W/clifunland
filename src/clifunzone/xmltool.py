@@ -1,3 +1,4 @@
+import itertools
 import json
 import logging
 import sys
@@ -336,14 +337,14 @@ def strip(input, whitespace, empty, xpaths, tags, attributes, attribute_values, 
 @cli.command(short_help='outputs matching portions of the input')
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
-@click.option('--xpath', '-x', type=click.STRING,
+@click.option('--xpath', '-x', 'xpaths', type=click.STRING, multiple=True,
               help='removes all elements matching a given XPath expression.')
 @click.option('--root', '-r', 'root_tag', default='results',
               help='a tag to use as the root element of the output.'
                    ' if not specified and multiple matches are found, the output may not be valid XML.')
 @click.option('--no-root', '-nr', 'no_root', is_flag=True, type=click.BOOL,
               help='prevents the root tag from being added to the output.')
-def find(input, xpath, root_tag, no_root, **kwargs):
+def find(input, xpaths, root_tag, no_root, **kwargs):
     """
     Extracts specified portions of XML data from the input. Requires valid input.
 
@@ -456,8 +457,8 @@ def find(input, xpath, root_tag, no_root, **kwargs):
     with click.open_file(input, mode='rb') as f:
         tree = ET.parse(f)
         root = tree.getroot()
-        if xpath:
-            elements = xml_utils.get_elements(root, xpath=xpath)
+        if xpaths:
+            elements = list(itertools.chain(*(xml_utils.get_elements(root, xpath=xpath) for xpath in xpaths)))
         else:
             elements = []
         # output = ET.tostring(root, method='text')

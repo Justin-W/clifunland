@@ -375,9 +375,9 @@ def test_strip_invalid_input(input_text):
     ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //b[@id="b1"]'],
      '<b id="b1"><c/></b>'),
     ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //b[@id="b1"]', '-x //*[./e]'],
-     '<d><e/></d>'),
+     '<b id="b1"><c/></b>\n<d><e/></d>'),
     ('<a><b id="b1"><c/></b><b id="b2"><d><e/></d><d/></b></a>', ['-nr', '-x //*[./e]', '-x //b[@id="b1"]'],
-     '<b id="b1"><c/></b>'),
+     '<d><e/></d>\n<b id="b1"><c/></b>'),
 ])
 def test_find(input_text, cli_args, expected):
     clirunner_invoke_piped(sut.find, cli_args, input_text, exit_code=0, out_xml=expected)
