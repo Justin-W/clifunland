@@ -152,6 +152,48 @@ def walk_items(obj, values_only=False, ancestors=True, keys_as_ancestors=False, 
     >>> d = OrderedDict({'a': 1, 'b': {'g': OrderedDict((('h', 3), ('i', 9)))}, 'e': defaultdict(int, {'f': 10})});
     >>> d = list(walk_items(d, ancestors=False, values_only=False)); list(enumerate(d))[-2:]
     [(6, (1, 'e', defaultdict(<type 'int'>, {'f': 10}))), (7, (2, 'f', 10))]
+
+    >>> d = {'a': {'b': 2, 'c': {'d': {'e': 5, 'f': 6}}}, 'g': {'h': 8, 'i': 9}};
+    >>> d = list(walk_items(d, values_only=True));
+    >>> d = [(i, d, k, v) for i, (d, k, v, a) in enumerate(d) if v % 2];
+    >>> list(d)
+    [(0, 4, 'e', 5), (3, 2, 'i', 9)]
+
+    >>> d = {'a': {'b': 2, 'c': {'d': {'e': 5, 'f': 6}}}, 'g': {'h': 8, 'i': 9}};
+    >>> d = list(walk_items(d, values_only=False));
+    >>> d = [(i, d, k, v) for i, (d, k, v, a) in enumerate(d) if isinstance(v, int) and v % 2];
+    >>> list(d)
+    [(4, 4, 'e', 5), (8, 2, 'i', 9)]
+
+    >>> d = {'a': {'b': 2, 'c': {'d': {'e': 5, 'f': 6}}}, 'g': {'h': 8, 'i': 9}};
+    >>> d = list(walk_items(d, values_only=True));
+    >>> d = [(i, d, k, v) for i, (d, k, v, a) in enumerate(d) if not v % 2];
+    >>> list(d)
+    [(1, 4, 'f', 6), (2, 2, 'b', 2), (4, 2, 'h', 8)]
+
+    >>> d = {'a': {'b': 2, 'c': {'d': {'e': 5, 'f': 6}}}, 'g': {'h': 8, 'i': 9}};
+    >>> d = list(walk_items(d, values_only=True, keys_as_ancestors=True));
+    >>> d = [(i, d, k, v) for i, (d, k, v, a) in enumerate(d) if not v % 2];
+    >>> list(d)
+    [(1, 8, 'f', 6), (2, 4, 'b', 2), (4, 4, 'h', 8)]
+
+    >>> d = {'a': {'b': 2, 'c': {'d': {'e': 5, 'f': 6}}}, 'g': {'h': 8, 'i': 9}};
+    >>> d = list(walk_items(d, values_only=True, keys_as_ancestors=True));
+    >>> d = ['#{}: {}={}'.format(i, '.'.join(a[1::2]), v) for i, (d, k, v, a) in enumerate(d) if not v % 2];
+    >>> list(d)
+    ['#1: a.c.d.f=6', '#2: a.b=2', '#4: g.h=8']
+
+    >>> d = {'a': {'b': 2, 'c': {'d': {'e': 5, 'f': 6}}}, 'g': {'h': 8, 'i': 9}};
+    >>> d = list(walk_items(d, values_only=True, keys_as_ancestors=True));
+    >>> d = ['#{}. {}={}'.format(i, ':'.join(a[-3::2]), v) for i, (d, k, v, a) in enumerate(d) if not v % 2];
+    >>> list(d)
+    ['#1. d:f=6', '#2. a:b=2', '#4. g:h=8']
+
+    >>> d = {'a': {'b': 2, 'c': {'d': {'e': 5, 'f': 6}}}, 'g': {'h': 8, 'i': 9}};
+    >>> d = list(walk_items(d, values_only=True, keys_as_ancestors=True));
+    >>> d = ["#{}. {}['{}']={}".format(i, a[-3], a[-1], v) for i, (d, k, v, a) in enumerate(d) if not v % 2];
+    >>> list(d)
+    ["#1. d['f']=6", "#2. a['b']=2", "#4. g['h']=8"]
     """
     is_map = isinstance(obj, Mapping)
     is_seq = isinstance(obj, (Sequence, Set)) and not isinstance(obj, string_types)
