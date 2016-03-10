@@ -7,7 +7,7 @@ from collections import Set
 try:
     from six import string_types, iteritems
 except ImportError:
-    string_types = (str, unicode) if str is bytes else (str, bytes)
+    string_types = (str, unicode) if str is bytes else (str, bytes)  # noqa
     # iteritems = lambda mapping: getattr(mapping, 'iteritems', mapping.items)()
 
     def iteritems(mapping):
