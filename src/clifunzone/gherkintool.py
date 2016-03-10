@@ -11,7 +11,6 @@ from clifunzone.reflection_utils import varsdict
 # from gherkin.pickles.compiler import compile  #as gherkin_compile
 
 
-
 @click.group(context_settings=click_utils.CONTEXT_SETTINGS, invoke_without_command=True)
 @click.version_option(version='1.0.0')
 @click.option('--debug/--silent', '-d/-s', 'debug', default=False)
