@@ -54,12 +54,6 @@ def info(input, verbose, pyformat, **kwargs):
         parser = Parser()
         feature_text = f.read()
         feature = parser.parse(feature_text)
-        # click.echo(feature)
-        # pickles = compile(feature, "path/to/the.feature")
-        # click.echo(pickles)
-
-        data = {}
-        data.update({'feature': feature})
 
         metrics = {}
         steps = [a[-1] for d, k, v, a in walk_items(feature) if k == 'type' and v == 'Step']
@@ -75,7 +69,7 @@ def info(input, verbose, pyformat, **kwargs):
             'Scenarios': [d['name'] for d in scenarios],
             'Steps': [d['text'] for d in steps],
         }})
-        data.update({'info': metrics})
+        data = metrics
 
         if verbose:
             data['_object'] = {
