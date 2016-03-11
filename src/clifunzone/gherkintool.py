@@ -42,7 +42,9 @@ def echo(input, **kwargs):
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--verbose', '-v', is_flag=True, type=click.BOOL,
               help='enables more detailed output.')
-def info(input, verbose, **kwargs):
+@click.option('--pyformat', '-py', is_flag=True, type=click.BOOL,
+              help='enables python-style output (instead of JSON).')
+def info(input, verbose, pyformat, **kwargs):
     """
     Provides info about the input. Requires valid input.
     """
@@ -80,7 +82,7 @@ def info(input, verbose, **kwargs):
                 'type': type(feature),
                 'members': sorted(varsdict(feature).keys())
             }
-        if verbose:
+        if pyformat:
             s = pformat(data)
         else:
             s = json.dumps(data, indent=2, sort_keys=True)
