@@ -121,7 +121,9 @@ def validate(input, silent, **kwargs):
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--verbose', '-v', is_flag=True, type=click.BOOL,
               help='enables more detailed output.')
-def info(input, verbose, **kwargs):
+@click.option('--pyformat', '-py', is_flag=True, type=click.BOOL,
+              help='enables python-style output (instead of JSON).')
+def info(input, verbose, pyformat, **kwargs):
     """
     Provides info about the input. Requires valid input.
     """
@@ -143,7 +145,7 @@ def info(input, verbose, **kwargs):
             }
         # click.echo(d)
         # click.echo(sorted(d.items()))
-        if verbose:
+        if pyformat:
             s = pformat(d)
         else:
             s = json.dumps(d, indent=2, sort_keys=True)
