@@ -126,6 +126,29 @@ def test_validate(input_text, exit_code, expected):
 
 
 @pytest.mark.parametrize("input_text,expected", [
+    ('{"a": null}', '{"a":null}'),
+    ('{"a": {"b": [{"c": 0}, {"d": 1}]}}', '{"a":{"b":[{"c":0},{"d":1}]}}')
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_parse(input_text, expected):
+    clirunner_invoke_piped(sut.parse, [], input_text, exit_code=0, out_json=expected)
+
+
+@pytest.mark.parametrize("input_text", [
+    '',
+    ' ',
+    '{{{',
+    '}',
+    '{a}',
+    'abc',
+    '<abc/>'
+])
+def test_parse_invalid_input(input_text):
+    clirunner_invoke_piped(sut.parse, [], input_text, exit_code=-1, out_ok=None)
+
+
+@pytest.mark.parametrize("input_text,expected", [
     ('{"a": null}', '{"keys":["a"],"length":1}'),
     ('{"a": {"b": [{"c": 0}, {"d": 1}]}}', '{"keys":["a"],"length":1}')
 ])
