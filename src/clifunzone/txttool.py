@@ -71,7 +71,7 @@ def echo(input, **kwargs):
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
 @click.option('--json', '-oj', 'output_format', flag_value='json',
               help='renders the output as JSON.')
-@click.option('--python', '--dict', '-od', 'output_format', flag_value='dict',
+@click.option('--pyformat', '-py', '--python', '--dict', '-od', 'output_format', flag_value='pydict',
               help='renders the output as a python dictionary.')
 @click.option('--xml', '-ox', 'output_format', flag_value='xml',
               help='renders the output as XML.')
@@ -99,7 +99,7 @@ def info(input, output_format, verbose, flat, **kwargs):
 
         if not output_format:
             output_format = 'json'
-        if output_format == 'dict':
+        if output_format == 'pydict':
             s = pformat(d)
         elif output_format == 'json':
             s = json.dumps(d, indent=2, sort_keys=True)
