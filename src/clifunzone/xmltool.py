@@ -109,6 +109,31 @@ def validate(input, silent, **kwargs):
             sys.exit(1)  # exit with a failure code of 1
 
 
+@cli.command(short_help='converts the input into an object model')
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--pyformat', '-py', is_flag=True, type=click.BOOL,
+              help='enables python-style output (instead of JSON).')
+@click.option('--sorted', '-s', 'sort_keys', is_flag=True, type=click.BOOL,
+              help='sorts the keys in the JSON output (only works with JSON output).')
+def parse(input, pyformat, sort_keys, **kwargs):
+    """
+    Converts the input into a structured object hierarchy. Requires valid input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        xmlstring = f.read()
+        output = xml_utils.xml_to_json(xmlstring, strip_whitespace=False, strip_namespace=False, strip_attribute=False,
+                                       pretty=True)
+        d = json.loads(output)
+        if pyformat:
+            s = pformat(d)
+        else:
+            s = json.dumps(d, indent=2, sort_keys=sort_keys)
+        click.echo(s)
+
+
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")

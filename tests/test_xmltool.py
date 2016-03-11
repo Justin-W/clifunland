@@ -106,6 +106,31 @@ def test_validate(input_text, exit_code, expected):
 
 @pytest.mark.parametrize("input_text,expected", [
     ('<abc/>', [
+        '{"abc":null}'
+    ]),
+    ('<a>\t<b><c/> </b></a>', [
+        '{"a":{"#text":"\\t","b":{"c":{"#tail":" "}}}}'
+    ])
+])
+def test_parse(input_text, expected):
+    clirunner_invoke_piped(sut.parse, [], input_text, exit_code=0, out_json=expected)
+
+
+@pytest.mark.parametrize("input_text", [
+    '',
+    ' ',
+    '<<<',
+    '>',
+    '<a>',
+    'abc',
+    '{"a": null}'
+])
+def test_parse_invalid_input(input_text):
+    clirunner_invoke_piped(sut.parse, [], input_text, exit_code=-1, out_ok=None)
+
+
+@pytest.mark.parametrize("input_text,expected", [
+    ('<abc/>', [
         '{',
         '  "root": {',
         '    "content": {',
