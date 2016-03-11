@@ -37,6 +37,36 @@ def echo(input, **kwargs):
         click.echo(s)
 
 
+@cli.command(short_help='converts the input into an object model')
+@click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
+              help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
+@click.option('--pyformat', '-py', is_flag=True, type=click.BOOL,
+              help='enables python-style output (instead of JSON).')
+@click.option('--sorted', '-s', 'sort_keys', is_flag=True, type=click.BOOL,
+              help='sorts the keys in the JSON output (only works with JSON output).')
+def parse(input, pyformat, sort_keys, **kwargs):
+    """
+    Converts the input into a structured object hierarchy. Requires valid input.
+    """
+    if not input:
+        input = '-'
+    with click.open_file(input, mode='rb') as f:
+        parser = Parser()
+        feature_text = f.read()
+        feature = parser.parse(feature_text)
+        # click.echo(feature)
+        # pickles = compile(feature, "path/to/the.feature")
+        # click.echo(pickles)
+
+        data = {}
+        data.update(feature)
+        if pyformat:
+            s = pformat(data)
+        else:
+            s = json.dumps(data, indent=2, sort_keys=sort_keys)
+        click.echo(s)
+
+
 @cli.command()
 @click.option('--input', '-i', type=click.Path(exists=True, dir_okay=False, allow_dash=True),
               help="the path to the file containing the input. Or '-' to use stdin (e.g. piped input).")
