@@ -1,9 +1,9 @@
 import sys
 
 import pytest
+from click_testing_utils import clirunner_invoke_piped
 
 import clifunzone.gherkintool as sut
-from click_testing_utils import clirunner_invoke_piped
 from clifunzone import txt_utils
 
 
