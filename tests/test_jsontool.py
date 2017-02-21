@@ -180,3 +180,15 @@ def test_info_invalid_input(input_text):
                     reason="currently broken for py35")
 def test_mustache(input_text, template, expected):
     clirunner_invoke_piped(sut.mustache, ['-s', template], input_text, exit_code=0, out_eq=expected)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', [], '{"a": "A", "b": 1, "n": {"c": null}, "d": []}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--compact'], '{"a":"A","b":1,"n":{"c":null},"d":[]}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--pretty'], '{\n  "a": "A", \n  "b": 1, \n  "n": {\n    "c": null\n  },\n  "d": []\n}'),
+     '{\n  "a": "A", \n  "b": 1, \n  "n": {\n    "c": null\n  },\n  "d": []\n}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--flat'], '{\n"a": "A", \n"b": 1, \n"n": {\n"c": null\n},\n"d": []\n}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['-c', '-s'], '{"a":"A","b":1,"d":[],"n":{"c":null}}'),
+])
+def test_format(input_text, cli_args, expected):
+    clirunner_invoke_piped(sut.formatcommand, cli_args, input_text, exit_code=0, out_eq=expected)
