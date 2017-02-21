@@ -194,3 +194,16 @@ def test_mustache(input_text, template, expected):
                     reason="currently broken for py35")
 def test_format(input_text, cli_args, expected):
     clirunner_invoke_piped(sut.formatcommand, cli_args, input_text, exit_code=0, out_eq=expected)
+
+
+@pytest.mark.parametrize("input_text,cli_args,expected", [
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', [], '{"a": "A", "b": 1, "n__c": null, "d": []}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--compact'], '{"a":"A","b":1,"n__c":null,"d":[]}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--pretty'],
+     '{\n  "a": "A", \n  "b": 1, \n  "n__c": null,\n  "d": []\n}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--flat'], '{\n"a": "A", \n"b": 1, \n"n__c": null,\n"d": []\n}'),
+])
+@pytest.mark.skipif(sys.version_info > (3, 3),
+                    reason="currently broken for py35")
+def test_flatten(input_text, cli_args, expected):
+    clirunner_invoke_piped(sut.flattencommand, cli_args, input_text, exit_code=0, out_eq=expected)
