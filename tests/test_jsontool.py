@@ -3,7 +3,6 @@ import sys
 import pytest
 
 import clifunzone.jsontool as sut
-from click_testing_utils import clirunner_invoke_piped
 
 
 def test_none():
@@ -185,7 +184,7 @@ def test_mustache(input_text, template, expected):
 @pytest.mark.parametrize("input_text,cli_args,expected", [
     ('{"a":"A","b":1,"n":{"c":null},"d":[]}', [], '{"a": "A", "b": 1, "n": {"c": null}, "d": []}'),
     ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--compact'], '{"a":"A","b":1,"n":{"c":null},"d":[]}'),
-    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--pretty'], '{\n  "a": "A", \n  "b": 1, \n  "n": {\n    "c": null\n  },\n  "d": []\n}'),
+    ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--pretty'],
      '{\n  "a": "A", \n  "b": 1, \n  "n": {\n    "c": null\n  },\n  "d": []\n}'),
     ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['--flat'], '{\n"a": "A", \n"b": 1, \n"n": {\n"c": null\n},\n"d": []\n}'),
     ('{"a":"A","b":1,"n":{"c":null},"d":[]}', ['-c', '-s'], '{"a":"A","b":1,"d":[],"n":{"c":null}}'),
