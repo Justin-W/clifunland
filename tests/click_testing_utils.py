@@ -3,9 +3,9 @@ import logging
 
 from click._compat import PY2
 from click.testing import CliRunner
+from testing_utils import munge_object_mem_refs
 
 from clifunzone.reflection_utils import is_string
-from testing_utils import munge_object_mem_refs
 
 # Use the most reasonable io that users would use for the python version.
 if PY2:

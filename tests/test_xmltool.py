@@ -1,9 +1,9 @@
 import sys
 
 import pytest
+from click_testing_utils import clirunner_invoke_piped
 
 import clifunzone.xmltool as sut
-from click_testing_utils import clirunner_invoke_piped
 
 
 def test_none():
