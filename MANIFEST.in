@@ -64,6 +64,7 @@ include .idea/runConfigurations
 include .idea/runConfigurations/run_tests__check_only.xml
 include .idea/runConfigurations/run_tests__Precommit.xml
 include .idea/runConfigurations/run_tests__tests_only.xml
+include .idea/runConfigurations/status__pip_freeze.xml
 include .idea/runConfigurations/tox_check_sh.xml
 include .idea/runConfigurations/tox_clean_sh.xml
 include .idea/runConfigurations/tox_fixisort_sh.xml
