@@ -33,6 +33,16 @@ def contains_valid_xml(obj):
 
     >>> contains_valid_xml('<constants><constant id="pi" value="3.14" /><constant id="zero">0</constant></constants>')
     True
+
+    >>> contains_valid_xml(dict())  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    ValueError: can only parse strings
+    # Note: the exception may be different without lxml: TypeError: feed() argument 1 must be string or read-only buffer, not dict
+
+    >>> contains_valid_xml(('<',))  # doctest: +IGNORE_EXCEPTION_DETAIL
+    Traceback (most recent call last):
+    ValueError: can only parse strings
+    # Note: the exception may be different without lxml: TypeError: feed() argument 1 must be string or read-only buffer, not tuple
     """
     if obj is None:
         return False
